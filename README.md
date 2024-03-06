@@ -25,7 +25,7 @@ pip3 install -U Flask-SQLAlchemy
 
 ```bash
 cd server
-python3 server.py
+python3 app.py
 ```
 
 - to stop the server:
@@ -33,6 +33,12 @@ python3 server.py
 ```bash
 cd server
 ^C
+```
+
+- to deactivate environment:
+```bash
+cd server
+deactivate
 ```
 
 ### Client (frontend)
@@ -43,3 +49,5 @@ cd server
 cd client
 npm run dev
 ```
+- do npm install if dependencies not installed yet
+
