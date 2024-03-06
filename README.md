@@ -1,9 +1,43 @@
 # CS-160
 
-To run the development server for frontend:
+### Server (backend)
+
+- to activate the virtual environment for backend, use the command
 
 ```bash
-npm run dev
+cd server
+source venv/bin/activate
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- install flask and dependencies:
+
+```bash
+cd server
+pip3 install flask
+pip3 install -U flask-cors
+pip3 install -U Flask-SQLAlchemy
+
+```
+
+- to run the server:
+
+```bash
+cd server
+python3 server.py
+```
+
+- to stop the server:
+
+```bash
+cd server
+^C
+```
+
+### Client (frontend)
+
+- to run the client server
+
+```bash
+cd client
+npm run dev
+```
