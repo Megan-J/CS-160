@@ -1,5 +1,7 @@
 # CS-160
 
+all commands written below are for mac
+
 ### Server (backend)
 
 - to activate the virtual environment for backend, use the command
