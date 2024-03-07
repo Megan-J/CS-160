@@ -6,14 +6,14 @@
 
 ### Server (backend)
 
-- to activate the virtual environment for backend, use the command
+to activate the virtual environment for backend, use the command
 
 ```bash
 cd server
 source venv/bin/activate
 ```
 
-- install flask and dependencies:
+install flask and dependencies:
 
 ```bash
 cd server
@@ -23,21 +23,21 @@ pip3 install -U Flask-SQLAlchemy
 
 ```
 
-- to run the server:
+to run the server:
 
 ```bash
 cd server
 python3 app.py
 ```
 
-- to stop the server:
+to stop the server:
 
 ```bash
 cd server
 ^C
 ```
 
-- to deactivate environment:
+to deactivate environment:
 ```bash
 cd server
 deactivate
@@ -45,11 +45,15 @@ deactivate
 
 ### Client (frontend)
 
-- to run the client server
+to run the client server
 
 ```bash
 cd client
 npm run dev
 ```
-- do npm install if dependencies not installed yet
 
+if dependencies not installed yet
+```bash
+cd client
+npm install
+```
