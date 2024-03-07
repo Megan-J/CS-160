@@ -5,7 +5,6 @@ from datetime import datetime
 #from os import environ
 
 app = Flask(__name__)
-#, resources={r"/*": {"origins": "http://localhost:3000"}}
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:mysql@localhost/cloud'
@@ -44,6 +43,7 @@ class Track(db.Model):
 
     def to_json(self):
         return {'id': self.id, 'user_id': self.user_id ,'title': self.title, 'description': self.description, 'audio_url': self.audio_url, 'image': self.image, 'created_at': self.created_at}
+
 
 
 #create new user

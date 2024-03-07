@@ -1,7 +1,6 @@
-/*MAIN PAGE*/
 import React, { useState, useEffect } from "react";
 
-function index() {
+function signup() {
   const [message, setMessage] = useState("Loading");
 
   useEffect(() => {
@@ -23,7 +22,7 @@ function index() {
             </ul>
         </nav>
         <h1 className="text-2xl font-semibold mb-4">CloudSound</h1>
-        <p>Start Listening today!</p>
+        <p>Login</p>
 
         <p>{message}</p>
       </div>
@@ -32,4 +31,4 @@ function index() {
   );
 }
 
-export default index;
+export default signup;

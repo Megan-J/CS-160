@@ -1,7 +1,6 @@
-/*MAIN PAGE*/
 import React, { useState, useEffect } from "react";
 
-function index() {
+function stores() {
   const [message, setMessage] = useState("Loading");
 
   useEffect(() => {
@@ -22,8 +21,9 @@ function index() {
                 <li><a href="signup">Signup</a></li>
             </ul>
         </nav>
-        <h1 className="text-2xl font-semibold mb-4">CloudSound</h1>
-        <p>Start Listening today!</p>
+        
+        <h1 className="text-2xl font-semibold mb-4">Stores</h1>
+        <p>Explore all the stores created by our very own users!</p>
 
         <p>{message}</p>
       </div>
@@ -32,4 +32,4 @@ function index() {
   );
 }
 
-export default index;
+export default stores;

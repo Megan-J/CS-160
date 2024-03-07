@@ -1,7 +1,7 @@
-/*MAIN PAGE*/
+/*for now, can make it so that anyone can upload new song ie.dont have to be logged in */
 import React, { useState, useEffect } from "react";
 
-function index() {
+function upload() {
   const [message, setMessage] = useState("Loading");
 
   useEffect(() => {
@@ -22,8 +22,9 @@ function index() {
                 <li><a href="signup">Signup</a></li>
             </ul>
         </nav>
-        <h1 className="text-2xl font-semibold mb-4">CloudSound</h1>
-        <p>Start Listening today!</p>
+        
+        <h1 className="text-2xl font-semibold mb-4">Upload Music</h1>
+        <p>Let the world hear your magic!</p>
 
         <p>{message}</p>
       </div>
@@ -32,4 +33,4 @@ function index() {
   );
 }
 
-export default index;
+export default upload;
