@@ -1,6 +1,8 @@
 # CS-160
 
-all commands written below are for mac
+#### Notes:
+- all commands written below are for mac
+- install node.js if it isn't on your computer yet
 
 ### Server (backend)
 
