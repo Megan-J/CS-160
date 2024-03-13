@@ -1,7 +1,8 @@
 from flask import request, jsonify
-from models import app, db, User
+from models import app
+#, db
 
-#test route
+#test route; must navigate to this url after activating 8080
 @app.route('/home', methods=['GET'])
 def get_contacts():
     data = {"message": "subscribe"}
@@ -13,6 +14,6 @@ def get_contacts():
 
 #port should be 8080
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    #with app.app_context():
+        #db.create_all()
     app.run(debug=False, port=8080)

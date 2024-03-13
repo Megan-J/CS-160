@@ -18,6 +18,7 @@ cd server
 pip3 install flask
 pip3 install -U flask-cors
 pip3 install -U Flask-SQLAlchemy
+pip3 install -U mysql-connector-python
 
 ```
 

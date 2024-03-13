@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
+import mysql.connector
 #from os import environ
 
 app = Flask(__name__)
@@ -11,41 +12,110 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:mysql@local
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///cloud.db"
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 
-db = SQLAlchemy(app)
+#db = SQLAlchemy(app)
 
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.String(80), nullable=False)
-    last_name = db.Column(db.String(80), nullable=False)
-    username = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    password = db.Column(db.String(120), nullable=False)
-    bio = db.Column(db.String(5000))
-    pfp = db.Column(db.String(2000))
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="mysql",
+    database="cloud"
+)
 
-    def to_json(self):
-        return {'id': self.id, 'first_name': self.first_name, 'last_name': self.last_name, 'username': self.username, 'email': self.email, 'password': self.password, 'bio': self.bio, 'pfp': self.pfp}
-    
+cursor = connection.cursor()
 
-class Track(db.Model):
-    __tablename__ = 'tracks'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) # for now only tracks with one author
-    title = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.Text)
-    audio_url = db.Column(db.String(255), nullable=False)
-    image = db.Column(db.String(255))
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+#cursor.execute("CREATE DATABASE IF NOT EXISTS cloud")
+#cursor.execute("USE cloud")
 
-    # Define relationship to the User model
-    #user = dbc.relationship('User', backref=db.backref('tracks', lazy=True))
+sql_query = """
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(80) NOT NULL,
+    last_name VARCHAR(80) NOT NULL,
+    username VARCHAR(80) NOT NULL,
+    email VARCHAR(120) NOT NULL,
+    password VARCHAR(120) NOT NULL,
+    bio VARCHAR(5000),
+    pfp VARCHAR(2000)
+);
 
-    def to_json(self):
-        return {'id': self.id, 'user_id': self.user_id ,'title': self.title, 'description': self.description, 'audio_url': self.audio_url, 'image': self.image, 'created_at': self.created_at}
+CREATE TABLE IF NOT EXISTS tracks (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    author_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    audio_url VARCHAR(255) NOT NULL,
+    image VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(user_id)
+);
 
+CREATE TABLE IF NOT EXISTS followers (
+    follower_id INT NOT NULL,
+    following_id INT NOT NULL,
+    PRIMARY KEY (follower_id, following_id),
+	FOREIGN KEY (follower_id) REFERENCES users(user_id),
+    FOREIGN KEY (following_id) REFERENCES users(user_id)
+);
+CREATE TABLE IF NOT EXISTS storefronts (
+    store_id INT PRIMARY KEY,
+    store_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    follower_count INT DEFAULT 0,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 
+CREATE TABLE IF NOT EXISTS product (
+    ProductID INT PRIMARY KEY AUTO_INCREMENT,
+    store_id INT,
+    Name VARCHAR(255) NOT NULL,
+    Description TEXT,
+    Price DECIMAL(10, 2) NOT NULL,
+    StockQuantity INT NOT NULL,
+    ImageURL VARCHAR(255),
+    FOREIGN KEY (store_id) REFERENCES storefronts(store_id)
+);
 
+CREATE TABLE IF NOT EXISTS order_table (
+    OrderID INT PRIMARY KEY AUTO_INCREMENT,
+    UserID INT,
+    store_id INT,
+    OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    TotalAmount DECIMAL(10, 2) NOT NULL,
+    Status VARCHAR(20) DEFAULT 'Pending',
+    Address VARCHAR(500) NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES users(user_id),
+    FOREIGN KEY (store_id) REFERENCES storefronts(store_id)
+);
+
+CREATE TABLE IF NOT EXISTS order_item (
+    OrderItemID INT PRIMARY KEY AUTO_INCREMENT,
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    Price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (OrderID) REFERENCES order_table(OrderID),
+    FOREIGN KEY (ProductID) REFERENCES product(ProductID)
+);
+
+CREATE TABLE IF NOT EXISTS payment (
+    PaymentID INT PRIMARY KEY AUTO_INCREMENT,
+    OrderID INT,
+    PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    Amount DECIMAL(10, 2) NOT NULL,
+    PaymentMethod VARCHAR(50),
+    TransactionID VARCHAR(100),
+    FOREIGN KEY (OrderID) REFERENCES order_table(OrderID)
+);          
+"""
+cursor.execute(sql_query, multi=True)
+
+connection.commit()
+
+cursor.close()
+connection.close()
+
+'''
 #create new user
 @app.route('/create_contact', methods=['POST'])
 def create_user():
@@ -64,7 +134,7 @@ def create_user():
     except Exception as e:
         return make_response(jsonify({'message': 'error creating user', 'error':str(e)}), 500)
 
-'''   
+  
 #get all users
 app.route('/api/flask/users', methods=['GET'])
 def get_users():
