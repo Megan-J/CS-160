@@ -1,5 +1,5 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for macos14 (x86_64)
--- 
+--
 -- Host: localhost    Database: cloudsound
 -- ------------------------------------------------------
 -- Server version	8.0.36
@@ -31,11 +31,10 @@ CREATE TABLE `Addresses` (
   `nStateID` int DEFAULT NULL,
   `vchZIP` varchar(45) DEFAULT NULL,
   `nCountryID` int NOT NULL,
-  `Phone` varchar(45) DEFAULT NULL,
-  `IsActive` int NOT NULL DEFAULT '1',
-  `InsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `bIsActive` int NOT NULL DEFAULT '0',
   `bIsDeleted` int NOT NULL DEFAULT '0',
+  `bUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `bInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`aID`),
   UNIQUE KEY `ID_UNIQUE` (`aID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -138,6 +137,32 @@ INSERT INTO `Countries` VALUES (1,'United States','USA',1,0,'2024-03-14 16:39:19
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Followers`
+--
+
+DROP TABLE IF EXISTS `Followers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Followers` (
+  `aID` int NOT NULL AUTO_INCREMENT,
+  `nUserID` int DEFAULT NULL,
+  `nFollowingID` int DEFAULT NULL,
+  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`aID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Followers`
+--
+
+LOCK TABLES `Followers` WRITE;
+/*!40000 ALTER TABLE `Followers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Followers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `OrderItems`
 --
 
@@ -146,7 +171,7 @@ DROP TABLE IF EXISTS `OrderItems`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `OrderItems` (
   `aID` int NOT NULL AUTO_INCREMENT,
-  `nItemID` int NOT NULL,
+  `nProductID` int NOT NULL,
   `nQuantity` int NOT NULL DEFAULT '1',
   `fPrice` float DEFAULT NULL,
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -200,6 +225,37 @@ LOCK TABLES `Orders` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Products`
+--
+
+DROP TABLE IF EXISTS `Products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Products` (
+  `aID` int NOT NULL AUTO_INCREMENT,
+  `nStoreID` int DEFAULT NULL,
+  `vchName` varchar(255) DEFAULT NULL,
+  `txtDescription` text,
+  `fPrice` float DEFAULT NULL,
+  `nInventory` int DEFAULT NULL,
+  `vchImagePath` varchar(255) DEFAULT NULL,
+  `bIsDeleted` int DEFAULT '0',
+  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`aID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Products`
+--
+
+LOCK TABLES `Products` WRITE;
+/*!40000 ALTER TABLE `Products` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `States`
 --
 
@@ -229,6 +285,88 @@ INSERT INTO `States` VALUES (1,'Alabama','AL',0.04,0,'2024-03-14 16:49:23','2024
 UNLOCK TABLES;
 
 --
+-- Table structure for table `StoreFollowers`
+--
+
+DROP TABLE IF EXISTS `StoreFollowers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `StoreFollowers` (
+  `aID` int NOT NULL AUTO_INCREMENT,
+  `nUserID` int DEFAULT NULL,
+  `nStoreID` int DEFAULT NULL,
+  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`aID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `StoreFollowers`
+--
+
+LOCK TABLES `StoreFollowers` WRITE;
+/*!40000 ALTER TABLE `StoreFollowers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `StoreFollowers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Storefronts`
+--
+
+DROP TABLE IF EXISTS `Storefronts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Storefronts` (
+  `aID` int NOT NULL AUTO_INCREMENT,
+  `vchStoreName` varchar(255) DEFAULT NULL,
+  `nUserID` int DEFAULT NULL,
+  `txtDescription` text,
+  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dtInsertDate` varchar(45) DEFAULT 'CURRENT_TIMESTAMP',
+  PRIMARY KEY (`aID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Storefronts`
+--
+
+LOCK TABLES `Storefronts` WRITE;
+/*!40000 ALTER TABLE `Storefronts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Storefronts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Tracks`
+--
+
+DROP TABLE IF EXISTS `Tracks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Tracks` (
+  `aID` int NOT NULL AUTO_INCREMENT,
+  `nAuthorID` int DEFAULT NULL,
+  `vchTitle` varchar(255) DEFAULT NULL,
+  `vchDescription` varchar(255) DEFAULT NULL,
+  `vchAudioURL` varchar(255) DEFAULT NULL,
+  `vchImagePath` varchar(255) DEFAULT NULL,
+  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`aID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Tracks`
+--
+
+LOCK TABLES `Tracks` WRITE;
+/*!40000 ALTER TABLE `Tracks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Tracks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Users`
 --
 
@@ -243,6 +381,10 @@ CREATE TABLE `Users` (
   `vchFirstName` varchar(45) DEFAULT NULL,
   `vchLastName` varchar(45) DEFAULT NULL,
   `vchNickname` varchar(45) DEFAULT NULL,
+  `vchEmail` varchar(45) DEFAULT NULL,
+  `bIsVerified` int DEFAULT '0',
+  `vchBio` varchar(255) DEFAULT NULL,
+  `vchProfilePicPath` varchar(255) DEFAULT NULL,
   `nShippingAddressID` int DEFAULT NULL,
   `nBillingAddressID` int DEFAULT NULL,
   `bIsBanned` int DEFAULT '0',
@@ -270,4 +412,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-14 17:10:35
+-- Dump completed on 2024-03-15 11:25:15
