@@ -1,5 +1,5 @@
 -- MySQL dump 10.13  Distrib 8.0.36, for macos14 (x86_64)
---
+-- 
 -- Host: localhost    Database: cloudsound
 -- ------------------------------------------------------
 -- Server version	8.0.36
