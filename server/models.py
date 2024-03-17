@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="mysql",
+    password="password123",
     database="cloud"
 )
 

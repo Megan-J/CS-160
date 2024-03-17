@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 
-function login() {
-  const [message, setMessage] = useState("Loading");
+export default function Login() {
+  const [inputs, setInputs] = useState({});
+
+  const handleChange = (event: { target: { name: any; value: any } }) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs((values) => ({ ...values, [name]: value }));
+  };
+
+  const handleSubmit = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    console.log(inputs);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -28,22 +39,32 @@ function login() {
         <h1 className="text-2xl font-semibold mb-4">Radar</h1>
         <div>
           <h2 className="text-xl mb-4">Login</h2>
-          <form>
-            <label className="font-semibold">
-              Username
-              <input type="text" name="username" />
-            </label>
-            <label className="font-semibold">
-              Password
-              <input type="text" name="password" />
-            </label>
-            <br />
-            <button type="button">Submit</button>
-          </form>
+
+          <div>
+            <form onSubmit={handleSubmit}>
+              <label>
+                Username
+                <input
+                  type="text"
+                  name="username"
+                  value={inputs.username || ""}
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                Password
+                <input
+                  type="text"
+                  name="password"
+                  value={inputs.password || ""}
+                  onChange={handleChange}
+                />
+              </label>
+              <input type="submit" />
+            </form>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default login;

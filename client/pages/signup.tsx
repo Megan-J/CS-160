@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 
-function signup() {
-  const [message, setMessage] = useState("Loading");
+export default function signup() {
+  const [inputs, setInputs] = useState({});
+
+  const handleChange = (event: { target: { name: any; value: any } }) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs((values) => ({ ...values, [name]: value }));
+  };
+
+  const handleSubmit = (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    console.log(inputs);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -27,27 +38,54 @@ function signup() {
         </nav>
         <h1 className="text-2xl font-semibold mb-4"></h1>
         <div>
-          <h2 className="text-xl mb-4">Sign Up</h2>
-          <form>
-            <label className="font-semibold">
-              Name
-              <input type="text" name="username" />
-            </label>
-            <label className="font-semibold">
-              Password
-              <input type="text" name="password" />
-            </label>
-            <label className="font-semibold">
-              Confirm Password
-              <input type="text" name="password" />
-            </label>
-            <br />
-            <button type="button">Submit</button>
-          </form>
+          <div>
+            <h2 className="text-xl mb-4">Signup</h2>
+
+            <div>
+              <form onSubmit={handleSubmit}>
+                <label>
+                  First Name
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={inputs.firstName || ""}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label>
+                  Last Name
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={inputs.lastName || ""}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label>
+                  Email
+                  <input
+                    type="text"
+                    name="email"
+                    value={inputs.email || ""}
+                    onChange={handleChange}
+                  />
+                </label>
+                <label>
+                  Password
+                  <input
+                    type="text"
+                    name="password"
+                    value={inputs.password || ""}
+                    onChange={handleChange}
+                  />
+                </label>
+                <br />
+                <input type="submit" />
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-export default signup;

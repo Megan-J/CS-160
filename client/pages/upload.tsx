@@ -1,9 +1,7 @@
 /*for now, can make it so that anyone can upload new song ie.dont have to be logged in */
 import React, { useState, useEffect } from "react";
 
-function upload() {
-  const [message, setMessage] = useState("Loading");
-
+export default function upload() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md">
@@ -26,14 +24,11 @@ function upload() {
             </li>
           </ul>
         </nav>
-
-        <h1 className="text-2xl font-semibold mb-4">Upload Music</h1>
-        <p>Let the world hear your magic!</p>
-
-        <p>{message}</p>
+        <div>
+          <h1 className="text-2xl font-semibold mb-4">Upload Music</h1>
+          <p>Let the world hear your magic!</p>
+        </div>
       </div>
     </div>
   );
 }
-
-export default upload;
