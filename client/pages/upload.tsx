@@ -2,6 +2,14 @@
 import React, { useState, useEffect } from "react";
 
 export default function upload() {
+  const onFileChange = (event) => {
+    console.log("selected file!");
+  };
+
+  const onFileUpload = () => {
+    console.log("uploaded file!");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md">
@@ -27,6 +35,10 @@ export default function upload() {
         <div>
           <h1 className="text-2xl font-semibold mb-4">Upload Music</h1>
           <p>Let the world hear your magic!</p>
+
+          <input type="file" onChange={onFileChange} />
+          <br />
+          <button onClick={onFileUpload}>Upload!</button>
         </div>
       </div>
     </div>
