@@ -202,6 +202,7 @@ CREATE TABLE `Orders` (
   `nItemCount` int DEFAULT NULL,
   `fCostTotal` float DEFAULT NULL,
   `fTaxTotal` float DEFAULT NULL,
+  `fShippingTotal` float DEFAULT NULL,
   `fGrandTotal` float DEFAULT NULL,
   `bIsPaid` int DEFAULT '0',
   `nCCInfoID` int DEFAULT NULL,
@@ -209,7 +210,7 @@ CREATE TABLE `Orders` (
   `nBillingAddressID` int DEFAULT NULL,
   `bIsShipped` int DEFAULT '0',
   `bIsCanceled` int DEFAULT '0',
-  `dtLastUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
+  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`aID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -383,7 +384,7 @@ CREATE TABLE `Users` (
   `vchNickname` varchar(45) DEFAULT NULL,
   `vchEmail` varchar(45) DEFAULT NULL,
   `bIsVerified` int DEFAULT '0',
-  `vchBio` varchar(255) DEFAULT NULL,
+  `vchBio` text,
   `vchProfilePicPath` varchar(255) DEFAULT NULL,
   `nShippingAddressID` int DEFAULT NULL,
   `nBillingAddressID` int DEFAULT NULL,
@@ -412,4 +413,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-03-15 11:25:15
+-- Dump completed on 2024-03-16 19:20:46

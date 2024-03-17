@@ -2,120 +2,193 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
-import mysql.connector
 #from os import environ
 
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:mysql@localhost/cloud'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///cloud.db"
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 
-#db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
-connection = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="mysql",
-    database="cloud"
-)
+class Addresses(db.Model):
+    __tablename__ = 'addresses'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    vchAddress1 = db.Column(db.String(45), nullable=True)
+    vchAddress2 = db.Column(db.String(45), nullable=True)
+    vchCity = db.Column(db.String(45), db.ForeignKey('cities.aID'), nullable=True)
+    nStateID = db.Column(db.Integer, db.ForeignKey('states.aID'), nullable=True)
+    vchZIP = db.Column(db.String(45), nullable=True)
+    nCountryID = db.Column(db.Integer, db.ForeignKey('countries.aID'), nullable=True)
+    bIsActive = db.Column(db.Integer, nullable=False)
+    bIsDeleted = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-cursor = connection.cursor()
+    def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'vchAddress1': self.vchAddress1, 'vchAddress2': self.vchAddress2, 'vchCity': self.vchCity, 'nStateID': self.nStateID, 'vchZIP': self.vchZIP, 'nCountryID': self.nCountryID, 'bIsActive': self.bIsActive, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+    
+class CCInfo(db.Model):
+    __tablename__ = 'ccinfo'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    vchCCNumber = db.Column(db.String(45), nullable=False)
+    vchCCType = db.Column(db.String(45), nullable=False)
+    vchCCExp = db.Column(db.String(45), nullable=False)
+    vchCCV = db.Column(db.String(45), nullable=False)
+    bIsPreferred = db.Column(db.Integer, nullable=False)
+    bIsDeleted = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-#cursor.execute("CREATE DATABASE IF NOT EXISTS cloud")
-#cursor.execute("USE cloud")
+    def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'vchCCNumber': self.vchCCNumber, 'vchCCType': self.vchCCType, 'vchCCExp': self.vchCCExp, 'vchCCV': self.vchCCV, 'bIsPreferred': self.bIsPreferred, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
 
-sql_query = """
-CREATE TABLE IF NOT EXISTS users (
-    user_id INT PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(80) NOT NULL,
-    last_name VARCHAR(80) NOT NULL,
-    username VARCHAR(80) NOT NULL,
-    email VARCHAR(120) NOT NULL,
-    password VARCHAR(120) NOT NULL,
-    bio VARCHAR(5000),
-    pfp VARCHAR(2000)
-);
+class Countries(db.Model):
+    __tablename__ = 'countries'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    vchCountryName = db.Column(db.String(45), nullable=False)
+    vchCountryAbbr = db.Column(db.String(45), nullable=False)
+    bPriority = db.Column(db.Integer, nullable=False)
+    bIsDeleted = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-CREATE TABLE IF NOT EXISTS tracks (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    author_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    audio_url VARCHAR(255) NOT NULL,
-    image VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users(user_id)
-);
+    def to_json(self):
+        return {'aID': self.aID, 'vchCountryName': self.vchCountryName, 'vchCountryAbbr': self.vchCountryAbbr, 'bPriority': self.bPriority, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
 
-CREATE TABLE IF NOT EXISTS followers (
-    follower_id INT NOT NULL,
-    following_id INT NOT NULL,
-    PRIMARY KEY (follower_id, following_id),
-	FOREIGN KEY (follower_id) REFERENCES users(user_id),
-    FOREIGN KEY (following_id) REFERENCES users(user_id)
-);
-CREATE TABLE IF NOT EXISTS storefronts (
-    store_id INT PRIMARY KEY,
-    store_name VARCHAR(255) NOT NULL,
-    description TEXT,
-    follower_count INT DEFAULT 0,
-    user_id INT,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
+class Followers(db.Model):
+    __tablename__ = 'followers'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    nFollowingID = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-CREATE TABLE IF NOT EXISTS product (
-    ProductID INT PRIMARY KEY AUTO_INCREMENT,
-    store_id INT,
-    Name VARCHAR(255) NOT NULL,
-    Description TEXT,
-    Price DECIMAL(10, 2) NOT NULL,
-    StockQuantity INT NOT NULL,
-    ImageURL VARCHAR(255),
-    FOREIGN KEY (store_id) REFERENCES storefronts(store_id)
-);
+    def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'nFollowingID': self.nFollowingID, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+    
+class OrderItems(db.Model):
+    __tablename__ = 'orderitems'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nProductID = db.Column(db.Integer, db.ForeignKey('products.aID'), nullable=False)
+    nQuantity = db.Column(db.Integer, nullable=False)
+    fPrice = db.Column(db.Float, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-CREATE TABLE IF NOT EXISTS order_table (
-    OrderID INT PRIMARY KEY AUTO_INCREMENT,
-    UserID INT,
-    store_id INT,
-    OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    TotalAmount DECIMAL(10, 2) NOT NULL,
-    Status VARCHAR(20) DEFAULT 'Pending',
-    Address VARCHAR(500) NOT NULL,
-    FOREIGN KEY (UserID) REFERENCES users(user_id),
-    FOREIGN KEY (store_id) REFERENCES storefronts(store_id)
-);
+    def to_json(self):
+        return {'aID': self.aID, 'nProductID': self.nProductID, 'nQuantity': self.nQuantity, 'fPrice': self.fPrice, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+    
+class Orders(db.Model):
+    __tablename__ = 'orders'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    nItemCount = db.Column(db.Integer, nullable=False)
+    fCostTotal = db.Column(db.Float, nullable=False)
+    fTaxTotal = db.Column(db.Float, nullable=False)
+    fShippingTotal = db.Column(db.Float, nullable=False)
+    fGrandTotal = db.Column(db.Float, nullable=False)
+    bIsPaid = db.Column(db.Integer, nullable=False)
+    nCCInfoID = db.Column(db.Integer, db.ForeignKey('ccinfo.aID'), nullable=False)
+    nShippingAddressID = db.Column(db.Integer, db.ForeignKey('addresses.aID'), nullable=False)
+    nBillingAddressID = db.Column(db.Integer, db.ForeignKey('addresses.aID'), nullable=False)
+    bIsShipped = db.Column(db.Integer, nullable=False)
+    bIsCanceled = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-CREATE TABLE IF NOT EXISTS order_item (
-    OrderItemID INT PRIMARY KEY AUTO_INCREMENT,
-    OrderID INT,
-    ProductID INT,
-    Quantity INT,
-    Price DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (OrderID) REFERENCES order_table(OrderID),
-    FOREIGN KEY (ProductID) REFERENCES product(ProductID)
-);
+    def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'nItemCount': self.nItemCount, 'fCostTotal': self.fCostTotal, 'fTaxTotal': self.fTaxTotal, 'fGrandTotal': self.fGrandTotal, 'bIsPaid': self.bIsPaid, 'nCCInfoID': self.nCCInfoID, 'nShippingAddressID': self.nShippingAddressID, 'nBillingAddressID': self.nBillingAddressID, 'bIsShipped': self.bIsShipped, 'bIsCanceled': self.bIsCanceled, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
 
-CREATE TABLE IF NOT EXISTS payment (
-    PaymentID INT PRIMARY KEY AUTO_INCREMENT,
-    OrderID INT,
-    PaymentDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Amount DECIMAL(10, 2) NOT NULL,
-    PaymentMethod VARCHAR(50),
-    TransactionID VARCHAR(100),
-    FOREIGN KEY (OrderID) REFERENCES order_table(OrderID)
-);          
-"""
-cursor.execute(sql_query, multi=True)
+class Products(db.Model):
+    __tablename__ = 'products'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    vchProductName = db.Column(db.String(45), nullable=False)
+    vchProductDesc = db.Column(db.String(45), nullable=True)
+    fPrice = db.Column(db.Float, nullable=False)
+    bIsDeleted = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-connection.commit()
+    def to_json(self):
+        return {'aID': self.aID, 'vchProductName': self.vchProductName, 'vchProductDesc': self.vchProductDesc, 'fPrice': self.fPrice, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
 
-cursor.close()
-connection.close()
+class States(db.Model):
+    __tablename__ = 'states'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    vchStateName = db.Column(db.String(45), nullable=False)
+    vchStateAbbr = db.Column(db.String(45), nullable=False)
+    fTaxRate = db.Column(db.Float, nullable=False)
+    bIsDeleted = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
-'''
+    def to_json(self):
+        return {'aID': self.aID, 'vchStateName': self.vchStateName, 'vchStateAbbr': self.vchStateAbbr, 'fTaxRate': self.fTaxRate, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+    
+class StoreFollowers(db.Model):
+    __tablename__ = 'storefollowers'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    nStoreID = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'nStoreID': self.nStoreID, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+    
+class Storefronts(db.Model):
+    __tablename__ = 'storefronts'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    vchStoreName = db.Column(db.String(45), nullable=False)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    txtDescription = db.Column(db.Text, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'vchStoreName': self.vchStoreName, 'nUserID': self.nUserID, 'txtDescription': self.txtDescription, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+    
+class Tracks(db.Model):
+    __tablename__ = 'tracks'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nAuthorID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    vchTitle = db.Column(db.String(255), nullable=False)
+    vchDescription = db.Column(db.String(255), nullable=True)
+    vchAudioURL = db.Column(db.String(255), nullable=False)
+    vchImagePath = db.Column(db.String(255), nullable=True)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'nAuthorID': self.nAuthorID, 'vchTitle': self.vchTitle, 'vchDescription': self.vchDescription, 'vchAudioURL': self.vchAudioURL, 'vchImagePath': self.vchImagePath, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+
+class Users(db.Model):
+    __tablename__ = 'users'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    vchUsername = db.Column(db.String(45), nullable=False)
+    vchPassword = db.Column(db.String(45), nullable=False)
+    dtLastLogin = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    vchFirstName = db.Column(db.String(45), nullable=True)
+    vchLastName = db.Column(db.String(45), nullable=True)
+    vchNickname = db.Column(db.String(45), nullable=True)
+    vchEmail = db.Column(db.String(45), nullable=False)
+    bIsVerified = db.Column(db.Integer, nullable=False)
+    txtBio = db.Column(db.Text, nullable=True)
+    vchProfilePicPath = db.Column(db.String(255), nullable=True)
+    nShippingAddressID = db.Column(db.Integer, db.ForeignKey('addresses.aID'), nullable=True)
+    nBillingAddressID = db.Column(db.Integer, db.ForeignKey('addresses.aID'), nullable=True)
+    bIsBanned = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'vchUsername': self.vchUsername, 'vchPassword': self.vchPassword, 'dtLastLogin': self.dtLastLogin, 'vchFirstName': self.vchFirstName, 'vchLastName': self.vchLastName, 'vchNickname': self.vchNickname, 'vchEmail': self.vchEmail, 'txtBio': self.txtBio, 'vchProfilePicPath': self.vchProfilePicPath, 'nShippingAddressID': self.nShippingAddressID, 'nBillingAddressID': self.nBillingAddressID, 'bIsBanned': self.bIsBanned, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+
 #create new user
 @app.route('/create_contact', methods=['POST'])
 def create_user():
@@ -134,7 +207,7 @@ def create_user():
     except Exception as e:
         return make_response(jsonify({'message': 'error creating user', 'error':str(e)}), 500)
 
-  
+'''   
 #get all users
 app.route('/api/flask/users', methods=['GET'])
 def get_users():
