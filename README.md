@@ -6,17 +6,20 @@
 
 ### Server (backend)
 
+first, go into the server directory
+```bash
+cd server
+```
+
 to activate the virtual environment for backend, use the command
 
 ```bash
-cd server
 source venv/bin/activate
 ```
 
-install flask and dependencies:
+install flask and dependencies (should be in the virtual environment when doing this):
 
 ```bash
-cd server
 pip3 install flask
 pip3 install -U flask-cors
 pip3 install -U Flask-SQLAlchemy
@@ -27,34 +30,34 @@ pip3 install -U mysql-connector-python
 to run the server:
 
 ```bash
-cd server
 python3 app.py
 ```
 
 to stop the server:
 
 ```bash
-cd server
 ^C
 ```
 
 to deactivate environment:
 ```bash
-cd server
 deactivate
 ```
 
 ### Client (frontend)
 
+you must be in the client directory when executing these commands
+```bash
+cd client
+```
+
 to run the client server
 
 ```bash
-cd client
 npm run dev
 ```
 
 if dependencies not installed yet
 ```bash
-cd client
 npm install
 ```
