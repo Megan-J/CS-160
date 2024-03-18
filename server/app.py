@@ -50,6 +50,30 @@ def get_users():
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
+#create user
+@app.route('/flask/createUser', methods=['POST'])
+def create_user():
+    try:
+        data = request.get_json()
+        new_user = Users(
+            vchFirstName=data['vchFirstName'],
+            vchLastName=data['vchLastName'],
+            vchPassword=data['vchPassword'],
+            vchEmail=data['vchEmail']
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({
+            'firstName': new_user.vchFirstName,
+            'lastName': new_user.vchLastName,
+            'password': new_user.vchPassword,
+            'email': new_user.vchEmail
+        }), 201
+    
+    except Exception as e:
+        return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
+
 #get user by id
 app.route('flask/users/<id>', methods=['GET'])
 def get_user(id):

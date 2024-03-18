@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-interface Inputs {
+interface Credentials {
   username?: string;
   password?: string;
 }
 
 export default function Login() {
-  const [inputs, setInputs] = useState<Inputs>({});
-  const existingUsers = [
-    {
-      username: "user1",
-      password: "password",
-    },
-  ];
+  const [inputs, setInputs] = useState<Credentials>({});
 
-  const handleChange = (event: { target: { name: any; value: any } }) => {
+  const existingUsers: Credentials = {
+    username: "user1",
+    password: "password",
+  };
+
+  const handleChange = (event: { target: { name: string; value: string } }) => {
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
@@ -23,6 +22,21 @@ export default function Login() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     console.log(inputs);
+
+    const inputUsername = inputs.username;
+    const inputPassword = inputs.password;
+
+    const usernameInDatabase =
+      Object.values(existingUsers).includes(inputUsername);
+    const passwordInDatabase =
+      Object.values(existingUsers).includes(inputPassword);
+
+    // if both exist, then redirect them to the home page
+    if (usernameInDatabase && passwordInDatabase) {
+      console.log("logged in");
+    } else {
+      console.log("User doesn't exist");
+    }
   };
 
   return (

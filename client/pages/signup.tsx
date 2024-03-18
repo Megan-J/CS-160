@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-interface Inputs {
+interface userInformation {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -8,7 +8,14 @@ interface Inputs {
 }
 
 export default function Signup() {
-  const [inputs, setInputs] = useState<Inputs>({});
+  const [inputs, setInputs] = useState<userInformation>({});
+
+  const existingUsers: userInformation = {
+    firstName: "john",
+    lastName: "doe",
+    email: "user@gmail.com",
+    password: "idk123",
+  };
 
   const handleChange = (event: { target: { name: any; value: any } }) => {
     const name = event.target.name;
@@ -19,6 +26,26 @@ export default function Signup() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     console.log(inputs);
+
+    const inputFirstName = inputs.firstName;
+    const inputLastName = inputs.lastName;
+    const inputEmail = inputs.email;
+    const inputPassword = inputs.password;
+
+    const firstNameInDatabase =
+      Object.values(existingUsers).includes(inputFirstName);
+    const lastNameInDatabase =
+      Object.values(existingUsers).includes(inputLastName);
+    const emailInDatabase = Object.values(existingUsers).includes(inputEmail);
+    const passwordInDatabase =
+      Object.values(existingUsers).includes(inputPassword);
+
+    // if both exist, then redirect them to the home page
+    if (emailInDatabase) {
+      console.log("already exists");
+    } else {
+      console.log("User doesn't exist. Create new user");
+    }
   };
 
   return (

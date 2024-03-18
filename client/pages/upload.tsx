@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 
 export default function upload() {
   const onFileChange = (event: any) => {
+    event.preventDefault();
     console.log("selected file!");
   };
 
