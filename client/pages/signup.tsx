@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 
-export default function signup() {
-  const [inputs, setInputs] = useState({});
+interface Inputs {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+}
+
+export default function Signup() {
+  const [inputs, setInputs] = useState<Inputs>({});
 
   const handleChange = (event: { target: { name: any; value: any } }) => {
     const name = event.target.name;

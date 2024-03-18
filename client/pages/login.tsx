@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 
+interface Inputs {
+  username?: string;
+  password?: string;
+}
+
 export default function Login() {
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState<Inputs>({});
 
   const handleChange = (event: { target: { name: any; value: any } }) => {
     const name = event.target.name;
