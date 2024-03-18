@@ -30,6 +30,9 @@ export default function upload() {
             <li>
               <a href="signup">Signup</a>
             </li>
+            <li>
+              <a href="order">Cart</a>
+            </li>
           </ul>
         </nav>
         <div>

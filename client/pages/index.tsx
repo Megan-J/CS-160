@@ -30,6 +30,9 @@ function index() {
             <li>
               <a href="signup">Signup</a>
             </li>
+            <li>
+              <a href="order">Cart</a>
+            </li>
           </ul>
         </nav>
         <h1 className="text-2xl font-semibold mb-4">Radar</h1>

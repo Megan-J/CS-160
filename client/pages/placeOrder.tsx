@@ -7,7 +7,7 @@ interface Inputs {
   password?: string;
 }
 
-export default function Signup() {
+export default function placeOrder() {
   const [inputs, setInputs] = useState<Inputs>({});
 
   const handleChange = (event: { target: { name: any; value: any } }) => {
@@ -49,45 +49,25 @@ export default function Signup() {
         <h1 className="text-2xl font-semibold mb-4"></h1>
         <div>
           <div>
-            <h2 className="text-xl mb-4">Signup</h2>
+            <h2 className="text-xl mb-4">Order</h2>
 
             <div>
-              <form onSubmit={handleSubmit}>
+              <form>
                 <label>
-                  First Name
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={inputs.firstName || ""}
-                    onChange={handleChange}
-                  />
+                  Contact
+                  <input type="text" placeholder="email" name="email" />
                 </label>
                 <label>
-                  Last Name
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={inputs.lastName || ""}
-                    onChange={handleChange}
-                  />
+                  Shipping address
+                  <input type="text" name="lastName" />
                 </label>
                 <label>
                   Email
-                  <input
-                    type="text"
-                    name="email"
-                    value={inputs.email || ""}
-                    onChange={handleChange}
-                  />
+                  <input type="text" name="email" />
                 </label>
                 <label>
                   Password
-                  <input
-                    type="text"
-                    name="password"
-                    value={inputs.password || ""}
-                    onChange={handleChange}
-                  />
+                  <input type="text" name="password" />
                 </label>
                 <br />
                 <input type="submit" />
