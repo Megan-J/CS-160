@@ -3,6 +3,7 @@
 #### Notes:
 - all commands written below are for mac
 - install node.js if it isn't on your computer yet
+- download mysql from the mysql website, create a user with the connection of 3306, create a table called cloud
 
 ### Server (backend)
 
