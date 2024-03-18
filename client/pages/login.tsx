@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 
 interface Credentials {
   username?: string;
@@ -34,6 +35,7 @@ export default function Login() {
     // if both exist, then redirect them to the home page
     if (usernameInDatabase && passwordInDatabase) {
       console.log("logged in");
+      const toHome = true;
     } else {
       console.log("User doesn't exist");
     }
@@ -42,6 +44,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md">
+        if(toHome){<Navigate to="/"></Navigate>}
         <nav className="main">
           <ul>
             <li>
@@ -66,7 +69,7 @@ export default function Login() {
           <h2 className="text-xl mb-4">Login</h2>
 
           <div>
-            <form onSubmit={handleSubmit}>
+            <form>
               <label>
                 Username
                 <input
@@ -85,7 +88,7 @@ export default function Login() {
                   onChange={handleChange}
                 />
               </label>
-              <input type="submit" />
+              <button onClick={handleSubmit}>Submit</button>
             </form>
           </div>
         </div>
