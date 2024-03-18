@@ -7,6 +7,12 @@ interface Inputs {
 
 export default function Login() {
   const [inputs, setInputs] = useState<Inputs>({});
+  const existingUsers = [
+    {
+      username: "user1",
+      password: "password",
+    },
+  ];
 
   const handleChange = (event: { target: { name: any; value: any } }) => {
     const name = event.target.name;
