@@ -143,8 +143,6 @@ def create_stores():
         return make_response(jsonify({'message': 'Error creating storefront', 'error': str(e)}), 500)
 
 #get all stores
-@app.route('/flask/getStores', methods=['GET'])
-
 @app.route('/store/all', methods=['GET'])
 def get_stores():
     try:
@@ -155,8 +153,6 @@ def get_stores():
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #get all users
-@app.route('/flask/getUsers', methods=['GET'])
-
 @app.route('/user/all', methods=['GET'])
 def get_users():
     try:
@@ -167,9 +163,6 @@ def get_users():
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #create user
-@app.route('/flask/createUser', methods=['POST'])
-
-
 @app.route('/user/create', methods=['POST'])
 def create_user():
     try:
@@ -194,9 +187,6 @@ def create_user():
         return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
 
 #get user by id
-app.route('flask/users/<id>', methods=['GET'])
-
-
 app.route('/user/{id}', methods=['GET'])
 def get_user(id):
     try:
@@ -235,6 +225,24 @@ def search_music():
             return jsonify({'message': 'Missing query'}), 400
     except Exception as e:
         return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
+
+@app.route('/product/<int:store_id>', methods=['GET'])
+def get_products_by_store(store_id):
+    try:
+        # Query products by store ID
+        products = Products.query.filter_by(nStoreID=store_id).all()
+        
+        # Convert products to JSON format
+        products_data = [{
+            'id': product.aID,
+            'name': product.vchProductName,
+            'description': product.vchProductDesc,
+            'price': product.fPrice
+        } for product in products]
+        
+        return jsonify(products_data), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
 
 #port should be 8080, pick one of the ports
 if __name__ == '__main__':
