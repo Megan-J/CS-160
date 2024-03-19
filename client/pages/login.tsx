@@ -66,10 +66,9 @@ export default function Login() {
             </li>
           </ul>
         </nav>
-        <h1 className="text-2xl font-semibold mb-4">Radar</h1>
+        <br />
+        <h1 className="text-2xl font-semibold mb-4">Login</h1>
         <div>
-          <h2 className="text-xl mb-4">Login</h2>
-
           <div>
             <form>
               <p>

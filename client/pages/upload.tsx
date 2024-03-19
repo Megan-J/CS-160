@@ -29,7 +29,7 @@ export default function upload() {
               <a href="login">Login</a>
             </li>
             <li>
-              <a href="signup">Signup</a>
+              <a href="signup">Sign Up</a>
             </li>
             <li>
               <a href="/checkout">Checkout</a>

@@ -66,18 +66,17 @@ export default function Signup() {
               <a href="login">Login</a>
             </li>
             <li>
-              <a href="signup">Signup</a>
+              <a href="signup">Sign Up</a>
             </li>
             <li>
               <a href="/checkout">Checkout</a>
             </li>
           </ul>
         </nav>
-        <h1 className="text-2xl font-semibold mb-4"></h1>
+        <br />
+        <h1 className="text-2xl font-semibold mb-4">Sign Up</h1>
         <div>
           <div>
-            <h2 className="text-xl mb-4">Signup</h2>
-
             <div>
               <form onSubmit={handleSubmit}>
                 <p>
