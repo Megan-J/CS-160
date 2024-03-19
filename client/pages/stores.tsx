@@ -39,11 +39,24 @@ function stores() {
       <div className="bg-white p-8 rounded-lg shadow-md">
         <nav className="main">
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/stores">Stores</a></li>
-            <li><a href="/upload">Upload Music</a></li>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/signup">Signup</a></li>
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="stores">Stores</a>
+            </li>
+            <li>
+              <a href="upload">Upload Music</a>
+            </li>
+            <li>
+              <a href="login">Login</a>
+            </li>
+            <li>
+              <a href="signup">Sign Up</a>
+            </li>
+            <li>
+              <a href="/checkout">Checkout</a>
+            </li>
           </ul>
         </nav>
         
