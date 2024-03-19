@@ -31,6 +31,9 @@ export default function upload() {
             <li>
               <a href="signup">Signup</a>
             </li>
+            <li>
+              <a href="/checkout">Checkout</a>
+            </li>
           </ul>
         </nav>
         <div>

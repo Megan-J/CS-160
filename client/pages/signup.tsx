@@ -68,6 +68,9 @@ export default function Signup() {
             <li>
               <a href="signup">Signup</a>
             </li>
+            <li>
+              <a href="/checkout">Checkout</a>
+            </li>
           </ul>
         </nav>
         <h1 className="text-2xl font-semibold mb-4"></h1>
