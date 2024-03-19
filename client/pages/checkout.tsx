@@ -36,23 +36,19 @@ export default function placeOrder() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     console.log(inputs);
-    console.log(inputs.email);
 
     if (
       inputs.email?.trim() != undefined &&
-      inputs.country?.trim() !== undefined &&
-      inputs.firstName?.trim() !== undefined &&
-      inputs.lastName?.trim() !== undefined &&
-      inputs.address?.trim() !== undefined &&
-      inputs.city?.trim() !== undefined &&
-      inputs.state?.trim() !== undefined &&
-      inputs.country?.trim() !== undefined &&
-      inputs.zip?.trim() !== undefined &&
-      inputs.phoneNumber?.trim() !== undefined &&
-      inputs.cardNumber?.trim() !== undefined &&
-      inputs.nameOnCard?.trim() !== undefined &&
-      inputs.expiration?.trim() !== undefined &&
-      inputs.securityCode?.trim() !== undefined
+      inputs.firstName?.trim() != undefined &&
+      inputs.lastName?.trim() != undefined &&
+      inputs.address?.trim() != undefined &&
+      inputs.city?.trim() != undefined &&
+      inputs.state?.trim() != undefined &&
+      inputs.zip?.trim() != undefined &&
+      inputs.cardNumber?.trim() != undefined &&
+      inputs.nameOnCard?.trim() != undefined &&
+      inputs.expiration?.trim() != undefined &&
+      inputs.securityCode?.trim() != undefined
     ) {
       alert("Order placed successfully!");
     } else {
@@ -229,11 +225,13 @@ export default function placeOrder() {
                     <input
                       type="text"
                       placeholder="Expiration date (MM/YY)"
-                      name="expirationDate"
+                      name="expiration"
                       value={inputs.expiration || ""}
                       onChange={handleChange}
                     />
                   </label>
+                </p>
+                <p>
                   <label>
                     <input
                       type="text"
