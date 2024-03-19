@@ -258,5 +258,32 @@ def delete_user(id):
     except Exception as e:
         return make_response(jsonify({'message': 'error updating user', 'error':str(e)}), 500)
  
+#listen to track music by id
+@app.route('/api/flask/listen/<int:track_id>'), methods=['GET'])
+def listen_to_music(track_id):
+    try:
+        track = Tracks.query.get(track_id)
+        if track:
+            return jsonify({'message'}: 'Listening to track'), 'track': track.to.json()}), 200
+        else:
+            return jsonify({'message'}: 'Track not found'}), 404
+    except Exception as e:
+        return jsonify({'message': 'Error listening to music', 'error': str(e)}), 500
 
+#search for music
+@app.route('/api/flask/listen', methods=['GET'])
+def search_music():
+    try:
+        query = request.args.get('query')
+        if query:
+            tracks = Tracks.query.filter(Tracks.vchTitle.ilike(f'%{query}%')).all()
+            if tracks:
+                tracks_json = [track.to_json() for track in tracks]
+                return jsonify({'message': 'Search results', 'results': tracks_json}), 200
+            else:
+                return jsonify({'message': 'No results found'}), 404
+        else:
+            return jsonify({'message': 'Missing query'}), 400
+    except Exception as e:
+        return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
 '''
