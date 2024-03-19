@@ -44,7 +44,6 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md">
-        if(toHome){<Navigate to="/"></Navigate>}
         <nav className="main">
           <ul>
             <li>
@@ -70,24 +69,29 @@ export default function Login() {
 
           <div>
             <form>
-              <label>
-                Username
-                <input
-                  type="text"
-                  name="username"
-                  value={inputs.username || ""}
-                  onChange={handleChange}
-                />
-              </label>
-              <label>
-                Password
-                <input
-                  type="text"
-                  name="password"
-                  value={inputs.password || ""}
-                  onChange={handleChange}
-                />
-              </label>
+              <p>
+                <label>
+                  Username
+                  <input
+                    type="text"
+                    name="username"
+                    value={inputs.username || ""}
+                    onChange={handleChange}
+                  />
+                </label>
+              </p>
+              <p>
+                <label>
+                  Password
+                  <input
+                    type="text"
+                    name="password"
+                    value={inputs.password || ""}
+                    onChange={handleChange}
+                  />
+                </label>
+              </p>
+              <br />
               <button onClick={handleSubmit}>Submit</button>
             </form>
           </div>

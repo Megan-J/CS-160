@@ -77,42 +77,48 @@ export default function Signup() {
 
             <div>
               <form onSubmit={handleSubmit}>
-                <label>
-                  First Name
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={inputs.firstName || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  Last Name
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={inputs.lastName || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  Email
-                  <input
-                    type="text"
-                    name="email"
-                    value={inputs.email || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  Password
-                  <input
-                    type="text"
-                    name="password"
-                    value={inputs.password || ""}
-                    onChange={handleChange}
-                  />
-                </label>
+                <p>
+                  <label>
+                    First Name
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={inputs.firstName || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label>
+                    Last Name
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={inputs.lastName || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    Email
+                    <input
+                      type="text"
+                      name="email"
+                      value={inputs.email || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    Password
+                    <input
+                      type="text"
+                      name="password"
+                      value={inputs.password || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </p>
                 <br />
                 <input type="submit" />
               </form>

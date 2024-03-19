@@ -36,7 +36,7 @@ export default function upload() {
         <div>
           <h1 className="text-2xl font-semibold mb-4">Upload Music</h1>
           <p>Let the world hear your magic!</p>
-
+          <br />
           <input type="file" onChange={onFileChange} />
           <br />
           <button onClick={onFileUpload}>Upload!</button>
