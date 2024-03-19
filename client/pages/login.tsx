@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Credentials {
   username?: string;
@@ -8,6 +8,11 @@ interface Credentials {
 
 export default function Login() {
   const [inputs, setInputs] = useState<Credentials>({});
+  const [toHome, setToHome] = useState(false);
+
+  if (toHome === true) {
+    window.location.href = "/";
+  }
 
   const existingUsers: Credentials = {
     username: "user1",
@@ -35,7 +40,7 @@ export default function Login() {
     // if both exist, then redirect them to the home page
     if (usernameInDatabase && passwordInDatabase) {
       console.log("logged in");
-      const toHome = true;
+      setToHome(true);
     } else {
       console.log("User doesn't exist");
     }
@@ -44,6 +49,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md">
+        <></>
         <nav className="main">
           <ul>
             <li>

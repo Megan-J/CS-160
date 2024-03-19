@@ -9,6 +9,11 @@ interface userInformation {
 
 export default function Signup() {
   const [inputs, setInputs] = useState<userInformation>({});
+  const [toHome, setToHome] = useState(false);
+
+  if (toHome === true) {
+    window.location.href = "/";
+  }
 
   const existingUsers: userInformation = {
     firstName: "john",
@@ -40,11 +45,12 @@ export default function Signup() {
     const passwordInDatabase =
       Object.values(existingUsers).includes(inputPassword);
 
-    // if both exist, then redirect them to the home page
     if (emailInDatabase) {
       console.log("already exists");
+      alert("user already exists");
     } else {
       console.log("User doesn't exist. Create new user");
+      setToHome(true);
     }
   };
 
