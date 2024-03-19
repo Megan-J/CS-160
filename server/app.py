@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+from flask import request, jsonify, make_response
+from models import app, db, Users, Storefronts
+=======
 #, jsonify, make_response
 from datetime import datetime
 from flask import Flask, request
@@ -56,6 +60,7 @@ class Tracks(db.Model):
 
 class Users(db.Model):
     __table__ = db.metadata.tables['Users']
+>>>>>>> origin
 
 #test route; must navigate to this url after activating 8080
 @app.route('/home', methods=['GET'])
@@ -63,6 +68,10 @@ def get_contacts():
     data = {"message": "subscribe"}
     return jsonify(data)
 
+<<<<<<< HEAD
+#create store
+@app.route('/flask/createStores', methods=['POST'])
+=======
 #test get users
 @app.route('/test1', methods=['GET'])
 def get_user():
@@ -118,6 +127,7 @@ def make_user():
 
 #create store
 @app.route('/store/create', methods=['POST'])
+>>>>>>> origin
 def create_stores():
     try:
         data = request.get_json()
@@ -140,7 +150,11 @@ def create_stores():
         return make_response(jsonify({'message': 'Error creating storefront', 'error': str(e)}), 500)
 
 #get all stores
+<<<<<<< HEAD
+@app.route('/flask/getStores', methods=['GET'])
+=======
 @app.route('/store/all', methods=['GET'])
+>>>>>>> origin
 def get_stores():
     try:
         stores = Storefronts.query.all()
@@ -150,7 +164,11 @@ def get_stores():
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #get all users
+<<<<<<< HEAD
+@app.route('/flask/getUsers', methods=['GET'])
+=======
 @app.route('/user/all', methods=['GET'])
+>>>>>>> origin
 def get_users():
     try:
         users = Users.query.all()
@@ -160,14 +178,22 @@ def get_users():
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #create user
+<<<<<<< HEAD
+@app.route('/flask/createUser', methods=['POST'])
+=======
 @app.route('/user/create', methods=['POST'])
+>>>>>>> origin
 def create_user():
     try:
         data = request.get_json()
         new_user = Users(
             vchFirstName=data['vchFirstName'],
             vchLastName=data['vchLastName'],
+<<<<<<< HEAD
+            vchPassword=data['vchPassword'],
+=======
             vchPassword=generate_password_hash(data['vchPassword']),
+>>>>>>> origin
             vchEmail=data['vchEmail']
         )
         db.session.add(new_user)
@@ -184,7 +210,11 @@ def create_user():
         return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
 
 #get user by id
+<<<<<<< HEAD
+app.route('flask/users/<id>', methods=['GET'])
+=======
 app.route('/user/{id}', methods=['GET'])
+>>>>>>> origin
 def get_user(id):
     try:
         user = Users.query.filter_by(id=id).first() #get first user with id
@@ -227,4 +257,8 @@ def search_music():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+<<<<<<< HEAD
+    app.run(debug=False, port=8080)
+=======
     app.run(debug=False, port=8081)
+>>>>>>> origin
