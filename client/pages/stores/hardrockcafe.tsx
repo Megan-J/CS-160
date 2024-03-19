@@ -53,10 +53,10 @@ export default function HardRockCafe() {
         <nav className="main">
             <ul>
                 <li>
-                    <a href="/">Store Home</a>
+                    <a href="/stores/hardrockcafe">Store Home</a>
                 </li>
                 <li>
-                    <a href="/cart">View Cart</a>
+                    <a href="\cart">View Cart</a>
                 </li>
             </ul>
         </nav>
