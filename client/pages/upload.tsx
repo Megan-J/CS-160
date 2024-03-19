@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from "react";
 
 export default function upload() {
-  const onFileChange = (event) => {
+  const onFileChange = (event: any) => {
+    event.preventDefault();
     console.log("selected file!");
   };
 
   const onFileUpload = () => {
     console.log("uploaded file!");
+    alert("file successfully uploaded!");
   };
 
   return (
@@ -28,7 +30,7 @@ export default function upload() {
               <a href="login">Login</a>
             </li>
             <li>
-              <a href="signup">Signup</a>
+              <a href="signup">Sign Up</a>
             </li>
             <li>
               <a href="/checkout">Checkout</a>
@@ -38,7 +40,7 @@ export default function upload() {
         <div>
           <h1 className="text-2xl font-semibold mb-4">Upload Music</h1>
           <p>Let the world hear your magic!</p>
-
+          <br />
           <input type="file" onChange={onFileChange} />
           <br />
           <button onClick={onFileUpload}>Upload!</button>

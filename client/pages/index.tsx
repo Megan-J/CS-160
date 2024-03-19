@@ -1,15 +1,7 @@
 /*MAIN PAGE*/
 import React, { useState, useEffect } from "react";
 
-function index() {
-  const [message, setMessage] = useState("Loading");
-
-  /*useEffect(() => {
-    fetch("http://localhost:8080/home")
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-  }, []);*/
-
+export default function index() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md">
@@ -28,7 +20,7 @@ function index() {
               <a href="login">Login</a>
             </li>
             <li>
-              <a href="signup">Signup</a>
+              <a href="signup">Sign Up</a>
             </li>
             <li>
               <a href="/checkout">Checkout</a>
@@ -37,11 +29,7 @@ function index() {
         </nav>
         <h1 className="text-2xl font-semibold mb-4">Radar</h1>
         <p>Start Listening today!</p>
-
-        <p>{message}</p>
       </div>
     </div>
   );
 }
-
-export default index;

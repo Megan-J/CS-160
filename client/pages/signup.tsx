@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-interface Inputs {
+interface userInformation {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -8,7 +8,19 @@ interface Inputs {
 }
 
 export default function Signup() {
-  const [inputs, setInputs] = useState<Inputs>({});
+  const [inputs, setInputs] = useState<userInformation>({});
+  const [toHome, setToHome] = useState(false);
+
+  if (toHome === true) {
+    window.location.href = "/";
+  }
+
+  const existingUsers: userInformation = {
+    firstName: "john",
+    lastName: "doe",
+    email: "user@gmail.com",
+    password: "idk123",
+  };
 
   const handleChange = (event: { target: { name: any; value: any } }) => {
     const name = event.target.name;
@@ -19,6 +31,27 @@ export default function Signup() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     console.log(inputs);
+
+    const inputFirstName = inputs.firstName;
+    const inputLastName = inputs.lastName;
+    const inputEmail = inputs.email;
+    const inputPassword = inputs.password;
+
+    const firstNameInDatabase =
+      Object.values(existingUsers).includes(inputFirstName);
+    const lastNameInDatabase =
+      Object.values(existingUsers).includes(inputLastName);
+    const emailInDatabase = Object.values(existingUsers).includes(inputEmail);
+    const passwordInDatabase =
+      Object.values(existingUsers).includes(inputPassword);
+
+    if (emailInDatabase) {
+      console.log("already exists");
+      alert("user already exists");
+    } else {
+      console.log("User doesn't exist. Create new user");
+      setToHome(true);
+    }
   };
 
   return (
@@ -39,56 +72,61 @@ export default function Signup() {
               <a href="login">Login</a>
             </li>
             <li>
-              <a href="signup">Signup</a>
+              <a href="signup">Sign Up</a>
             </li>
             <li>
               <a href="/checkout">Checkout</a>
             </li>
           </ul>
         </nav>
-        <h1 className="text-2xl font-semibold mb-4"></h1>
+        <br />
+        <h1 className="text-2xl font-semibold mb-4">Sign Up</h1>
         <div>
           <div>
-            <h2 className="text-xl mb-4">Signup</h2>
-
             <div>
               <form onSubmit={handleSubmit}>
-                <label>
-                  First Name
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={inputs.firstName || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  Last Name
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={inputs.lastName || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  Email
-                  <input
-                    type="text"
-                    name="email"
-                    value={inputs.email || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-                <label>
-                  Password
-                  <input
-                    type="text"
-                    name="password"
-                    value={inputs.password || ""}
-                    onChange={handleChange}
-                  />
-                </label>
+                <p>
+                  <label>
+                    First Name
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={inputs.firstName || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                  <label>
+                    Last Name
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={inputs.lastName || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    Email
+                    <input
+                      type="text"
+                      name="email"
+                      value={inputs.email || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </p>
+                <p>
+                  <label>
+                    Password
+                    <input
+                      type="text"
+                      name="password"
+                      value={inputs.password || ""}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </p>
                 <br />
                 <input type="submit" />
               </form>
