@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SearchStores from "./components/searchStores";
+import CreateStores from "./components/createStores";
 
 function stores() {
   const [message, setMessage] = useState("Loading");
@@ -71,8 +72,8 @@ function stores() {
             onChange={handleSearchInputChange}
           />
         </div> */}
-        <div>
-          
+        <div className="createStore">
+          <CreateStores />
         </div>
 
         <div className="searchStore">

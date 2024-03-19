@@ -190,27 +190,7 @@ class OrderItems(db.Model):
 
     def to_json(self):
         return {'aID': self.aID, 'nOrderID':self.nOrderID, 'nProductID': self.nProductID, 'nQuantity': self.nQuantity, 'fPrice': self.fPrice, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate} 
-'''   
-#get all users
-app.route('/api/flask/users', methods=['GET'])
-def get_users():
-    try:
-        users = User.query.all()
-        users_data = [{'id': user.id,'name': user.name, 'email': user.email} for user in users]
-        return jsonify(users_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
-    
-#get user by id
-app.route('/api/flask/users/<id>', methods=['GET'])
-def get_user(id):
-    try:
-        user = User.query.filter_by(id=id).first() #get first user with id
-        if user:
-            return make_response(jsonify({'user': user.json()}), 200)
-        return make_response(jsonify({'message': 'user not found'}), 404)
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+'''
     
 #update user by id
 @app.route('/api/flask/users/<id>', methods=['PUT'])
