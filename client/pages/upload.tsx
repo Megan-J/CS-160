@@ -9,6 +9,7 @@ export default function upload() {
 
   const onFileUpload = () => {
     console.log("uploaded file!");
+    alert("file successfully uploaded!");
   };
 
   return (
