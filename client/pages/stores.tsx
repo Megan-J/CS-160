@@ -8,7 +8,6 @@ function stores() {
   //const [searchQuery, setSearchQuery] = useState(""); // State for search query
   //const [storesList, setStoresList] = useState([]); // State for storing fetched stores
 
-
   // Function to fetch stores data
   // const fetchStores = () => {
   //   // Assuming API endpoint for fetching stores
@@ -39,17 +38,30 @@ function stores() {
       <div className="bg-white p-8 rounded-lg shadow-md">
         <nav className="main">
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/stores">Stores</a></li>
-            <li><a href="/upload">Upload Music</a></li>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/signup">Signup</a></li>
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="stores">Stores</a>
+            </li>
+            <li>
+              <a href="upload">Upload Music</a>
+            </li>
+            <li>
+              <a href="login">Login</a>
+            </li>
+            <li>
+              <a href="signup">Sign Up</a>
+            </li>
+            <li>
+              <a href="/checkout">Checkout</a>
+            </li>
           </ul>
         </nav>
-        
+
         <div className="title">
-                <h1 className="text-2xl font-semibold mb-4">Stores</h1>
-                <p>Explore all the stores created by our very own users!</p>
+          <h1 className="text-2xl font-semibold mb-4">Stores</h1>
+          <p>Explore all the stores created by our very own users!</p>
         </div>
 
         {/* Check if user is logged in to show the create shop button */}
@@ -80,14 +92,12 @@ function stores() {
           <SearchStores />
         </div>
         {/* Display filtered stores */}
-
       </div>
     </div>
   );
 }
 
 export default stores;
-
 
 // {filteredStores.map(store => (
 //   <div key={store.id} className="mt-4 border border-gray-200 p-4 rounded">

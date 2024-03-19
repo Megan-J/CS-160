@@ -1,14 +1,20 @@
+<<<<<<< HEAD
+from flask import request, jsonify, make_response
+from models import app, db, Users, Storefronts
+=======
+#, jsonify, make_response
 from datetime import datetime
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request
+from flask import request, jsonify, make_response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from models import app, db, Addresses, CCInfo, Countries, Followers, OrderItems, Orders, Products, States, StoreFollowers, Storefronts, Tracks, Users
+# from models import app, db, Addresses, CCInfo, CCTypes, Countries, Followers, OrderItems, Orders, Products, States, StoreFollowers, Storefronts, Tracks, Users
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloud'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///cloud.db"
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -17,43 +23,44 @@ with app.app_context():
     db.reflect()
 
 class Addresses(db.Model):
-    __table__ = db.metadata.tables['addresses']
+    __table__ = db.metadata.tables['Addresses']
 
 class CCInfo(db.Model):
-    __table__ = db.metadata.tables['ccinfo']
-'''
+    __table__ = db.metadata.tables['CCInfo']
+
 class CCTypes(db.Model):
-    __table__ = db.metadata.tables['cctypes']
-'''
+    __table__ = db.metadata.tables['CCTypes']
+
 class Countries(db.Model):
-    __table__ = db.metadata.tables['countries']
+    __table__ = db.metadata.tables['Countries']
 
 class Followers(db.Model):
-    __table__ = db.metadata.tables['followers']
+    __table__ = db.metadata.tables['Followers']
 
 class OrderItems(db.Model):
-    __table__ = db.metadata.tables['orderitems']
+    __table__ = db.metadata.tables['OrderItems']
 
 class Orders(db.Model):
-    __table__ = db.metadata.tables['orders']
+    __table__ = db.metadata.tables['Orders']
 
 class Products(db.Model):
-    __table__ = db.metadata.tables['products']
+    __table__ = db.metadata.tables['Products']
 
 class States(db.Model):
-    __table__ = db.metadata.tables['states']
+    __table__ = db.metadata.tables['States']
 
 class StoreFollowers(db.Model):
-    __table__ = db.metadata.tables['storefollowers']
+    __table__ = db.metadata.tables['StoreFollowers']
 
 class Storefronts(db.Model):
-    __table__ = db.metadata.tables['storefronts']
+    __table__ = db.metadata.tables['Storefronts']
 
 class Tracks(db.Model):
-    __table__ = db.metadata.tables['tracks']
+    __table__ = db.metadata.tables['Tracks']
 
 class Users(db.Model):
-    __table__ = db.metadata.tables['users']
+    __table__ = db.metadata.tables['Users']
+>>>>>>> origin
 
 #test route; must navigate to this url after activating 8080
 @app.route('/home', methods=['GET'])
@@ -61,7 +68,10 @@ def get_contacts():
     data = {"message": "subscribe"}
     return jsonify(data)
 
-
+<<<<<<< HEAD
+#create store
+@app.route('/flask/createStores', methods=['POST'])
+=======
 #test get users
 @app.route('/test1', methods=['GET'])
 def get_user():
@@ -92,7 +102,7 @@ def get_user():
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
 #test create new user
-@app.route('/test2', methods=['POST'])
+@app.route('/test2', methods=['GET'])
 def make_user():
     try:
         new_user = Users(
@@ -117,6 +127,7 @@ def make_user():
 
 #create store
 @app.route('/store/create', methods=['POST'])
+>>>>>>> origin
 def create_stores():
     try:
         data = request.get_json()
@@ -139,7 +150,11 @@ def create_stores():
         return make_response(jsonify({'message': 'Error creating storefront', 'error': str(e)}), 500)
 
 #get all stores
+<<<<<<< HEAD
+@app.route('/flask/getStores', methods=['GET'])
+=======
 @app.route('/store/all', methods=['GET'])
+>>>>>>> origin
 def get_stores():
     try:
         stores = Storefronts.query.all()
@@ -149,7 +164,11 @@ def get_stores():
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #get all users
+<<<<<<< HEAD
+@app.route('/flask/getUsers', methods=['GET'])
+=======
 @app.route('/user/all', methods=['GET'])
+>>>>>>> origin
 def get_users():
     try:
         users = Users.query.all()
@@ -159,14 +178,22 @@ def get_users():
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #create user
+<<<<<<< HEAD
+@app.route('/flask/createUser', methods=['POST'])
+=======
 @app.route('/user/create', methods=['POST'])
+>>>>>>> origin
 def create_user():
     try:
         data = request.get_json()
         new_user = Users(
             vchFirstName=data['vchFirstName'],
             vchLastName=data['vchLastName'],
+<<<<<<< HEAD
+            vchPassword=data['vchPassword'],
+=======
             vchPassword=generate_password_hash(data['vchPassword']),
+>>>>>>> origin
             vchEmail=data['vchEmail']
         )
         db.session.add(new_user)
@@ -183,45 +210,27 @@ def create_user():
         return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
 
 #get user by id
-app.route('/user/<int:id>', methods=['GET'])
+<<<<<<< HEAD
+app.route('flask/users/<id>', methods=['GET'])
+=======
+app.route('/user/{id}', methods=['GET'])
+>>>>>>> origin
 def get_user(id):
     try:
-        users = Users.query.filter_by(aID=id).all() #get first user with id
-
-        user_data = [{
-            'id': users.aID,
-            'username': users.vchUsername,
-            'firstname': users.vchFirstName
-        } for user in users]
-        if users:
-            return jsonify(user_data), 200
+        user = Users.query.filter_by(id=id).first() #get first user with id
+        if user:
+            return make_response(jsonify({'user': user.json()}), 200)
         return make_response(jsonify({'message': 'user not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
-
-    
-@app.route('/product/<int:store_id>', methods=['GET'])
-def get_products_by_store(store_id):
-    try:
-        # Query products by store ID
-        products = Products.query.filter_by(nStoreID=store_id).all()
-        
-        # Convert products to JSON format
-        products_data = [{
-            'id': product.aID,
-            'name': product.vchProductName,
-            'description': product.vchProductDesc,
-            'price': product.fPrice
-        } for product in products]
-        
-        return jsonify(products_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
-
 
 
 #port should be 8080
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+<<<<<<< HEAD
     app.run(debug=False, port=8080)
+=======
+    app.run(debug=False, port=8081)
+>>>>>>> origin
