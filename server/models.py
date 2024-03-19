@@ -1,5 +1,7 @@
 from flask import Flask, request
 #, jsonify, make_response
+from flask import Flask, request
+#, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from datetime import datetime
@@ -61,6 +63,8 @@ class Products(db.Model):
     def to_json(self):
         return {'aID': self.aID, 'vchProductName': self.vchProductName, 'vchProductDesc': self.vchProductDesc, 'fPrice': self.fPrice, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
   
+        return {'aID': self.aID, 'vchProductName': self.vchProductName, 'vchProductDesc': self.vchProductDesc, 'fPrice': self.fPrice, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+  
 class CCInfo(db.Model):
     __tablename__ = 'ccinfo'
     aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -89,6 +93,19 @@ class Countries(db.Model):
 
     def to_json(self):
         return {'aID': self.aID, 'vchCountryName': self.vchCountryName, 'vchCountryAbbr': self.vchCountryAbbr, 'bPriority': self.bPriority, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+
+class States(db.Model):
+    __tablename__ = 'states'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    vchStateName = db.Column(db.String(45), nullable=False)
+    vchStateAbbr = db.Column(db.String(45), nullable=False)
+    fTaxRate = db.Column(db.Float, nullable=False)
+    bIsDeleted = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'vchStateName': self.vchStateName, 'vchStateAbbr': self.vchStateAbbr, 'fTaxRate': self.fTaxRate, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
 
 class States(db.Model):
     __tablename__ = 'states'
@@ -141,6 +158,33 @@ class StoreFollowers(db.Model):
  
 class Addresses(db.Model):
     __tablename__ = 'addresses'
+class Tracks(db.Model):
+    __tablename__ = 'tracks'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nAuthorID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    vchTitle = db.Column(db.String(255), nullable=False)
+    vchDescription = db.Column(db.String(255), nullable=True)
+    vchAudioURL = db.Column(db.String(255), nullable=False)
+    vchImagePath = db.Column(db.String(255), nullable=True)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'nAuthorID': self.nAuthorID, 'vchTitle': self.vchTitle, 'vchDescription': self.vchDescription, 'vchAudioURL': self.vchAudioURL, 'vchImagePath': self.vchImagePath, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+   
+class StoreFollowers(db.Model):
+    __tablename__ = 'storefollowers'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    nStoreID = db.Column(db.Integer, db.ForeignKey('storefronts.aID'), nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'nStoreID': self.nStoreID, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+ 
+class Addresses(db.Model):
+    __tablename__ = 'addresses'
     aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
     vchAddress1 = db.Column(db.String(45), nullable=True)
@@ -155,6 +199,8 @@ class Addresses(db.Model):
     dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
     def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'vchAddress1': self.vchAddress1, 'vchAddress2': self.vchAddress2, 'vchCity': self.vchCity, 'nStateID': self.nStateID, 'vchZIP': self.vchZIP, 'nCountryID': self.nCountryID, 'bIsActive': self.bIsActive, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+
         return {'aID': self.aID, 'nUserID': self.nUserID, 'vchAddress1': self.vchAddress1, 'vchAddress2': self.vchAddress2, 'vchCity': self.vchCity, 'nStateID': self.nStateID, 'vchZIP': self.vchZIP, 'nCountryID': self.nCountryID, 'bIsActive': self.bIsActive, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
 
 class Orders(db.Model):
@@ -178,6 +224,8 @@ class Orders(db.Model):
     def to_json(self):
         return {'aID': self.aID, 'nUserID': self.nUserID, 'nItemCount': self.nItemCount, 'fCostTotal': self.fCostTotal, 'fTaxTotal': self.fTaxTotal, 'fGrandTotal': self.fGrandTotal, 'bIsPaid': self.bIsPaid, 'nCCInfoID': self.nCCInfoID, 'nShippingAddressID': self.nShippingAddressID, 'nBillingAddressID': self.nBillingAddressID, 'bIsShipped': self.bIsShipped, 'bIsCanceled': self.bIsCanceled, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
 
+class OrderItems(db.Model):
+    __tablename__ = 'orderitems'
 class OrderItems(db.Model):
     __tablename__ = 'orderitems'
     aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
