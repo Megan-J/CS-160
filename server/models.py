@@ -157,7 +157,26 @@ class StoreFollowers(db.Model):
         return {'aID': self.aID, 'nUserID': self.nUserID, 'nStoreID': self.nStoreID, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
  
 class Addresses(db.Model):
-    __tablename__ = 'addresses'
+     __tablename__ = 'addresses'
+    aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nUserID = db.Column(db.Integer, db.ForeignKey('users.aID'), nullable=False)
+    vchAddress1 = db.Column(db.String(45), nullable=True)
+    vchAddress2 = db.Column(db.String(45), nullable=True)
+    vchCity = db.Column(db.String(45), nullable=True)
+    nStateID = db.Column(db.Integer, db.ForeignKey('states.aID'), nullable=True)
+    vchZIP = db.Column(db.String(45), nullable=True)
+    nCountryID = db.Column(db.Integer, db.ForeignKey('countries.aID'), nullable=True)
+    bIsActive = db.Column(db.Integer, nullable=False)
+    bIsDeleted = db.Column(db.Integer, nullable=False)
+    dtUpdateDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    dtInsertDate = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    def to_json(self):
+        return {'aID': self.aID, 'nUserID': self.nUserID, 'vchAddress1': self.vchAddress1, 'vchAddress2': self.vchAddress2, 'vchCity': self.vchCity, 'nStateID': self.nStateID, 'vchZIP': self.vchZIP, 'nCountryID': self.nCountryID, 'bIsActive': self.bIsActive, 'bIsDeleted': self.bIsDeleted, 'dtUpdateDate': self.dtUpdateDate, 'dtInsertDate': self.dtInsertDate}
+    
+
+
+
 class Tracks(db.Model):
     __tablename__ = 'tracks'
     aID = db.Column(db.Integer, primary_key=True, autoincrement=True)
