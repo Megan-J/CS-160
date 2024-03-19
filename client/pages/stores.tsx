@@ -24,7 +24,7 @@ function stores() {
               <a href="signup">Signup</a>
             </li>
             <li>
-              <a href="order">Cart</a>
+              <a href="/checkout">Checkout</a>
             </li>
           </ul>
         </nav>

@@ -30,19 +30,19 @@ export default function placeOrder() {
               <a href="/">Home</a>
             </li>
             <li>
-              <a href="stores">Stores</a>
+              <a href="/stores">Stores</a>
             </li>
             <li>
-              <a href="upload">Upload Music</a>
+              <a href="/upload">Upload Music</a>
             </li>
             <li>
-              <a href="login">Login</a>
+              <a href="/login">Login</a>
             </li>
             <li>
-              <a href="signup">Signup</a>
+              <a href="/signup">Signup</a>
             </li>
             <li>
-              <a href="order">Cart</a>
+              <a href="/placeOrder">Checkout</a>
             </li>
           </ul>
         </nav>
@@ -53,24 +53,44 @@ export default function placeOrder() {
 
             <div>
               <form>
+                <a className="font-semibold">Contact</a>
+                <br />
                 <label>
-                  Contact
+                  Email
                   <input type="text" placeholder="email" name="email" />
+                  <br />
+                  <br />
                 </label>
+                <a className="font-semibold">Shipping Address</a>
+                <br />
                 <label>
-                  Shipping address
-                  <input type="text" name="lastName" />
+                  Country/Region
+                  <select>
+                    <option value={"United States"}>United States</option>
+                  </select>
                 </label>
+                <br />
                 <label>
                   Email
                   <input type="text" name="email" />
                 </label>
                 <label>
-                  Password
+                  First name
+                  <input type="text" name="email" />
+                </label>
+                <label>
+                  Last name
+                  <input type="text" name="email" />
+                </label>
+                <label>
+                  Address
+                  <input type="text" name="email" />
+                </label>
+                <label>
+                  City
                   <input type="text" name="password" />
                 </label>
                 <br />
-                <input type="submit" />
               </form>
             </div>
           </div>
