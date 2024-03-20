@@ -43,6 +43,7 @@ export default function Login() {
       setToHome(true);
     } else {
       console.log("User doesn't exist");
+      alert("Incorrect username or password");
     }
   };
 
@@ -57,6 +58,9 @@ export default function Login() {
             </li>
             <li>
               <a href="stores">Stores</a>
+            </li>
+            <li>
+              <a href="listen">Listen</a>
             </li>
             <li>
               <a href="upload">Upload Music</a>

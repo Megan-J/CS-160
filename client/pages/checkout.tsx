@@ -68,6 +68,9 @@ export default function placeOrder() {
               <a href="/stores">Stores</a>
             </li>
             <li>
+              <a href="listen">Listen</a>
+            </li>
+            <li>
               <a href="/upload">Upload Music</a>
             </li>
             <li>
