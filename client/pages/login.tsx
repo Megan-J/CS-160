@@ -1,114 +1,88 @@
 import React, { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-
-interface Credentials {
-  username?: string;
-  password?: string;
-}
+import { useRouter } from "next/router";
+import Panel from "./components/Panel";
+import { backend } from "./components/Constants";
 
 export default function Login() {
-  const [inputs, setInputs] = useState<Credentials>({});
-  const [toHome, setToHome] = useState(false);
+  const [formState, setFormState] = useState({ username: "", password: "" });
+  let [error, setError] = useState("");
+  const router = useRouter();
 
-  if (toHome === true) {
-    window.location.href = "/";
-  }
-
-  const existingUsers: Credentials = {
-    username: "user1",
-    password: "password",
+  const handleChange = (event) => {
+    setFormState({
+      ...formState,
+      [event.target.name]: event.target.value,
+    });
   };
 
-  const handleChange = (event: { target: { name: string; value: string } }) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs((values) => ({ ...values, [name]: value }));
-  };
-
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(inputs);
-
-    const inputUsername = inputs.username;
-    const inputPassword = inputs.password;
-
-    const usernameInDatabase =
-      Object.values(existingUsers).includes(inputUsername);
-    const passwordInDatabase =
-      Object.values(existingUsers).includes(inputPassword);
-
-    // if both exist, then redirect them to the home page
-    if (usernameInDatabase && passwordInDatabase) {
-      console.log("logged in");
-      setToHome(true);
-    } else {
-      console.log("User doesn't exist");
-      alert("Incorrect username or password");
-    }
+    console.log(formState);
+    let success = false;
+    fetch(`${backend}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formState),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+        } else {
+          setError("Invalid username or password");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          sessionStorage.setItem("user", JSON.stringify(data.user));
+          sessionStorage.setItem("store", JSON.stringify(data.store));
+          sessionStorage.setItem("products", JSON.stringify(data.products));
+          sessionStorage.setItem("music", JSON.stringify(data.music));
+          sessionStorage.setItem("tracks", JSON.stringify(data.tracks));
+          sessionStorage.setItem("followers", JSON.stringify(data.followers));
+          sessionStorage.setItem("following", JSON.stringify(data.following));
+          console.log(sessionStorage);
+          router.push("/user");
+        }
+        return data;
+      });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <></>
-        <nav className="main">
-          <ul>
-            <li>
-              <a href="/">Home</a>
-            </li>
-            <li>
-              <a href="stores">Stores</a>
-            </li>
-            <li>
-              <a href="listen">Listen</a>
-            </li>
-            <li>
-              <a href="upload">Upload Music</a>
-            </li>
-            <li>
-              <a href="login">Login</a>
-            </li>
-            <li>
-              <a href="signup">Signup</a>
-            </li>
-            <li>
-              <a href="/checkout">Checkout</a>
-            </li>
-          </ul>
-        </nav>
-        <br />
-        <h1 className="text-2xl font-semibold mb-4">Login</h1>
-        <div>
-          <div>
-            <form>
-              <p>
-                <label>
-                  Username
-                  <input
-                    type="text"
-                    name="username"
-                    value={inputs.username || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-              </p>
-              <p>
-                <label>
-                  Password
-                  <input
-                    type="text"
-                    name="password"
-                    value={inputs.password || ""}
-                    onChange={handleChange}
-                  />
-                </label>
-              </p>
-              <br />
-              <button onClick={handleSubmit}>Submit</button>
-            </form>
+    <Panel title="Login">
+      <div className="flex items-center justify-center">
+        <form onSubmit={handleSubmit} autocomplete="off">
+          <div className="row">
+            <label>Username</label>
+            <input
+              className="input"
+              type="text"
+              name="username"
+              onChange={handleChange}
+            />
           </div>
-        </div>
+          <div className="row">
+            <label>Password</label>
+            <input
+              className="input"
+              type="password"
+              name="password"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="row">
+            {error ? <div className="error">{error}</div> : <div>&nbsp;</div>}
+          </div>
+          <div className="flex items-center justify-center">
+            <button className="button button-small change-hue">Submit</button>
+          </div>
+        </form>
       </div>
-    </div>
+    </Panel>
   );
 }

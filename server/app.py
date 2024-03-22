@@ -48,8 +48,8 @@ class States(db.Model):
 class StoreFollowers(db.Model):
     __table__ = db.metadata.tables['StoreFollowers']
 
-class Storefronts(db.Model):
-    __table__ = db.metadata.tables['Storefronts']
+class Stores(db.Model):
+    __table__ = db.metadata.tables['Stores']
 
 class Tracks(db.Model):
     __table__ = db.metadata.tables['Tracks']
@@ -63,8 +63,307 @@ def get_contacts():
     data = {"message": "subscribe"}
     return jsonify(data)
 
-#create store
-@app.route('/flask/createStores', methods=['POST'])
+# do login
+@app.route('/login', methods=['POST'])
+def do_login():
+    try:
+        data = request.get_json()
+        usersTable = Users()
+        storesTable = Stores()
+        productsTable = Products()
+        tracksTable = Tracks()
+        musicTable = Tracks()
+        followersTable = Followers()
+        ordersTable = Orders()
+        orderItemsTable = OrderItems()
+
+        try:
+            u = usersTable.query.filter_by(vchUsername=data['username'], vchPassword=data['password']).first()
+            response = {}
+            if u.vchUsername == data['username']:
+                response['user'] = {
+                    'aID': u.aID,
+                    'vchUsername': u.vchUsername,
+                    'vchEmail': u.vchEmail,
+                    'vchPassword': u.vchPassword,
+                    'vchFirstName': u.vchFirstName,
+                    'vchLastName': u.vchLastName,
+                    'bIsVerified': u.bIsVerified,
+                    'txtBio': u.txtBio,
+                    'vchProfilePicPath': u.vchProfilePicPath,
+                    'bIsBanned': u.bIsBanned
+                }
+
+                try:
+                    # get any store associated with the user
+                    store = storesTable.query.filter_by(nUserID=u.aID).first()
+                    response['store'] = {
+                        'aID': store.aID,
+                        'nUserID': store.nUserID,
+                        'vchName': store.vchName,
+                        'txtDescription': store.txtDescription
+                    } if store else {}
+                except Exception as e:
+                    response['store'] = {}
+
+                try:
+                    # get products associated with the store
+                    products = productsTable.query.filter_by(nStoreID=store.aID).all()
+                    response['products'] = [{
+                        'aID': product.aID,
+                        'nStoreID': product.nStoreID,
+                        'vchName': product.vchName,
+                        'txtDescription': product.txtDescription,
+                        'fPrice': product.fPrice,
+                        'fShipping': product.fShipping,
+                        'nInventory': product.nInventory,
+                        'vchImagePath': product.vchImagePath,
+                        'bIsDeleted': product.bIsDeleted,
+                    } for product in products] if products else []
+                except Exception as e:
+                    response['products'] = []
+
+                try:
+                    # get any tracks associated with the user
+                    tracks = tracksTable.query.filter_by(nUserID=u.aID).all()
+                    response['tracks'] = [{
+                        'aID': track.aID,
+                        'nUserID': track.nUserID,
+                        'vchTrackName': track.vchTrackName,
+                        'txtTrackDescription': track.txtTrackDescription,
+                        'vchTrackPath': track.vchTrackPath,
+                        'nPrice': track.nPrice,
+                        'nGenreID': track.nGenreID,
+                        'nStoreID': track.nStoreID
+                    } for track in tracks] if tracks else []
+                    # get artust name for each track
+                    for track in response['tracks']:
+                        artist = usersTable.query.filter_by(aID=track['nUserID']).first()
+                        track['vchAuthorName'] = f'{artist.vchFirstName} {artist.vchLastName}'
+                except Exception as e:
+                    response['tracks'] = []
+
+                try:
+                    # get any tracks in which user was the artist
+                    music = musicTable.query.filter_by(nArtistID=u.aID).all()
+                    response['music'] = [{
+                        'aID': track.aID,
+                        'nUserID': track.nUserID,
+                        'nArtistID': track.nArtistID,
+                        'vchTrackName': track.vchTrackName,
+                        'txtTrackDescription': track.txtTrackDescription,
+                        'vchTrackPath': track.vchTrackPath,
+                        'nGenreID': track.nGenreID,
+                        'nStoreID': track.nStoreID
+                    } for track in music] if music else []
+                except Exception as e:
+                    response['music'] = []
+
+                try:
+                    # get any followers associated with the user
+                    followers = followersTable.query.filter_by(nUserID=u.aID).all()
+                    response['followers'] = [{
+                        'aID': follower.aID,
+                        'nUserID': follower.nUserID,
+                        'nFollowerID': follower.nFollowerID
+                    } for follower in followers] if followers else []
+                except Exception as e:
+                    response['followers'] = []
+
+                try:
+                    # get any users being followed by the user
+                    following = followersTable.query.filter_by(nFollowerID=u.aID).all()
+                    response['following'] = [{
+                        'aID': follow.aID,
+                        'nUserID': follow.nUserID,
+                        'nFollowerID': follow.nFollowerID
+                    } for follow in following] if following else []
+                except Exception as e:
+                    response['following'] = []
+
+                try:
+                    # get any orders associated with the user
+                    orders = ordersTable.query.filter_by(nUserID=u.aID).all()
+                    response['orders'] = [{
+                        'aID': order.aID,
+                        'nUserID': order.nUserID,
+                        'nItemCount': order.nItemCount,
+                        'fCostTotal': order.fCostTotal,
+                        'fShippingTotal': order.fShippingTotal,
+                        'fGrandTotal': order.fGrandTotal,
+                        'bIsPaid': order.bIsPaid,
+                        'nCCInfoID': order.nCCInfoID,
+                        'nShippingAddressID': order.nShippingAddressID,
+                        'nBillingAddressID': order.nBillingAddressID,
+                        'bIsShipped': order.bIsShipped,
+                        'bIsCanceled': order.bIsCanceled,
+                        'dtInsertDate': order.dtInsertDate,
+                        'dtUpdateDate': order.dtUpdateDate
+                    } for order in orders] if orders else []
+
+                    # get any order items associated with the orders and add them to the response entries
+                    for order in response['orders']:
+                        items = orderItemsTable.query.filter_by(nOrderID=order.aID).all()
+                        order.items = [{
+                            'aID': item.aID,
+                            'nOrderID': item.nOrderID,
+                            'nProductID': item.nProductID,
+                            'nQuantity': item.nQuantity,
+                            'fPrice': item.fPrice
+                        } for item in items] if items else []
+                except Exception as e:
+                    response['orders'] = []
+                return make_response(jsonify(response), 200)
+        except Exception as e:
+            return make_response(jsonify({'message': 'login unsuccessful1', 'error':str(e)}), 500)
+        return make_response(jsonify({'message': 'login unsuccessful2'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'login unsuccessful3', 'error':str(e)}), 500)
+
+# signup
+@app.route('/signup', methods=['POST'])
+def do_signup():
+    data = request.get_json()
+    try:
+        users = Users()
+        try:
+            u = users.query.filter_by(vchUsername=data['username']).first()
+        except Exception as e:
+            return make_response(jsonify({'message': 'signup unsuccessful3', 'error':str(e)}), 500)
+        if u:
+            return make_response(jsonify({'message': 'username already exists'}), 409)
+        else:
+            u = Users(
+                vchFirstName=data['firstName'],
+                vchLastName=data['lastName'],
+                vchUsername=data['username'],
+                vchPassword=data['password'],
+                vchEmail=data['email']
+            )
+            db.session.add(u)
+            db.session.commit()
+            return jsonify({
+                'aID': u.aID,
+                'vchUsername': u.vchUsername,
+                'vchEmail': u.vchEmail,
+                'vchPassword': u.vchPassword,
+                'vchFirstName': u.vchFirstName,
+                'vchLastName': u.vchLastName,
+                'bIsVerified': u.bIsVerified,
+                'txtBio': u.txtBio,
+                'vchProfilePicPath': u.vchProfilePicPath,
+                'bIsBanned': u.bIsBanned
+            }), 201
+    except Exception as e:
+        return make_response(jsonify({'message': 'signup unsuccessful2', 'error':str(e), 'data':data}), 500)
+
+# create store
+@app.route('/create-store', methods=['POST'])
+def create_store():
+    s = None
+    try:
+        data = request.get_json()
+        s = Stores(
+            nUserID=data['nUserID'],
+            vchName=data['vchName'],
+            txtDescription=data['txtDescription']
+        )
+        db.session.add(s)
+        db.session.commit()
+        return make_response(jsonify({
+            'aID': s.aID,
+            'nUserID': s.nUserID,
+            'vchName': s.vchName,
+            'txtDescription': s.txtDescription
+        }), 201)
+    except Exception as e:
+        return make_response(jsonify({'message': 'store not created', 'error':str(e), 'data':data}), 500)
+
+# add product
+@app.route('/add-product', methods=['POST'])
+def add_product():
+    response = {}
+    try:
+        data = request.get_json()
+        storeID = data['nStoreID']
+        p = Products(
+            nStoreID=data['nStoreID'],
+            vchName=data['vchName'],
+            txtDescription=data['txtDescription'],
+            fPrice=data['fPrice'],
+            fShipping=data['fShipping'],
+            nInventory=data['nInventory'],
+            vchImagePath=data['vchImagePath']
+        )
+        db.session.add(p)
+        db.session.commit()
+        productsTable = Products()
+        products = productsTable.query.filter_by(nStoreID=storeID).all()
+        response['products'] = [{
+            'aID': product.aID,
+            'nStoreID': product.nStoreID,
+            'vchName': product.vchName,
+            'txtDescription': product.txtDescription,
+            'fPrice': product.fPrice,
+            'fShipping': product.fShipping,
+            'nInventory': product.nInventory,
+            'vchImagePath': product.vchImagePath,
+            'bIsDeleted': product.bIsDeleted,
+        } for product in products] if products else []
+        return make_response(jsonify(response), 201)
+    except Exception as e:
+        return make_response(jsonify({'message': 'product not added', 'error':str(e), 'response':response}), 500)
+
+# delete product
+@app.route('/delete-product', methods=['POST'])
+def delete_product():
+    response = {}
+    try:
+        data = request.get_json()
+        storeID = data['nStoreID']
+        p = Products.query.filter_by(aID=data['aID']).first()
+        if p:
+            db.session.delete(p)
+            db.session.commit()
+            productsTable = Products()
+            products = productsTable.query.filter_by(nStoreID=storeID).all()
+            response['products'] = [{
+                'aID': product.aID,
+                'nStoreID': product.nStoreID,
+                'vchName': product.vchName,
+                'txtDescription': product.txtDescription,
+                'fPrice': product.fPrice,
+                'fShipping': product.fShipping,
+                'nInventory': product.nInventory,
+                'vchImagePath': product.vchImagePath,
+                'bIsDeleted': product.bIsDeleted,
+            } for product in products] if products else []
+            return make_response(jsonify(response), 200)
+        return make_response(jsonify({'message': 'product not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'product not deleted', 'error':str(e), 'response':response}), 500)
+
+# update store
+@app.route('/update-store', methods=['POST'])
+def update_store():
+    data = request.get_json()
+    try:
+        s = Stores.query.filter_by(aID=data['aID']).first()
+        if s:
+            s.nUserID = data['nUserID']
+            s.vchName = data['vchName']
+            s.txtDescription = data['txtDescription']
+            # update the database with new values
+            db.session.commit()
+            return make_response(jsonify({
+                'aID': s.aID,
+                'nUserID': s.nUserID,
+                'vchName': s.vchName,
+                'txtDescription': s.txtDescription
+            }), 200)
+        return make_response(jsonify({'message': 'store not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'store not updated', 'error':str(e),'data':data}), 500)
 
 #test get users
 @app.route('/test1', methods=['GET'])
@@ -86,7 +385,7 @@ def get_user():
                 'vchFirstName': user.vchFirstName,
                 'vchLastName': user.vchLastName,
                 'bIsVerified': user.bIsVerified,
-                'vchBio': user.vchBio,
+                'txtBio': user.txtBio,
                 'vchProfilePicPath': user.vchProfilePicPath,
                 'bIsBanned': user.bIsBanned
             } for user in allusers]
@@ -119,35 +418,12 @@ def make_user():
     except Exception as e:
         return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
 
-#create store
-@app.route('/store/create', methods=['POST'])
-def create_stores():
-    try:
-        data = request.get_json()
-        new_store = Storefronts(
-            vchStoreName=data['vchStoreName'],
-            nUserID=data['nUserID'],
-            txtDescription=data['txtDescription']
-        )
-        db.session.add(new_store)
-        db.session.commit()
-
-        return jsonify({
-            'id': new_store.aID,
-            'name': new_store.vchStoreName,
-            'user_id': new_store.nUserID,
-            'description': new_store.txtDescription
-        }), 201
-    
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error creating storefront', 'error': str(e)}), 500)
-
 #get all stores
 @app.route('/store/all', methods=['GET'])
 def get_stores():
     try:
         stores = Storefronts.query.all()
-        stores_data = [{'id': store.aID, 'name': store.vchStoreName, 'user': store.nUserID, 'txtDescription':store.txtDescription} for store in stores]
+        stores_data = [{'id': store.aID, 'name': store.vchName, 'user': store.nUserID, 'txtDescription':store.txtDescription} for store in stores]
         return jsonify(stores_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
@@ -246,7 +522,6 @@ def get_products_by_store(store_id):
 
 #port should be 8080, pick one of the ports
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=False, port=8081)
-    # app.run(debug=False, port=8080)
+    # with app.app_context():
+    #     db.create_all()
+    app.run(debug=False, port=5000)
