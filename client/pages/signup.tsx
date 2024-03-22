@@ -1,139 +1,84 @@
 import React, { useState, useEffect } from "react";
-
-interface userInformation {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
-}
+import { useRouter } from "next/router";
+import Panel from './components/Panel';
+import { backend} from './components/Constants';
 
 export default function Signup() {
-  const [inputs, setInputs] = useState<userInformation>({});
-  const [toHome, setToHome] = useState(false);
+    const [formState, setFormState] = useState(null);
+    let [error, setError] = useState(null);
+    const router = useRouter();
 
-  if (toHome === true) {
-    window.location.href = "/";
-  }
+    const handleChange = (event) => {
+        setFormState({
+            ...formState,
+            [event.target.name]: event.target.value,
+        });
+    };
 
-  const existingUsers: userInformation = {
-    firstName: "john",
-    lastName: "doe",
-    email: "user@gmail.com",
-    password: "idk123",
-  };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log(formState);
 
-  const handleChange = (event: { target: { name: any; value: any } }) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs((values) => ({ ...values, [name]: value }));
-  };
+        let success = false;
+        fetch(`${backend}/signup`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formState),
+        })
+            .then((res) => {
+                if (res.status === 200 || res.status === 201) {
+                    success = true;
+                } else {
+                    setError("Username already taken. Please try another.");
+                }
+                console.log(res);
+                return res.json();
+            })
+            .then((data) => {
+                console.log("returned:");
+                console.log(data);
+                if (success) {
+                    sessionStorage.setItem("user", JSON.stringify(data));
+                    router.push("/user");
+                }
+                return data;
+            });
+    };
 
-  const handleSubmit = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    console.log(inputs);
-
-    const inputFirstName = inputs.firstName;
-    const inputLastName = inputs.lastName;
-    const inputEmail = inputs.email;
-    const inputPassword = inputs.password;
-
-    const firstNameInDatabase =
-      Object.values(existingUsers).includes(inputFirstName);
-    const lastNameInDatabase =
-      Object.values(existingUsers).includes(inputLastName);
-    const emailInDatabase = Object.values(existingUsers).includes(inputEmail);
-    const passwordInDatabase =
-      Object.values(existingUsers).includes(inputPassword);
-
-    if (emailInDatabase) {
-      console.log("already exists");
-      alert("user already exists");
-    } else {
-      console.log("User doesn't exist. Create new user");
-      setToHome(true);
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <nav className="main">
-          <ul>
-            <li>
-              <a href="/">Home</a>
-            </li>
-            <li>
-              <a href="stores">Stores</a>
-            </li>
-            <li>
-              <a href="upload">Upload Music</a>
-            </li>
-            <li>
-              <a href="login">Login</a>
-            </li>
-            <li>
-              <a href="signup">Sign Up</a>
-            </li>
-            <li>
-              <a href="/checkout">Checkout</a>
-            </li>
-          </ul>
-        </nav>
-        <br />
-        <h1 className="text-2xl font-semibold mb-4">Sign Up</h1>
-        <div>
-          <div>
+    return (
+        <Panel title="Sign Up">
             <div>
-              <form onSubmit={handleSubmit}>
-                <p>
-                  <label>
-                    First Name
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={inputs.firstName || ""}
-                      onChange={handleChange}
-                    />
-                  </label>
-                  <label>
-                    Last Name
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={inputs.lastName || ""}
-                      onChange={handleChange}
-                    />
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    Email
-                    <input
-                      type="text"
-                      name="email"
-                      value={inputs.email || ""}
-                      onChange={handleChange}
-                    />
-                  </label>
-                </p>
-                <p>
-                  <label>
-                    Password
-                    <input
-                      type="text"
-                      name="password"
-                      value={inputs.password || ""}
-                      onChange={handleChange}
-                    />
-                  </label>
-                </p>
-                <br />
-                <input type="submit" />
-              </form>
+                <div>
+                    <div className="flex items-center justify-center">
+                        <form onSubmit={handleSubmit}>
+                            <div className="row">
+                                <label>First Name</label>
+                                <input type="text" name="firstName" onChange={handleChange} />
+                                <label>Last Name</label>
+                                <input type="text" name="lastName" onChange={handleChange} />
+                            </div>
+                            <div className="row">
+                                <label>Email</label>
+                                <input type="text" name="email" onChange={handleChange} />
+                            </div>
+                            <div className="row">
+                                <label>
+                                    Username
+                                </label>
+                                <input type="text" name="username" onChange={handleChange} />
+                            </div>
+                            <div className="row">
+                                <label>Password</label>
+                                <input type="password" name="password" onChange={handleChange} />
+                            </div>
+                            <div>{error ? <div className="error">{error}</div> : <div>&nbsp;</div>}</div>
+                            <div className="flex items-center justify-center"><button class="button change-hue">Sign Up</button></div>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+        </Panel>
+    );
 }
