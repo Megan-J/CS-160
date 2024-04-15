@@ -59,8 +59,7 @@ export default function placeOrder() {
   };
 
   return (
-    <Panel>
-      <NavBar />
+    <Panel title="Checkout">
       <h2 className="text-xl mb-4">Order</h2>
       <div>
         <ul>
