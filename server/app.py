@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///cloud.db"
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -365,6 +365,41 @@ def update_store():
     except Exception as e:
         return make_response(jsonify({'message': 'store not updated', 'error':str(e),'data':data}), 500)
 
+# add track
+@app.route('/add-track', methods=['POST'])
+def add_track():
+    response = {}
+    try:
+        data = request.get_json()
+        storeID = data['nStoreID']
+        t = Tracks(
+            nStoreID=data['nStoreID'],
+            vchName=data['vchName'],
+            txtDescription=data['txtDescription'],
+            fPrice=data['fPrice'],
+            fShipping=data['fShipping'],
+            nInventory=data['nInventory'],
+            vchImagePath=data['vchImagePath']
+        )
+        db.session.add(t)
+        db.session.commit()
+        tracksTable = Tracks()
+        tracks = tracksTable.query.filter_by(nStoreID=storeID).all()
+        response['products'] = [{
+            'aID': product.aID,
+            'nStoreID': product.nStoreID,
+            'vchName': product.vchName,
+            'txtDescription': product.txtDescription,
+            'fPrice': product.fPrice,
+            'fShipping': product.fShipping,
+            'nInventory': product.nInventory,
+            'vchImagePath': product.vchImagePath,
+            'bIsDeleted': product.bIsDeleted,
+        } for product in products] if products else []
+        return make_response(jsonify(response), 201)
+    except Exception as e:
+        return make_response(jsonify({'message': 'product not added', 'error':str(e), 'response':response}), 500)
+
 #test get users
 @app.route('/test1', methods=['GET'])
 def get_user():
@@ -422,7 +457,7 @@ def make_user():
 @app.route('/store/all', methods=['GET'])
 def get_stores():
     try:
-        stores = Storefronts.query.all()
+        stores = Stores.query.all()
         stores_data = [{'id': store.aID, 'name': store.vchName, 'user': store.nUserID, 'txtDescription':store.txtDescription} for store in stores]
         return jsonify(stores_data), 200
     except Exception as e:
