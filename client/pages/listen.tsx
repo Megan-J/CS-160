@@ -64,7 +64,7 @@ function Listen() {
   };
 
   const handleShare = async (trackId: number) => {
-    const url = 'http://127.0.0.1:5000/track/${trackId}';
+    const url = `http://127.0.0.1:5000/track/${trackId}`;
     if(navigator.share) {
       try {
         await navigator.share({
