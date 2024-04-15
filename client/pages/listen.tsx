@@ -1,17 +1,87 @@
 import React, { useState, useEffect } from "react";
 
+interface Track {
+  track_id: number;
+  title: string;
+  hearted: boolean;
+  vchTrackPath: string;
+}
+
 function Listen() {
-  const [message, setMessage] = useState("Loading");
   const [searchQuery, setSearchQuery] = useState("");
+  const [tracks, setTracks] = useState<Track[]>([]);
+
+  useEffect(() => {
+    const fetchTracks = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/tracks');
+        const data = await response.json();
+        setTracks(data.tracks);
+      } catch (error) {
+        console.error('Failed to fetch tracks:', error);
+      }
+    };
+    fetchTracks();
+  }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSearchSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //implement search function here
-    console.log("Searching for:", searchQuery);
+    try {
+      const response = await fetch('http://127.0.0.1:5000/track?query=${encodeURIComponent(searchQuery)}');
+      const data = await response.json();
+      setTracks(data.results);
+    } catch (error) {
+      console.error('Error searching for tracks:', error);
+    }
+  };
+
+  const toggleHeart = async (trackId: number) => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/heart/${trackId}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        //
+        body: JSON.stringify({user_id: 123}) //replace 123 with userId
+        //
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setTracks(prevTracks => prevTracks.map(track => 
+          track.track_id === trackId ? {...track, hearted: data.hearted } : track
+        ));
+      } else {
+        console.error('Failed to toggle heart status');
+      }
+    } catch (error) {
+      console.error('Error toggling heart:', error);
+    }
+  };
+
+  const handleShare = async (trackId: number) => {
+    const url = 'http://127.0.0.1:5000/track/${trackId}';
+    if(navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Check out this song!',
+          url: url,
+        });
+        console.log("Shared successfully!");
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Link copied to clipboard!');
+      }, (err) => {
+        console.error('Could not copy text: ', err);
+      });
+    }
   };
 
   return (
@@ -59,6 +129,15 @@ function Listen() {
             Search
           </button>
         </form>
+        <div>
+          {tracks.map((track) => (
+            <div key={track.track_id}>
+              <p>{track.title}</p>
+              <button onClick={() => toggleHeart(track.track_id)}>{track.hearted ? '♥' : '♡'}</button>
+              <button onClick={() => handleShare(track.track_id)}>Share</button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
