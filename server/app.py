@@ -371,34 +371,35 @@ def add_track():
     response = {}
     try:
         data = request.get_json()
-        storeID = data['nStoreID']
+        authorID = data['nAuthorID']
         t = Tracks(
-            nStoreID=data['nStoreID'],
-            vchName=data['vchName'],
+            nAuthorID=data['nAuthorID'],
+            vchTitle=data['vchTitle'],
             txtDescription=data['txtDescription'],
-            fPrice=data['fPrice'],
-            fShipping=data['fShipping'],
-            nInventory=data['nInventory'],
-            vchImagePath=data['vchImagePath']
+            vchAudioURL=data['vchAudioURL'],
+            vchImagePath=data['vchImagePath'],
+            nGenreID=data['nGenreID'],
+            dtUpdateDate=data['dtUpdateDate'],
+            dtInsertDate=data['dtInsertDate']
         )
         db.session.add(t)
         db.session.commit()
         tracksTable = Tracks()
-        tracks = tracksTable.query.filter_by(nStoreID=storeID).all()
-        response['products'] = [{
-            'aID': product.aID,
-            'nStoreID': product.nStoreID,
-            'vchName': product.vchName,
-            'txtDescription': product.txtDescription,
-            'fPrice': product.fPrice,
-            'fShipping': product.fShipping,
-            'nInventory': product.nInventory,
-            'vchImagePath': product.vchImagePath,
-            'bIsDeleted': product.bIsDeleted,
-        } for product in products] if products else []
+        tracks = tracksTable.query.filter_by(nAuthorID=authorID).all()
+        response['tracks'] = [{
+            'aID': track.aID,
+            'nAuthorID': track.nAuthorID,
+            'vchTitle': track.vchTitle,
+            'txtDescription': track.txtDescription,
+            'vchAudioURL': track.vchAudioURL,
+            'vchImagePath': track.vchImagePath,
+            'nGenreID': track.nGenreID,
+            'dtUpdateDate': track.dtUpdateDate,
+            'dtInsertDate': track.dtInsertDate,
+        } for track in tracks] if tracks else []
         return make_response(jsonify(response), 201)
     except Exception as e:
-        return make_response(jsonify({'message': 'product not added', 'error':str(e), 'response':response}), 500)
+        return make_response(jsonify({'message': 'track not added', 'error':str(e), 'response':response}), 500)
 
 #test get users
 @app.route('/test1', methods=['GET'])
@@ -500,6 +501,17 @@ def create_user():
 #get user by id
 app.route('/user/{id}', methods=['GET'])
 def get_user(id):
+    try:
+        user = Users.query.filter_by(id=id).first() #get first user with id
+        if user:
+            return make_response(jsonify({'user': user.json()}), 200)
+        return make_response(jsonify({'message': 'user not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+
+#get all tracks for user
+@app.route('/user/{id}/tracks', methods=['GET'])
+def get_track(id):
     try:
         user = Users.query.filter_by(id=id).first() #get first user with id
         if user:

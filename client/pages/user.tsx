@@ -16,6 +16,7 @@ export default function index() {
   let [creatingStore, setCreatingStore] = useState(null);
   let [editingStore, setEditingStore] = useState(null);
   let [addingProduct, setAddingProduct] = useState(null);
+  let [addingTrack, setAddingTrack] = useState(null);
 
   let [theStoreName, setTheStoreName] = useState("");
   let [theStoreDescription, setTheStoreDescription] = useState("");
@@ -29,6 +30,14 @@ export default function index() {
   let [newProductPrice, setNewProductPrice] = useState("");
   let [newProductShipping, setNewProductShipping] = useState("");
   let [newProductInventory, setNewProductInventory] = useState("");
+
+  let [newTrackName, setNewTrackName] = useState("");
+  let [newTrackDescription, setNewTrackDescription] = useState("");
+  let [newTrackAudioURL, setNewTrackAudioURL] = useState("");
+  let [newTrackImagePath, setNewTrackImagePath] = useState("");
+  let [newTrackGenreID, setNewTrackGenreID] = useState("");
+  let [newTrackUpdate, setNewTrackUpdate] = useState("");
+  let [newTrackInsert, setNewTrackInsert] = useState("");
 
   const handleChangeCreateStoreName = (event) => {
     setCreateStoreName(event.target.value);
@@ -58,6 +67,10 @@ export default function index() {
 
   const cancelAddProduct = () => {
     setAddingProduct(false);
+  };
+
+  const handleAddTrack = () => {
+    setAddingTrack(true);
   };
 
   const createStore = (e) => {
@@ -178,6 +191,54 @@ export default function index() {
           console.log("products updated");
           console.log(data);
           setAddingProduct(false);
+        }
+        return data;
+      });
+  };
+
+  const handleSubmitTrack = (e) => {
+    e.preventDefault();
+    let success = false;
+    let data = {
+      nUserID: user.aID,
+      vchTitle: newTrackName,
+      txtDescription: newTrackDescription,
+      vchAudioURL: newTrackAudioURL,
+      vchImagePath: newTrackImagePath,
+      nGenreID: newTrackGenreID,
+      dtUpdateDate: newTrackUpdate,
+      dtInsertDate: newTrackInsert,
+    };
+    fetch(`${backend}/add-track`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+          // clear the form
+          setNewTrackName("");
+          setNewTrackDescription("");
+          setNewTrackAudioURL("");
+          setNewTrackImagePath("");
+          setNewTrackGenreID("");
+          setNewTrackUpdate("");
+          setNewTrackInsert("");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          setTracks(data.products);
+          console.log("tracks updated");
+          console.log(data);
+          setAddingTrack(false);
         }
         return data;
       });
@@ -635,16 +696,18 @@ export default function index() {
           </>
         )}
         <div className="center">
-          <input type="file" name="file" id="file-upload" />
-          <br />
-          <label htmlFor="file-upload">
-            <button
-              className="indent bottom-margin top-indent button button-small"
-              onClick={onFileUpload}
-            >
-              Upload a Track
-            </button>
-          </label>
+          <form onSubmit={handleAddTrack}>
+            <input type="file" name="file" id="file-upload" />
+            <br />
+            <label htmlFor="file-upload">
+              <button
+                className="indent bottom-margin top-indent button button-small"
+                type="submit"
+              >
+                Upload a Track
+              </button>
+            </label>
+          </form>
         </div>
       </div>
 
