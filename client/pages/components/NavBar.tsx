@@ -46,6 +46,9 @@ const NavBar = ({ children }: NavBarProps) => {
                          <li>
                              <Link href="/listen">Listen</Link>
                          </li>
+                         <li>
+                             <Link href="/cart">Cart</Link>
+                         </li>
                        </>
                      : <>
                           <li>

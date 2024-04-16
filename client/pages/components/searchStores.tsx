@@ -29,25 +29,9 @@ const fetchStores = () => {
         .catch(error => console.error('Error fetching stores:', error));
 };
 
-  /**useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        const response = await fetch("${backend}/store/all");
-        if (!response.ok) {
-          throw new Error("Failed to fetch stores.");
-        }
-        const storesData = await response.json();
-        setUserList(storesData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchStores();
-  }, []); */
-
   const handleOnClick = async () => {
     // Fetch all stores
-    const response = await fetch("http://127.0.0.1:8080/store/all");
+    const response = await fetch(`${backend}/store/all`);
     if (!response.ok) {
       throw new Error("Failed to fetch stores.");
     }
@@ -100,7 +84,7 @@ const fetchStores = () => {
             <a href="/stores/my-little-store">
               <p>{product.name}</p>
             </a>
-            <p>{product.user}</p>
+            <p>Owned by: {product.user}</p>
             <p>{product.txtDescription}</p>
           </div>
         ))}

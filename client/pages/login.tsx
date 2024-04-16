@@ -56,7 +56,7 @@ export default function Login() {
   return (
     <Panel title="Login">
       <div className="flex items-center justify-center">
-        <form onSubmit={handleSubmit} autocomplete="off">
+        <form onSubmit={handleSubmit} autoComplete="off">
           <div className="row">
             <label>Username</label>
             <input

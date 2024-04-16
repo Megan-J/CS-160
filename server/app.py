@@ -391,9 +391,49 @@ def delete_ban():
     except Exception as e:
         return make_response(jsonify({'message': 'Ban not deleted', 'error': str(e)}), 500)
 
+#update user
+@app.route('/user-ban', methods=['POST'])
+def user_ban():
+    data = request.get_json()
+    try:
+        ban = Users.query.filter_by(aID=data['aID']).first()
+        if ban:
+            # Update ban request fields
+            ban.bisBanned = data['bisBanned']
 
-#resolve ban
+            # Commit changes to the database
+            db.session.commit()
 
+            return make_response(jsonify({
+                    'bisBanned': ban.bisBanned
+             }), 200)
+        return make_response(jsonify({'message': 'Ban request not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'Ban request not updated', 'error': str(e), 'data': data}), 500)
+
+#update ban
+@app.route('/update-ban', methods=['POST'])
+def update_ban():
+    data = request.get_json()
+    try:
+        ban = BanRequests.query.filter_by(aID=data['aID']).first()
+        if ban:
+            # Update ban request fields
+            ban.aID = data['aID']
+            ban.dtResolved = data['dtResolved']
+            ban.bResolved = data['bResolved']
+
+            # Commit changes to the database
+            db.session.commit()
+
+            return make_response(jsonify({
+                    'aID': ban.aID,
+                    'dtResolved': ban.dtResolved,
+                    'bResolved': ban.bResolved
+            }), 200)
+        return make_response(jsonify({'message': 'Ban request not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'Ban request not updated', 'error': str(e), 'data': data}), 500)
 
 
 # update store
@@ -496,7 +536,13 @@ def get_users():
 def get_bans():
     try:
         bans = BanRequests.query.all()  # 
-        bans_data = [{'id': ban.aID, 'reason': ban.vchReason, 'requester': ban.nRequesterUserID, 'requested': ban.nRequestedUserID, 'requestdate': ban.dtRequested, 'resolved': ban.bResolved} for ban in bans]
+        bans_data = [{
+            'aID': ban.aID, 
+            'vchReason': ban.vchReason, 
+            'nRequesterUserID': ban.nRequesterUserID, 
+            'nRequestedUserID': ban.nRequestedUserID, 
+            'dtRequested': ban.dtRequested, 
+            'bResolved': ban.bResolved} for ban in bans]
         return jsonify(bans_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'Error getting bans', 'error': str(e)}), 500)
@@ -576,9 +622,11 @@ def get_products_by_store(store_id):
         # Convert products to JSON format
         products_data = [{
             'id': product.aID,
-            'name': product.vchProductName,
-            'description': product.vchProductDesc,
-            'price': product.fPrice
+            'name': product.vchName,
+            'description': product.txtDescription,
+            'fPrice': product.fPrice,
+            'fShipping' : product.fShipping,
+            'nInventory' : product.nInventory
         } for product in products]
         
         return jsonify(products_data), 200

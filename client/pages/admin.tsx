@@ -57,14 +57,50 @@ function admin() {
             })
     }
 
+    const AcceptBan = (event, aID) => {
+        event.preventDefault();
+        let success = false;
+        let data = {
+            aID: aID,
+            bResolved: 1,
+            dtResolved: new Date().toISOString()
+        };
+        fetch(`${backend}/update-ban`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(res => {
+            console.log(res);
+            if (res.status === 200 || res.status === 201) {
+                success = true;
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log("returned:");
+            console.log(data);
+            if (success) {
+                setBans(data.bans);
+                console.log("bans updated");
+                console.log(data);
+                //edit user isbaned status
+            }
+            return data;
+        });
+    }
+
     const RejectBan = (event, aID) => {
         event.preventDefault();
         let success = false;
         let data = {
             aID: aID,
-            nRequesterUserID: 0,
+            bResolved: -1,
+            dtResolved: new Date().toISOString()
         };
-        fetch(`${backend}/delete-ban`, {
+        fetch(`${backend}/update-ban`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -118,13 +154,14 @@ function admin() {
                             {
                                 bans.map((t, i) => (
                                     <div className="product" key={i}>
-                                        <div className="product-name">Requested by: {t.requester}</div>
-                                        <div className="product-inventory">User to be banned: {t.requested}</div>
-                                        <div className="product-description">Reason: {t.reason}</div>
-                                        <div className="request-date">Request Date: {t.requestdate}</div>
-                                        <div className="product-inventory">Resolved Status: {t.resolved}</div>
-                                        {t.resolved === 0 && <button className="cancel" onClick={(event) => RejectBan(event, t.id)} key={t.id}>Reject</button>}
-                                        {t.resolved === 0 && <button className="button button-small" onClick={(event) => AcceptBan(event, t.aID)} key={t.id}>Accept</button>}
+                                        <div className="product-name">Requested by: {t.nRequesterUserID}</div>
+                                        <div className="product-inventory">User to be banned: {t.nRequestedUserID}</div>
+                                        <div className="product-description">Reason: {t.vchReason}</div>
+                                        <div className="request-date">Request Date: {t.dtRequested}</div>
+                                        <div className="product-inventory">Resolved Status: {t.bResolved}</div>
+                                        {t.}
+                                        {t.bResolved === 0 && <button className="cancel" onClick={(event) => RejectBan(event, t.aID)} key={t.aID}>Reject</button>}
+                                        {t.bResolved === 0 && <button className="button button-small" onClick={(event) => AcceptBan(event, t.aID)} key={t.aID}>Accept</button>}
                                     </div>
                                 ))
                             }
@@ -142,21 +179,21 @@ function admin() {
                              <form onSubmit={handleSubmitBan}>
                                 <div className="new-product-pane">
                                 <div>
-                                                            <input
-                                                                className="new-product-name input"
-                                                                type="text"
-                                                                name="newRequestedID"
-                                                                value={newRequestedID}
-                                                                onChange={(e) => setNewRequestedID(e.target.value)}
-                                                                placeholder="Username/UserID"
-                                                            />
-                                                            <textarea
-                                                                className="new-product-description input"
-                                                                name="newBanReason"
-                                                                value={newBanReason}
-                                                                onChange={(e) => setNewBanReason(e.target.value)}
-                                                                placeholder="Reason"
-                                                            />
+                                    <input
+                                        className="new-product-name input"
+                                        type="text"
+                                        name="newRequestedID"
+                                        value={newRequestedID}
+                                        onChange={(e) => setNewRequestedID(e.target.value)}
+                                        placeholder="Username/UserID"
+                                    />
+                                    <textarea
+                                        className="new-product-description input"
+                                        name="newBanReason"
+                                        value={newBanReason}
+                                        onChange={(e) => setNewBanReason(e.target.value)}
+                                        placeholder="Reason"
+                                    />
                                                         
                                  </div>
                                  <div className="product-submit-margin-top">
@@ -181,12 +218,3 @@ function admin() {
 }
 
 export default admin;
-
-/**
- * let bansJson = sessionStorage.getItem("bans");        
-        console.log(bansJson);
-        //is null
-        let bans = bansJson ? JSON.parse(bansJson) : null;
-
-        if (bansJson) setBans(bans);
- */
