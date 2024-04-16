@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///cloud.db"
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 db = SQLAlchemy(app)
