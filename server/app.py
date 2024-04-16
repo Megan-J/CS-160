@@ -693,13 +693,18 @@ def get_user(id):
     except Exception as e:
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
-#listen to track/music by id
+#listen to track/music by id + share link
 @app.route('/track/<int:track_id>', methods=['GET'])
 def listen_to_music(track_id):
     try:
         track = Tracks.query.get(track_id)
         if track:
-            return jsonify({'message': 'Listening to track', 'track': track.to.json()}), 200
+            #new for share link
+            track_data = track.to_json()
+            full_url = request.host_url + 'track/' + str(track_id)
+            track_data['share_url'] = full_url
+            #
+            return jsonify({'message': 'Listening to track', 'track': track.to_json()}), 200
         else:
             return jsonify({'message': 'Track not found'}), 404
     except Exception as e:
@@ -722,6 +727,30 @@ def search_music():
     except Exception as e:
         return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
 
+#heart a song: currently missing heart model
+@app.route('/tracks/<int:track_id>', methods=['POST'])
+def toggle_heart(track_id):
+    data = request.get_json()
+    user_id = data.get('user_id')
+    try:
+        #
+        heart = Heart.query.filter_by(track_id = track_id, user_id = user_id).first()
+        #
+        if heart:
+            db.session.delete(heart)
+            db.session.commit()
+            hearted = False
+        else:
+            #
+            new_heart = Heart(track_id = track_id, user_id = user_id)
+            #
+            db.session.add(new_heart)
+            db.session.commit()
+            hearted = True
+        return jsonify({'hearted': hearted}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error toggling heart', 'error': str(e)}), 500
+
 @app.route('/product/<int:store_id>', methods=['GET'])
 def get_products_by_store(store_id):
     try:
@@ -741,6 +770,16 @@ def get_products_by_store(store_id):
         return jsonify(products_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+
+# get all tracks
+@app.route('/tracks/all', methods=['GET'])
+def get_tracks():
+    try:
+        tracks = Tracks.query.all()
+        tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
+        return jsonify(tracks_data), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #get bans by requester
 @app.route('/bans/<int:requester_user_id>', methods=['GET'])
