@@ -20,10 +20,6 @@ interface Inputs {
 
 export default function placeOrder() {
   require("dotenv").config({ debug: true });
-  //console.log(process.env);
-
-  let applicationKey = process.env.SQUARE_API_APPLICATION_KEY;
-  let locationKey = process.env.SQUARE_API_LOCATION_KEY;
 
   const [inputs, setInputs] = useState<Inputs>({});
 
@@ -178,12 +174,12 @@ export default function placeOrder() {
           </p>
           <div className="payment-form">
             <PaymentForm
-              applicationId={applicationKey}
+              applicationId={process.env.REACT_APP_SQUARE_API_APPLICATION_KEY}
               cardTokenizeResponseReceived={async (token, verifiedBuyer) => {
                 console.log("token:", token);
                 console.log("verifiedBuyer:", verifiedBuyer);
               }}
-              locationId={locationKey}
+              locationId={process.env.REACT_APP_SQUARE_API_LOCATION_KEY}
             >
               <CreditCard />
             </PaymentForm>
