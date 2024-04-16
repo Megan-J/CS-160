@@ -448,6 +448,43 @@ def add_cart():
 @app.route('/cart/<int:user_id>', methods=['GET'])
 def get_cart_by_user(user_id):
     try:
+        # Query cart items by user ID
+        cart_items = Cart.query.filter_by(nUserID=user_id).all()
+        
+        # Initialize an empty list to store formatted cart items
+        formatted_cart_items = []
+        
+        # Iterate over each cart item
+        for cart_item in cart_items:
+            # Get the product associated with the cart item
+            product = Products.query.get(cart_item.nProductID)
+            if product:
+                # Get the store associated with the product
+                store = Stores.query.get(product.nStoreID)
+                if store:
+                    # Create a dictionary representing the formatted cart item
+                    formatted_cart_item = {
+                        'cart_id': cart_item.aID,
+                        'user_id': cart_item.nUserID,
+                        'product_id': cart_item.nProductID,
+                        'store_id': cart_item.nStoreID,
+                        'quantity': cart_item.nQuantity,
+                        'product_name': product.vchName,  # Include product name
+                        'store_name': store.vchName,  # Include store name
+                        'product_price': product.fPrice,
+                        'shipping_cost': product.fShipping
+                    }
+                    # Append the formatted cart item to the list
+                    formatted_cart_items.append(formatted_cart_item)
+        
+        # Return the formatted cart items as JSON response
+        return jsonify(formatted_cart_items), 200
+    
+    except Exception as e:
+        return make_response(jsonify({'message': 'Error getting cart items', 'error': str(e)}), 500)
+'''
+def get_cart_by_user(user_id):
+    try:
         # Query products by store ID
         bans = Cart.query.filter_by(nUserID=user_id).all()
         
@@ -463,8 +500,22 @@ def get_cart_by_user(user_id):
         return jsonify(ban), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
-
+'''
 #delete cart item by cart aid
+@app.route('/delete-cart', methods=['POST'])
+def delete_cart():
+    response = {}
+    try:
+        data = request.get_json()
+       # ban_id = data['aID']
+        ban = Cart.query.filter_by(aID=data['aID']).first()
+        if ban:
+            db.session.delete(ban)
+            db.session.commit()
+            return make_response(jsonify({'message': 'Item deleted successfully'}), 200)
+        return make_response(jsonify({'message': 'Item not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
 
 
 #update ban

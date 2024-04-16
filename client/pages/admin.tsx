@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import Panel from "./components/Panel";
 import { backend } from './components/Constants';
 
+interface Store {
+    id: number;
+    username: string;
+    email: string;
+  }
+
 function admin() {
 
     let [bans, setBans] = useState([]);
@@ -9,6 +15,9 @@ function admin() {
 
     let [newBanReason, setNewBanReason] = useState("");
     let [newRequestedID, setNewRequestedID] = useState("");
+    const [text, setText] = React.useState("");
+
+    const [userList, setUserList] = useState<Store[]>([]);
 
     const handleAddBan = () => {
         setAddingBan(true);
@@ -160,8 +169,48 @@ function admin() {
         });
     }
     
+    const fetchStores = () => {
+        // Fetch ban requests from the backend
+        fetch(`${backend}/user/all`)
+            .then(res => res.json())
+            .then(data => {
+                setUserList(data);
+                console.log(data);
+            })
+            .catch(error => console.error('Error fetching stores:', error));
+    };
+    
+    const handleOnClick = async () => {
+        // Fetch all stores
+        const response = await fetch(`${backend}/user/all`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch stores.");
+        }
+        const storesData = await response.json();
+    
+        if (!text.trim()) {
+          //if there is no text entered into search
+          //setUserList(storesData);
+          setUserList(storesData);
+          return;
+        }
+    
+        const filteredStores = userList.filter(
+          (s) => s?.username.toLowerCase() === text.toLowerCase()
+        );
+        setUserList(filteredStores);
+    
+       
+      };
+    
+      const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+          handleOnClick();
+        }
+      };
 
     useEffect(() => {
+        fetchStores();
         fetchBanRequests();
     }, []);
 
@@ -182,8 +231,30 @@ function admin() {
       <p>Welcome, Admin!</p>
       <div>
       <div className="box">
-      <div className="heading"> Ban Requests</div>  
-        <h3>Search Users</h3>
+      <div className="heading"> Search Users</div>  
+      <div>
+      <div className="input_wrapper">
+        <input
+          type="text"
+          placeholder="Search Stores"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyPress={handleKeyPress}
+        />
+        <button className="indent bottom-margin top-indent button button-small" disabled={!text} onClick={handleOnClick}>
+          Search
+        </button>
+      </div>
+      <div className="all-products flex">
+        {userList.map((product) => (
+          <div className="body_item">
+              <p>User ID: {product.id}</p>
+            <p>Username: {product.username}</p>
+            <p>Email: {product.email}</p>
+          </div>
+        ))}
+      </div>
+    </div>
         </div>
       <div className="box">
             <div className="heading"> Ban Requests</div>              
@@ -251,6 +322,7 @@ function admin() {
 
         </div>
         </div>
+
 
     </Panel>
   );

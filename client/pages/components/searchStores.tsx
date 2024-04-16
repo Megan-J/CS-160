@@ -49,13 +49,7 @@ const fetchStores = () => {
     );
     setUserList(filteredStores);
 
-    //filter and find
-    //const findUsers = userList && userList?.length> 0 ? userList?.filter(u => u?.user.toLowerCase() == text) : undefined;
-    // const findUsers = userList && userList?.length > 0 ? userList?.filter(u =>
-    //     u?.user.toLowerCase() == text||
-    //     u?.name.toLowerCase() == text
-    // ) : undefined;
-    // setUserList(findUsers);
+   
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {

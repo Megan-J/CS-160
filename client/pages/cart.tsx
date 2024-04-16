@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from './components/Constants';
 
@@ -13,10 +14,8 @@ import { backend } from './components/Constants';
 export default function Cart() {
     const [products, setProducts] = useState([]);
     let [bans, setBans] = useState(null);
-    let [user, setUser] = useState();
-
-
-
+    let [user, setUser] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
       let userJson = sessionStorage.getItem("user");
@@ -40,10 +39,6 @@ export default function Cart() {
   }, []);
 
   const fetchBanRequests = () => {
-    if (!user || !user.aID) {
-        console.error('User data is not available or does not contain aID');
-        return;
-    }
 
     // Fetch ban requests from the backend
     fetch(`${backend}/cart/1`)
@@ -53,7 +48,17 @@ export default function Cart() {
             console.log(data);
         })
         .catch(error => console.error('Error fetching ban requests:', error));
-};
+    };
+
+    const handleProceedToCheckout = () => {
+        // Redirect to the "/checkout" page when the button is clicked
+     router.push('/checkout');
+    };
+
+    function deleteItem(event: React.MouseEvent<HTMLButtonElement, MouseEvent>, aID: any): void {
+        throw new Error("Function not implemented.");
+    }
+
 //<div className="product-price">Price: $ {`${t.fPrice.toFixed(2)}`}</div>
 //<div className="product-shipping">Shipping: $ {`${t.fShipping.toFixed(2)}`}</div>
                                   
@@ -67,12 +72,10 @@ export default function Cart() {
                             {
                                 bans.map((t, i) => (
                                   <div className="product" key={i}>
-                                  <div className="product-name">{t.nStoreID}</div>
-                                  <div className="product-description">{t.nProductID}</div>
-                                  <div className="product-price">Price: $ {`${t.fPrice.toFixed(2)}`}</div>
-                                  <div className="product-shipping">Shipping: $ {`${t.fShipping.toFixed(2)}`}</div>
-                                  <div className="product-inventory">Stock: {t.nQuantity}</div>
-                                  <button className="delete-product-button button button-small" onClick={(event) => deleteProduct(event, t.aID)} key={t.aID}>Add Product</button>
+                                  <div className="product-name">Store: {t.store_name}</div>
+                                  <div className="product-description">Product: {t.product_name}</div>
+                                   <div className="product-inventory">Quantity: {t.quantity}</div>
+                                  <button className="delete-product-button button button-small" onClick={(event) => deleteItem(event, t.aID)} key={t.aID}>Delete Product</button>
                               </div>
                                 ))
                             }
@@ -81,6 +84,9 @@ export default function Cart() {
                 <div className="indent bottom-margin">No Items in Cart</div>
                 </>
             }
+       </div>
+       <div>
+        <button className="delete-product-button button button-small" onClick={handleProceedToCheckout}> Proceed to Checkout</button>
        </div>
         
         </Panel>
