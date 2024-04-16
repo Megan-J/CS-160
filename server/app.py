@@ -125,21 +125,21 @@ def do_login():
 
                 try:
                     # get any tracks associated with the user
-                    tracks = tracksTable.query.filter_by(nUserID=u.aID).all()
+                    tracks = tracksTable.query.filter_by(nAuthorID=u.aID).all()
+                    #tracks = tracksTable.query.all()
                     response['tracks'] = [{
                         'aID': track.aID,
-                        'nUserID': track.nUserID,
-                        'vchTrackName': track.vchTrackName,
-                        'txtTrackDescription': track.txtTrackDescription,
-                        'vchTrackPath': track.vchTrackPath,
-                        'nPrice': track.nPrice,
+                        'nAuthorID': track.nAuthorID,
+                        'vchTitle': track.vchTitle,
+                        'txtDescription': track.txtDescription,
+                        'vchAudioURL': track.vchAudioURL,
+                        'vchImagePath': track.vchImagePath,
                         'nGenreID': track.nGenreID,
-                        'nStoreID': track.nStoreID
                     } for track in tracks] if tracks else []
-                    # get artust name for each track
-                    for track in response['tracks']:
-                        artist = usersTable.query.filter_by(aID=track['nUserID']).first()
-                        track['vchAuthorName'] = f'{artist.vchFirstName} {artist.vchLastName}'
+                     #get artust name for each track
+                    #for track in response['tracks']:
+                        #artist = usersTable.query.filter_by(aID=track['nAuthorID']).first()
+                        #track['vchAuthorName'] = f'{artist.vchFirstName} {artist.vchLastName}'
                 except Exception as e:
                     response['tracks'] = []
 
@@ -158,6 +158,7 @@ def do_login():
                     } for track in music] if music else []
                 except Exception as e:
                     response['music'] = []
+
 
                 try:
                     # get any followers associated with the user
@@ -400,6 +401,35 @@ def add_track():
         return make_response(jsonify(response), 201)
     except Exception as e:
         return make_response(jsonify({'message': 'track not added', 'error':str(e), 'response':response}), 500)
+
+# delete track
+@app.route('/delete-track', methods=['POST'])
+def delete_track():
+    response = {}
+    try:
+        data = request.get_json()
+        userID = data['nUserID']
+
+        t = Tracks.query.filter_by(aID=data['aID']).first()
+        if t:
+            db.session.delete(t)
+            db.session.commit()
+            tracksTable = Tracks()
+            tracks = tracksTable.query.filter_by(nAuthorID=userID).all()
+            response['tracks'] = [{
+                'aID': track.aID,
+                'nAuthorID': track.nAuthorID,
+                'vchTitle': track.vchTitle,
+                'txtDescription': track.txtDescription,
+                'vchAudioURL': track.vchAudioURL,
+                'vchImagePath': track.vchImagePath,
+                'nGenreID': track.nGenreID,
+            } for track in tracks] if tracks else []
+            return make_response(jsonify(response), 200)
+        return make_response(jsonify({'message': 'track not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'track not deleted', 'error':str(e), 'response':response}), 500)
+
 
 #test get users
 @app.route('/test1', methods=['GET'])

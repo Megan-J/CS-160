@@ -38,6 +38,11 @@ export default function index() {
   let [newTrackGenreID, setNewTrackGenreID] = useState("");
   let [newTrackUpdate, setNewTrackUpdate] = useState("");
   let [newTrackInsert, setNewTrackInsert] = useState("");
+  const sprint2Tracks = [
+    { id: 1, title: "song1" },
+    { id: 2, title: "song2" },
+    { id: 3, title: "song3" },
+  ];
 
   const handleChangeCreateStoreName = (event) => {
     setCreateStoreName(event.target.value);
@@ -256,8 +261,41 @@ export default function index() {
     setEditingStore(false);
   };
 
-  const deleteTrack = () => {
+  const deleteTrack = (event, aID) => {
     console.log("delete track " + 1);
+    event.preventDefault();
+    let success = false;
+    let data = {
+      aID: aID,
+      nUserID: user.aID,
+      nStoreID: store.aID,
+    };
+    console.log("sending to delete:");
+    console.log(data);
+    fetch(`${backend}/delete-track`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          setTracks(data.tracks);
+          console.log("tracks updated");
+          console.log(data);
+        }
+        return data;
+      });
   };
 
   const unfollow = () => {
@@ -302,6 +340,7 @@ export default function index() {
   };
 
   useEffect(() => {
+    console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
     let storeJson = sessionStorage.getItem("store");
     let tracksJson = sessionStorage.getItem("tracks");
@@ -340,11 +379,12 @@ export default function index() {
     }
   }, []);
 
-  let firstName, lastName, userID;
+  let firstName, lastName, userID: number;
   try {
     userID = user.aID;
     firstName = user.vchFirstName;
     lastName = user.vchLastName;
+    console.log(user);
   } catch (e) {
     userID = "";
     firstName = "";
@@ -648,11 +688,14 @@ export default function index() {
         {tracks && tracks.length > 0 ? (
           tracks.map((t, i) => (
             <div className="track" key={i}>
-              <div className="track-title">{t.vchTrackName}</div>
+              <div className="track-title">{t.vchTitle}</div>
               <div className="track-description">{t.txtDescription}</div>
               <div className="track-url">{t.vchAudioUrl}</div>
-              <div className="track-artist">{t.vchArtist}</div>
-              <button className="button button-small" onClick={deleteTrack}>
+              <button
+                className="button button-small"
+                onClick={(event) => deleteTrack(event, t.aID)}
+                key={t.aID}
+              >
                 Delete
               </button>
             </div>
