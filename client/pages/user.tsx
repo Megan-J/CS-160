@@ -225,7 +225,7 @@ export default function index() {
             console.log("returned:");
             console.log(data);
             if (success) {
-                sessionStorage.setItem("bans", JSON.stringify(data));
+               // sessionStorage.setItem("bans", JSON.stringify(data));
                 setBans(data.bans);
                 console.log("bans updated");
                 console.log(data);

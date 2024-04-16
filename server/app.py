@@ -24,6 +24,9 @@ class Addresses(db.Model):
 class BanRequests(db.Model):
     __table__ = db.metadata.tables['BanRequests']
 
+class Cart(db.Model):
+      __table__ = db.metadata.tables['Cart']
+
 class CCInfo(db.Model):
     __table__ = db.metadata.tables['CCInfo']
 
@@ -391,25 +394,78 @@ def delete_ban():
     except Exception as e:
         return make_response(jsonify({'message': 'Ban not deleted', 'error': str(e)}), 500)
 
-#update user
-@app.route('/user-ban', methods=['POST'])
-def user_ban():
+#user update ban
+@app.route('/user-update-ban', methods=['POST'])
+def user_update_ban():
     data = request.get_json()
     try:
         ban = Users.query.filter_by(aID=data['aID']).first()
         if ban:
             # Update ban request fields
-            ban.bisBanned = data['bisBanned']
+            ban.bIsBanned = data['bIsBanned']
 
             # Commit changes to the database
             db.session.commit()
 
             return make_response(jsonify({
-                    'bisBanned': ban.bisBanned
-             }), 200)
+                    'aID': ban.aID,
+                    'vchUsername': ban.vchUsername,
+                    'bIsBanned': ban.bIsBanned
+            }), 200)
         return make_response(jsonify({'message': 'Ban request not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'Ban request not updated', 'error': str(e), 'data': data}), 500)
+
+#add to cart
+@app.route('/cart/add', methods=['POST'])
+def add_cart():
+    response = {}
+    try:
+        data = request.get_json()
+        ban = Cart(
+            nUserID= data['nUserID'],
+            nProductID= data['nProductID'],
+            nStoreID= data['nStoreID'],
+            nQuantity= data['nQuantity']
+        )
+        db.session.add(ban)
+        db.session.commit()
+        
+        response['cart'] = {
+            'aID': ban.aID,
+            'nUserID': ban.nUserID,
+            'nProductID': ban.nProductID,
+            'nStoreID': ban.nStoreID,
+            'nQuantity': ban.nQuantity
+        }
+
+        return make_response(jsonify(response), 201)
+    except Exception as e:
+        return make_response(jsonify({'message': 'Ban not added', 'error': str(e), 'response': response}), 500)
+
+
+#get cart all by user id
+@app.route('/cart/<int:user_id>', methods=['GET'])
+def get_cart_by_user(user_id):
+    try:
+        # Query products by store ID
+        bans = Cart.query.filter_by(nUserID=user_id).all()
+        
+        # Convert products to JSON format
+        ban = [{
+            'aID': ban.aID,
+            'nUserID': ban.nUserID,
+            'nProductID': ban.nProductID,
+            'nStoreID': ban.nStoreID,
+            'nQuantity': ban.nQuantity
+        } for ban in bans]
+        
+        return jsonify(ban), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+
+#delete cart item by cart aid
+
 
 #update ban
 @app.route('/update-ban', methods=['POST'])
@@ -428,6 +484,8 @@ def update_ban():
 
             return make_response(jsonify({
                     'aID': ban.aID,
+                    'nRequesterUserID': ban.nRequesterUserID,
+                    'nRequestedUserID': ban. nRequestedUserID,
                     'dtResolved': ban.dtResolved,
                     'bResolved': ban.bResolved
             }), 200)
@@ -621,9 +679,9 @@ def get_products_by_store(store_id):
         
         # Convert products to JSON format
         products_data = [{
-            'id': product.aID,
-            'name': product.vchName,
-            'description': product.txtDescription,
+            'aID': product.aID,
+            'vchName': product.vchName,
+            'txtDescription': product.txtDescription,
             'fPrice': product.fPrice,
             'fShipping' : product.fShipping,
             'nInventory' : product.nInventory

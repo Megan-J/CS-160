@@ -57,13 +57,13 @@ function admin() {
             })
     }
 
-    const AcceptBan = (event, aID) => {
+    const AcceptBan = (event, aID, nRequestedUserID) => {
         event.preventDefault();
         let success = false;
         let data = {
             aID: aID,
             bResolved: 1,
-            dtResolved: new Date().toISOString()
+            dtResolved: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
         fetch(`${backend}/update-ban`, {
             method: 'POST',
@@ -87,18 +87,52 @@ function admin() {
                 console.log("bans updated");
                 console.log(data);
                 //edit user isbaned status
+                updateUserBanStatus(nRequestedUserID);
             }
             return data;
         });
     }
 
+    const updateUserBanStatus = (nRequestedUserID) => {
+        let success = false;
+        let userData = {
+            aID: nRequestedUserID,
+            bIsBanned: 1 // Assuming 1 represents "banned" state
+        };
+        fetch(`${backend}/user-update-ban`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+        .then(res => {
+            console.log(res);
+            if (res.status === 200 || res.status === 201) {
+                success = true;
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log("User ban returned:");
+            console.log(data);
+            if (success) {
+            // Handle any further actions after updating user ban status
+            console.log("User ban status updated");
+            console.log(data);
+            }
+            return data;
+        });
+    }
+ 
+    
     const RejectBan = (event, aID) => {
         event.preventDefault();
         let success = false;
         let data = {
             aID: aID,
             bResolved: -1,
-            dtResolved: new Date().toISOString()
+            dtResolved: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
         fetch(`${backend}/update-ban`, {
             method: 'POST',
@@ -125,6 +159,7 @@ function admin() {
             return data;
         });
     }
+    
 
     useEffect(() => {
         fetchBanRequests();
@@ -143,14 +178,19 @@ function admin() {
 
 
   return (
-    <Panel title="Admin">
+    <Panel title='Admin'>
       <p>Welcome, Admin!</p>
       <div>
+      <div className="box">
+      <div className="heading"> Ban Requests</div>  
+        <h3>Search Users</h3>
+        </div>
       <div className="box">
             <div className="heading"> Ban Requests</div>              
             {
                 bans && bans.length > 0 ? 
                         <div className="all-products flex">
+                            
                             {
                                 bans.map((t, i) => (
                                     <div className="product" key={i}>
@@ -159,9 +199,8 @@ function admin() {
                                         <div className="product-description">Reason: {t.vchReason}</div>
                                         <div className="request-date">Request Date: {t.dtRequested}</div>
                                         <div className="product-inventory">Resolved Status: {t.bResolved}</div>
-                                        {t.}
                                         {t.bResolved === 0 && <button className="cancel" onClick={(event) => RejectBan(event, t.aID)} key={t.aID}>Reject</button>}
-                                        {t.bResolved === 0 && <button className="button button-small" onClick={(event) => AcceptBan(event, t.aID)} key={t.aID}>Accept</button>}
+                                        {t.bResolved === 0 && <button className="button button-small" onClick={(event) => AcceptBan(event, t.aID, t.nRequestedUserID)} key={t.aID}>Accept</button>}
                                     </div>
                                 ))
                             }
@@ -210,8 +249,8 @@ function admin() {
                 </>
              }
 
-            </div>
-      </div>
+        </div>
+        </div>
 
     </Panel>
   );

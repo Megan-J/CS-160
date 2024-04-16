@@ -46,11 +46,11 @@ export default function MyLittleStore() {
       event.preventDefault();
       let success = false;
       let data = {
-          aID: aID,
           nUserID: user.aID,
+          nProductID: aID,
           nStoreID: 1,
+          nQuantity: 1
       };
-      console.log("sending to delete:");
       console.log(data);
       fetch(`${backend}/cart/add`, {
           method: 'POST',
@@ -71,7 +71,7 @@ export default function MyLittleStore() {
           console.log(data);
           if (success) {
               setProducts(data.products);
-              console.log("products updated");
+              console.log("Add product to cart!");
               console.log(data);
           }
           return data;

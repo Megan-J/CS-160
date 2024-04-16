@@ -13,7 +13,7 @@ import { backend } from './components/Constants';
 export default function Cart() {
     const [products, setProducts] = useState([]);
     let [bans, setBans] = useState(null);
-    let [user, setUser] = useState(null);
+    let [user, setUser] = useState();
 
 
 
@@ -35,13 +35,16 @@ export default function Cart() {
               initials = initials.toUpperCase();
           }
           
-          //if (productsJson) setProducts(products);
-          //if (bansJson) setBans(bans);
           fetchBanRequests();
       }
   }, []);
 
   const fetchBanRequests = () => {
+    if (!user || !user.aID) {
+        console.error('User data is not available or does not contain aID');
+        return;
+    }
+
     // Fetch ban requests from the backend
     fetch(`${backend}/cart/1`)
         .then(res => res.json())
@@ -51,7 +54,9 @@ export default function Cart() {
         })
         .catch(error => console.error('Error fetching ban requests:', error));
 };
-
+//<div className="product-price">Price: $ {`${t.fPrice.toFixed(2)}`}</div>
+//<div className="product-shipping">Shipping: $ {`${t.fShipping.toFixed(2)}`}</div>
+                                  
   return (
     <Panel title = "Store">
       <div className="box">
@@ -62,11 +67,11 @@ export default function Cart() {
                             {
                                 bans.map((t, i) => (
                                   <div className="product" key={i}>
-                                  <div className="product-name">{t.vchName}</div>
-                                  <div className="product-description">{t.txtDescription}</div>
+                                  <div className="product-name">{t.nStoreID}</div>
+                                  <div className="product-description">{t.nProductID}</div>
                                   <div className="product-price">Price: $ {`${t.fPrice.toFixed(2)}`}</div>
                                   <div className="product-shipping">Shipping: $ {`${t.fShipping.toFixed(2)}`}</div>
-                                  <div className="product-inventory">Stock: {t.nInventory}</div>
+                                  <div className="product-inventory">Stock: {t.nQuantity}</div>
                                   <button className="delete-product-button button button-small" onClick={(event) => deleteProduct(event, t.aID)} key={t.aID}>Add Product</button>
                               </div>
                                 ))
