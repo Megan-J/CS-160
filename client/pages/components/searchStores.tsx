@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { backend } from './Constants';
 
 interface Store {
   id: number;
@@ -14,9 +15,24 @@ const SearchStores: React.FC = () => {
   const [userList, setUserList] = useState<Store[]>([]);
 
   useEffect(() => {
+    fetchStores();
+}, []);
+
+const fetchStores = () => {
+    // Fetch ban requests from the backend
+    fetch(`${backend}/store/all`)
+        .then(res => res.json())
+        .then(data => {
+            setUserList(data);
+            console.log(data);
+        })
+        .catch(error => console.error('Error fetching stores:', error));
+};
+
+  /**useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8080/store/all");
+        const response = await fetch("${backend}/store/all");
         if (!response.ok) {
           throw new Error("Failed to fetch stores.");
         }
@@ -27,7 +43,7 @@ const SearchStores: React.FC = () => {
       }
     };
     fetchStores();
-  }, []);
+  }, []); */
 
   const handleOnClick = async () => {
     // Fetch all stores
@@ -78,10 +94,10 @@ const SearchStores: React.FC = () => {
           Search
         </button>
       </div>
-      <div className="body">
+      <div className="all-products flex">
         {userList.map((product) => (
           <div className="body_item">
-            <a href="/stores/hardrockcafe">
+            <a href="/stores/my-little-store">
               <p>{product.name}</p>
             </a>
             <p>{product.user}</p>

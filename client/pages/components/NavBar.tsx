@@ -31,7 +31,6 @@ const NavBar = ({ children }: NavBarProps) => {
     return (
         <nav className="main">
             <ul>
-                <li><Link href="/index">Home</Link></li>
                 {
                   me ?
                        <>
@@ -43,6 +42,9 @@ const NavBar = ({ children }: NavBarProps) => {
                          </li>
                          <li>
                              <Link href="/logout">Logout</Link>
+                         </li>
+                         <li>
+                             <Link href="/listen">Listen</Link>
                          </li>
                        </>
                      : <>

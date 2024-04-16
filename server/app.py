@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost/cloudsound'
 #app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///cloud.db"
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -20,6 +20,9 @@ with app.app_context():
 
 class Addresses(db.Model):
     __table__ = db.metadata.tables['Addresses']
+
+class BanRequests(db.Model):
+    __table__ = db.metadata.tables['BanRequests']
 
 class CCInfo(db.Model):
     __table__ = db.metadata.tables['CCInfo']
@@ -80,7 +83,7 @@ def do_login():
         try:
             u = usersTable.query.filter_by(vchUsername=data['username'], vchPassword=data['password']).first()
             response = {}
-            if u.vchUsername == data['username']:
+            if u.vchUsername == data['username'] and u.isBanned == 0:
                 response['user'] = {
                     'aID': u.aID,
                     'vchUsername': u.vchUsername,
@@ -314,6 +317,35 @@ def add_product():
     except Exception as e:
         return make_response(jsonify({'message': 'product not added', 'error':str(e), 'response':response}), 500)
 
+#add ban
+@app.route('/add-ban', methods=['POST'])
+def add_ban():
+    response = {}
+    try:
+        data = request.get_json()
+        ban = BanRequests(
+            nRequesterUserID=data['nRequesterUserID'],
+            nRequestedUserID=data['nRequestedUserID'],
+            vchReason=data['vchReason']
+        )
+        db.session.add(ban)
+        db.session.commit()
+        
+        response['ban'] = {
+            'aID': ban.aID,
+            'nRequesterUserID': ban.nRequesterUserID,
+            'nRequestedUserID': ban.nRequestedUserID,
+            'vchReason': ban.vchReason,
+            'dtRequested': ban.dtRequested.isoformat(),
+            'dtResolved': ban.dtResolved.isoformat() if ban.dtResolved else None,
+            'bResolved': ban.bResolved
+        }
+
+        return make_response(jsonify(response), 201)
+    except Exception as e:
+        return make_response(jsonify({'message': 'Ban not added', 'error': str(e), 'response': response}), 500)
+
+
 # delete product
 @app.route('/delete-product', methods=['POST'])
 def delete_product():
@@ -342,6 +374,27 @@ def delete_product():
         return make_response(jsonify({'message': 'product not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'product not deleted', 'error':str(e), 'response':response}), 500)
+
+#delete ban
+@app.route('/delete-ban', methods=['POST'])
+def delete_ban():
+    response = {}
+    try:
+        data = request.get_json()
+        ban_id = data['aID']
+        ban = BanRequests.query.filter_by(aID=ban_id).first()
+        if ban:
+            db.session.delete(ban)
+            db.session.commit()
+            return make_response(jsonify({'message': 'Ban deleted successfully'}), 200)
+        return make_response(jsonify({'message': 'Ban not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'Ban not deleted', 'error': str(e)}), 500)
+
+
+#resolve ban
+
+
 
 # update store
 @app.route('/update-store', methods=['POST'])
@@ -422,7 +475,7 @@ def make_user():
 @app.route('/store/all', methods=['GET'])
 def get_stores():
     try:
-        stores = Storefronts.query.all()
+        stores = Stores.query.all()
         stores_data = [{'id': store.aID, 'name': store.vchName, 'user': store.nUserID, 'txtDescription':store.txtDescription} for store in stores]
         return jsonify(stores_data), 200
     except Exception as e:
@@ -437,6 +490,16 @@ def get_users():
         return jsonify(users_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
+    
+#get all bans
+@app.route('/ban/all', methods=['GET'])
+def get_bans():
+    try:
+        bans = BanRequests.query.all()  # 
+        bans_data = [{'id': ban.aID, 'reason': ban.vchReason, 'requester': ban.nRequesterUserID, 'requested': ban.nRequestedUserID, 'requestdate': ban.dtRequested, 'resolved': ban.bResolved} for ban in bans]
+        return jsonify(bans_data), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'Error getting bans', 'error': str(e)}), 500)
 
 #create user
 @app.route('/user/create', methods=['POST'])
@@ -461,6 +524,8 @@ def create_user():
     
     except Exception as e:
         return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
+
+
 
 #get user by id
 app.route('/user/{id}', methods=['GET'])
@@ -519,6 +584,28 @@ def get_products_by_store(store_id):
         return jsonify(products_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+
+#get bans by requester
+@app.route('/bans/<int:requester_user_id>', methods=['GET'])
+def get_bans_by_requester(requester_user_id):
+    try:
+        # Query bans by requester user ID
+        bans = BanRequests.query.filter_by(nRequesterUserID=requester_user_id).all()
+        
+        # Convert bans to JSON format
+        bans_data = [{
+            'aID': ban.aID,
+            'nRequesterUserID': ban.nRequesterUserID,
+            'nRequestedUserID': ban.nRequestedUserID,
+            'vchReason': ban.vchReason,
+            'dtRequested': ban.dtRequested.isoformat(),
+            'dtResolved': ban.dtResolved.isoformat() if ban.dtResolved else None,
+            'bResolved': ban.bResolved
+        } for ban in bans]
+        
+        return jsonify(bans_data), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'Error getting bans', 'error': str(e)}), 500)
 
 #port should be 8080, pick one of the ports
 if __name__ == '__main__':
