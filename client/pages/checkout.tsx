@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Panel from "./components/Panel";
-import NavBar from "./components/NavBar";
+import { PaymentForm, CreditCard } from "react-square-web-payments-sdk";
 
 interface Inputs {
   email?: string;
@@ -61,6 +61,20 @@ export default function placeOrder() {
   return (
     <Panel title="Checkout">
       <h2 className="text-xl mb-4">Order</h2>
+
+      <div className="payment-form">
+        <PaymentForm
+          applicationId={process.env.SQUARE_API_APPLICATION_KEY}
+          cardTokenizeResponseReceived={async (token, verifiedBuyer) => {
+            console.log("token:", token);
+            console.log("verifiedBuyer:", verifiedBuyer);
+          }}
+          locationId={process.env.SQUARE_API_LOCATION_KEY}
+        >
+          <CreditCard />
+        </PaymentForm>
+      </div>
+
       <div>
         <ul>
           {dummyOrder.items.map((item) => (

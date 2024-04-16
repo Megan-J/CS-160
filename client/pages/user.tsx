@@ -611,26 +611,16 @@ export default function index() {
                               }
                               placeholder="Inventory Count"
                             />
-                            {music && music.length > 0 ? (
-                              music.map((t, i) => (
-                                <div className="track" key={i}>
-                                  <div className="track-title">
-                                    {t.vchTrackName}
-                                  </div>
-                                  <div className="track-description">
-                                    {t.txtDescription}
-                                  </div>
-                                  <div className="track-url">
-                                    {t.vchAudioUrl}
-                                  </div>
-                                  <button
-                                    className="button button-small"
-                                    onClick={deleteTrack}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              ))
+                            <label>Add audio: </label>
+                            {tracks && tracks.length > 0 ? (
+                              <select>
+                                <option value="None">None</option>
+                                {tracks.map((t, i) => (
+                                  <option value={t.vchTitle}>
+                                    {t.vchTitle}
+                                  </option>
+                                ))}
+                              </select>
                             ) : (
                               <>
                                 <div className="indent">
