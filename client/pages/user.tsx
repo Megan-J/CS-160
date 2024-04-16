@@ -340,12 +340,6 @@ export default function index() {
     }
   }, []);
 
-  const onFileUpload = (event: any) => {
-    //var name = document.getElementById("file-upload");
-    //alert("Selected file: " + name.files.item(0).name);
-    console.log("file uploaded");
-  };
-
   let firstName, lastName, userID;
   try {
     userID = user.aID;
@@ -370,15 +364,6 @@ export default function index() {
     editStoreName = storeName = initStoreName = "";
     editStoreDescription = storeDescription = initStoreDescription = "";
   }
-
-  const fileUploadButton = () => {
-    document.getElementById("fileButton").click();
-    document.getElementById("fileButton").onchange = () => {
-      this.setFile({
-        fileUploadState: document.getElementById("fileButton").value,
-      });
-    };
-  };
 
   return (
     <Panel title="My Radar">
@@ -696,17 +681,15 @@ export default function index() {
           </>
         )}
         <div className="center">
-          <form onSubmit={handleAddTrack}>
+          <form onSubmit={handleSubmitTrack}>
             <input type="file" name="file" id="file-upload" />
             <br />
-            <label htmlFor="file-upload">
-              <button
-                className="indent bottom-margin top-indent button button-small"
-                type="submit"
-              >
-                Upload a Track
-              </button>
-            </label>
+            <button
+              className="indent bottom-margin top-indent button button-small"
+              type="submit"
+            >
+              Upload a Track
+            </button>
           </form>
         </div>
       </div>

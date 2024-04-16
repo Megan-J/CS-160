@@ -509,16 +509,23 @@ def get_user(id):
     except Exception as e:
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
-#get all tracks for user
-@app.route('/user/{id}/tracks', methods=['GET'])
-def get_track(id):
+#get tracks for user
+@app.route('/tracks/<int:user_id>', methods=['GET'])
+def get_tracks_by_user(user_id):
     try:
-        user = Users.query.filter_by(id=id).first() #get first user with id
-        if user:
-            return make_response(jsonify({'user': user.json()}), 200)
-        return make_response(jsonify({'message': 'user not found'}), 404)
+        # Query track by store ID
+        tracks = Tracks.query.filter_by(nAuthorID=user_id).all()
+        
+        # Convert tracks to JSON format
+        tracks_data = [{
+            'id': track.aID,
+            'name': track.vchTitle,
+            'description': track.txtDescription,
+        } for track in tracks]
+        
+        return jsonify(tracks_data), 200
     except Exception as e:
-        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
 
 #listen to track/music by id
 @app.route('/track/<int:track_id>', methods=['GET'])
