@@ -508,7 +508,7 @@ def search_music():
         return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
 
 #heart a song: currently missing heart model
-@app.route('/heart/<int:track_id>', methods=['POST'])
+@app.route('/tracks/<int:track_id>', methods=['POST'])
 def toggle_heart(track_id):
     data = request.get_json()
     user_id = data.get('user_id')
