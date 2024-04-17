@@ -174,12 +174,12 @@ export default function placeOrder() {
           </p>
           <div className="payment-form">
             <PaymentForm
-              applicationId={process.env.REACT_APP_SQUARE_API_APPLICATION_KEY}
+              applicationId="sq0idp-vcdvrG8K6y53ItYMyBFfsQ"
               cardTokenizeResponseReceived={async (token, verifiedBuyer) => {
                 console.log("token:", token);
                 console.log("verifiedBuyer:", verifiedBuyer);
               }}
-              locationId={process.env.REACT_APP_SQUARE_API_LOCATION_KEY}
+              locationId="EAAAl58xwT8s_Esh11rlgbT9Wde0bkLB33DEhpVD0ulvezR9rZmAd2qU8dwbAIs8"
             >
               <CreditCard />
             </PaymentForm>
