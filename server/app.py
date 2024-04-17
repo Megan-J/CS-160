@@ -71,6 +71,7 @@ def do_login():
         usersTable = Users()
         storesTable = Stores()
         productsTable = Products()
+        ordersTable = Orders()
         tracksTable = Tracks()
         musicTable = Tracks()
         followersTable = Followers()
@@ -122,6 +123,30 @@ def do_login():
                     } for product in products] if products else []
                 except Exception as e:
                     response['products'] = []
+
+                try:
+                    # get orders for store associaed with this user
+                    orders = ordersTable.query.filter_by(nUserID=u.aID).all()
+                    response['orders'] = [{
+                        'aID': order.aID,
+                        'nStoreID': order.nStoreID,
+                        'nUserID': order.nUserID,
+                        'nItemID': order.nItemID,
+                        'nItemCount': order.nItemCount,
+                        'fCostTotal': order.fCostTotal,
+                        'fShippingTotal': order.fShippingTotal,
+                        'fGrandTotal': order.fGrandTotal,
+                        'bIsPaid': order.bIsPaid,
+                        'nCCInfoID': order.nCCInfoID,
+                        'nShippingAddressID': order.nShippingAddressID,
+                        'nBillingAddressID': order.nBillingAddressID,
+                        'bIsShipped': order.bIsShipped,
+                        'bIsCanceled': order.bIsCanceled,
+                        'dtInsertDate': order.dtInsertDate,
+                        'dtUpdateDate': order.dtUpdateDate
+                    } for order in orders] if orders else []
+                except Exception as e:
+                    response['orders'] = []
 
                 try:
                     # get any tracks associated with the user
@@ -182,11 +207,14 @@ def do_login():
                     response['following'] = []
 
                 try:
-                    # get any orders associated with the user
-                    orders = ordersTable.query.filter_by(nUserID=u.aID).all()
+                    # get any orders associated with the user's store
+                    
+                    orders = ordersTable.query.filter_by(nStoreID=response['store']['aID']).all()
                     response['orders'] = [{
                         'aID': order.aID,
+                        'nStoreID': order.nStoreID,
                         'nUserID': order.nUserID,
+                        'nItemID': order.nItemID,
                         'nItemCount': order.nItemCount,
                         'fCostTotal': order.fCostTotal,
                         'fShippingTotal': order.fShippingTotal,
@@ -364,6 +392,45 @@ def update_store():
         return make_response(jsonify({'message': 'store not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'store not updated', 'error':str(e),'data':data}), 500)
+
+# update products
+@app.route('/update-product', methods=['POST'])
+def update_product():
+    data = request.get_json()
+    id = int(data['aID'])
+    where = 'top'
+    try:
+        productsTable = Products()
+        s = productsTable.query.filter_by(aID=id).first()
+        where = 'mid'
+        if s:
+            s.vchName = data['vchName']
+            s.txtDescription = data['txtDescription']
+            s.fPrice = data['fPrice']
+            s.fShipping = data['fShipping']
+            s.nInventory = data['nInventory']
+            s.vchImagePath = data['vchImagePath']
+            # update the database with new values
+            db.session.commit()
+            where = 'commit'
+        products = productsTable.query.filter_by(nStoreID=s.nStoreID).all()
+        where = 'query'
+        response = [{
+            'aID': product.aID,
+            'nStoreID': product.nStoreID,
+            'vchName': product.vchName,
+            'txtDescription': product.txtDescription,
+            'fPrice': product.fPrice,
+            'fShipping': product.fShipping,
+            'nInventory': product.nInventory,
+            'vchImagePath': product.vchImagePath,
+            'bIsDeleted': product.bIsDeleted,
+        } for product in products] if products else []
+        where = 'for'
+        return make_response(jsonify(response), 201)
+        return make_response(jsonify({'message': 'product not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'product not updated', 'error':str(e),'data':data, 'where':where, 'id':id}), 501)
 
 #test get users
 @app.route('/test1', methods=['GET'])

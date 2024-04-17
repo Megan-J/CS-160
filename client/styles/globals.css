@@ -43,6 +43,9 @@ nav.main a:hover {
     margin-right: 10px;
 }
 
+.short-input {
+    max-width: 100px;
+}
 .larger {
     width: 250px;
 }
@@ -442,4 +445,33 @@ html {
 .div-center {
     margin-left: 150px;
     margin-right: auto;
+}
+
+.order {
+    border: 1px solid #888;
+    margin-right: 10px;
+}
+
+.header {
+    font-weight: bold;
+}
+
+.order-date,
+.order-product-name,
+.order-quantity,
+.order-total {
+    display: inline-block;
+    margin-right: 10px;
+    width: 100px;
+    vertical-align: top;
+}
+
+.order-product-name {
+    width: 250px;
+}
+
+.cancel-order {
+    display: inline-block;
+    height: 25px;
+    padding-top: 0;
 }

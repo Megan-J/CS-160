@@ -42,10 +42,12 @@ export default function Login() {
           sessionStorage.setItem("user", JSON.stringify(data.user));
           sessionStorage.setItem("store", JSON.stringify(data.store));
           sessionStorage.setItem("products", JSON.stringify(data.products));
+          sessionStorage.setItem("orders", JSON.stringify(data.orders));
           sessionStorage.setItem("music", JSON.stringify(data.music));
           sessionStorage.setItem("tracks", JSON.stringify(data.tracks));
           sessionStorage.setItem("followers", JSON.stringify(data.followers));
           sessionStorage.setItem("following", JSON.stringify(data.following));
+          console.log("sessionStorage:")
           console.log(sessionStorage);
           router.push("/user");
         }
