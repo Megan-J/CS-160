@@ -9,9 +9,13 @@ export default function index() {
   let [store, setStore] = useState(null);
   let [tracks, setTracks] = useState(null);
   let [music, setMusic] = useState(null);
+  let [orders, setOrders] = useState(null);
   let [products, setProducts] = useState(null);
   let [following, setFollowing] = useState(null);
   let [followers, setFollowers] = useState(null);
+  let [orderItem1, setOrderItem1] = useState(true);
+  let [orderItem2, setOrderItem2] = useState(true);
+  let [orderItem3, setOrderItem3] = useState(true);
   let [bans, setBans] = useState(null);
 
   let [creatingStore, setCreatingStore] = useState(null);
@@ -26,12 +30,28 @@ export default function index() {
   let [createStoreDescription, setCreateStoreDescription] = useState("");
   let [editStoreName, setEditStoreName] = useState("");
   let [editStoreDescription, setEditStoreDescription] = useState("");
+  let [isEditingStoreName, setIsEditingStoreName] = useState(false);
+  let [isEditingStoreDescription, setIsEditingStoreDescription] =
+    useState(false);
 
   let [newProductName, setNewProductName] = useState("");
   let [newProductDescription, setNewProductDescription] = useState("");
   let [newProductPrice, setNewProductPrice] = useState("");
   let [newProductShipping, setNewProductShipping] = useState("");
   let [newProductInventory, setNewProductInventory] = useState("");
+  let [editProductName, setEditProductName] = useState("");
+  let [editProductDescription, setEditProductDescription] = useState("");
+  let [editProductPrice, setEditProductPrice] = useState("");
+  let [editProductShipping, setEditProductShipping] = useState("");
+  let [editProductInventory, setEditProductInventory] = useState("");
+  let [isEditingProductName, setIsEditingProductName] = useState(false);
+  let [isEditingProductDescription, setIsEditingProductDescription] =
+    useState(false);
+  let [isEditingProductPrice, setIsEditingProductPrice] = useState(false);
+  let [isEditingProductShipping, setIsEditingProductShipping] = useState(false);
+  let [isEditingProductInventory, setIsEditingProductInventory] =
+    useState(false);
+  let [isEditingProductID, setIsEditingProductID] = useState(false);
 
   let [newTrackName, setNewTrackName] = useState("");
   let [newTrackDescription, setNewTrackDescription] = useState("");
@@ -40,11 +60,6 @@ export default function index() {
   let [newTrackGenreID, setNewTrackGenreID] = useState("");
   let [newTrackUpdate, setNewTrackUpdate] = useState("");
   let [newTrackInsert, setNewTrackInsert] = useState("");
-  const sprint2Tracks = [
-    { id: 1, title: "song1" },
-    { id: 2, title: "song2" },
-    { id: 3, title: "song3" },
-  ];
 
   let [newBanReason, setNewBanReason] = useState("");
   let [newRequestedID, setNewRequestedID] = useState("");
@@ -352,6 +367,95 @@ export default function index() {
       });
   };
 
+  const updateStoreEdit = (e, field) => {
+    console.log("update store edit");
+    console.log("target value: " + e.target.value);
+    console.log("store name:" + theStoreName);
+    let success = false;
+    let result = {
+      aID: store.aID,
+      nUserID: user.aID,
+      vchName: editStoreName,
+      txtDescription: editStoreDescription,
+    };
+    result[field] = e.target.value;
+    console.log("result");
+    console.log(result);
+    fetch(`${backend}/update-store`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(result),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          sessionStorage.setItem("store", JSON.stringify(data));
+          setStore(data);
+          setEditStoreName(data.vchName);
+          setEditStoreDescription(data.txtDescription);
+          console.log("store updated");
+          console.log(data);
+        }
+        return data;
+      });
+  };
+
+  const updateProductEdit = (e, id, field) => {
+    console.log("update product edit: " + id + ", " + field);
+    console.log("target value: " + e.target.value);
+    let success = false;
+    console.log(products);
+    let p = products[id];
+    let result = {
+      aID: p.aID,
+      nStoreID: store.aID,
+      vchName: p.vchName,
+      txtDescription: p.txtDescription,
+      fPrice: p.fPrice,
+      fShipping: p.fShipping,
+      nInventory: p.nInventory,
+      vchImagePath: "",
+    };
+    result[field] = e.target.value;
+    console.log("sending:");
+    console.log(result);
+    fetch(`${backend}/update-product`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(result),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          //                sessionStorage.setItem("products", JSON.stringify(data));
+          setProducts(data);
+          console.log("product updated");
+          console.log(data);
+        }
+        return data;
+      });
+  };
+
   useEffect(() => {
     console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
@@ -460,6 +564,9 @@ export default function index() {
     editStoreDescription = storeDescription = initStoreDescription = "";
   }
 
+  let order_prod_id: number | null = null;
+  let order_prod_name: string | null = null;
+
   return (
     <Panel title="My Radar">
       <p>Welcome{firstName && `, ${firstName} ${lastName}`}!</p>
@@ -467,60 +574,56 @@ export default function index() {
       <div className="box container bluebg">
         <div className="heading">My Store</div>
         {store && storeName != null ? (
-          editingStore ? (
-            <>
-              <div className="edit-store">
-                <form onSubmit={updateStore}>
-                  <input type="hidden" name="nUserID" value={userID} />
-                  <input type="hidden" name="aID" value={storeID} />
-                  <input
-                    className="indent input"
-                    name="vchName"
-                    defaultValue={editStoreName}
-                    type="text"
-                    placeholder="Store Name"
-                    onChange={(e) => {
-                      setTheStoreName(e.target.value);
-                    }}
-                  />
-                  <input
-                    className="indent input larger"
-                    name="txtDescription"
-                    type="text"
-                    defaultValue={editStoreDescription}
-                    placeholder="Store Description"
-                    onChange={(e) => {
-                      setTheStoreDescription(e.target.value);
-                    }}
-                  />
-                  <input
-                    type="submit"
-                    className="button button-small"
-                    value="Update Store"
-                  />
-                  <button
-                    className="button button-small right right-indent  cancel"
-                    onClick={cancelEditStore}
-                  >
-                    Cancel
-                  </button>
-                </form>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="indent store-name">{theStoreName}&nbsp;</div>
-              <div className="indent store-description">
-                {theStoreDescription}&nbsp;
-              </div>
-              <button
-                className="edit-store-button button button-small change-hue"
-                onClick={editStoreClicked}
-              >
-                Edit Store
-              </button>
-            </>
-          )
+          <>
+            <div
+              className="indent store-name"
+              onDoubleClick={() => setIsEditingStoreName(true)}
+            >
+              {isEditingStoreName ? (
+                <input
+                  className="indent input"
+                  name="vchName"
+                  defaultValue={editStoreName}
+                  type="text"
+                  placeholder="Store Name"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      updateStoreEdit(e, "vchName");
+                      setIsEditingStoreName(false);
+                    } else if (e.key === "Escape") {
+                      setIsEditingStoreName(false);
+                    }
+                  }}
+                />
+              ) : (
+                <>{theStoreName}&nbsp;</>
+              )}
+            </div>
+            <div
+              className="indent store-description"
+              onDoubleClick={() => setIsEditingStoreDescription(true)}
+            >
+              {isEditingStoreDescription ? (
+                <input
+                  className="indent input"
+                  name="vchDescription"
+                  defaultValue={editStoreDescription}
+                  type="text"
+                  placeholder="Store Description"
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      updateStoreEdit(e, "txtDescription");
+                      setIsEditingStoreDescription(false);
+                    } else if (e.key === "Escape") {
+                      setIsEditingStoreDescription(false);
+                    }
+                  }}
+                />
+              ) : (
+                <>{theStoreDescription}&nbsp;</>
+              )}
+            </div>
+          </>
         ) : creatingStore ? (
           <>
             <div className="create-store">
@@ -576,18 +679,151 @@ export default function index() {
                       return (
                         <>
                           <div className="product" key={i}>
-                            <div className="product-name">{t.vchName}</div>
-                            <div className="product-description">
-                              {t.txtDescription}
+                            <div
+                              className="product-name"
+                              onDoubleClick={() => {
+                                setIsEditingProductID(i);
+                                setIsEditingProductName(true);
+                              }}
+                            >
+                              {isEditingProductName &&
+                              isEditingProductID == i ? (
+                                <input
+                                  className="indent input"
+                                  name="vchName"
+                                  defaultValue={t.vchName}
+                                  type="text"
+                                  placeholder="Product Name"
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      updateProductEdit(e, i, "vchName");
+                                      setIsEditingProductName(false);
+                                    } else if (e.key === "Escape") {
+                                      setIsEditingProductName(false);
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                <>{t.vchName}&nbsp;</>
+                              )}
                             </div>
-                            <div className="product-price">
-                              Price: $ {`${t.fPrice.toFixed(2)}`}
+                            <div
+                              className="product-description"
+                              onDoubleClick={() => {
+                                setIsEditingProductID(i);
+                                setIsEditingProductDescription(true);
+                              }}
+                            >
+                              {isEditingProductDescription &&
+                              isEditingProductID == i ? (
+                                <input
+                                  className="indent input"
+                                  name="txtDescription"
+                                  defaultValue={t.txtDescription}
+                                  type="text"
+                                  placeholder="Product Description"
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      updateProductEdit(e, i, "txtDescription");
+                                      setIsEditingProductDescription(false);
+                                    } else if (e.key === "Escape") {
+                                      setIsEditingProductDescription(false);
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                <>{t.txtDescription}&nbsp;</>
+                              )}
                             </div>
-                            <div className="product-shipping">
-                              Shipping: $ {`${t.fShipping.toFixed(2)}`}
+                            <div
+                              className="product-price"
+                              onDoubleClick={() => {
+                                setIsEditingProductID(i);
+                                setIsEditingProductPrice(true);
+                              }}
+                            >
+                              Price: $
+                              {isEditingProductPrice &&
+                              isEditingProductID == i ? (
+                                <input
+                                  className="indent input short-input"
+                                  name="fPrice"
+                                  defaultValue={t.fPrice.toFixed(2)}
+                                  type="text"
+                                  placeholder="Price"
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      updateProductEdit(e, i, "fPrice");
+                                      setIsEditingProductPrice(false);
+                                    } else if (e.key === "Escape") {
+                                      setIsEditingProductPrice(false);
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                <>{t.fPrice.toFixed(2)}&nbsp;</>
+                              )}
                             </div>
-                            <div className="product-inventory">
-                              Stock: {t.nInventory}
+                            <div
+                              className="product-shipping"
+                              onDoubleClick={() => {
+                                setIsEditingProductID(i);
+                                setIsEditingProductShipping(true);
+                              }}
+                            >
+                              Shipping: $
+                              {isEditingProductShipping &&
+                              isEditingProductID == i ? (
+                                <input
+                                  className="indent input short-input"
+                                  name="fShipping"
+                                  defaultValue={t.fShipping.toFixed(2)}
+                                  type="text"
+                                  placeholder="Shipping"
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      updateProductEdit(e, i, "fShipping");
+                                      setIsEditingProductShipping(false);
+                                      setIsEditingProductID(null);
+                                    } else if (e.key === "Escape") {
+                                      setIsEditingProductShipping(false);
+                                      setIsEditingProductID(null);
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                <>{t.fShipping.toFixed(2)}&nbsp;</>
+                              )}
+                            </div>
+                            <div
+                              className="product-inventory"
+                              onDoubleClick={() => {
+                                setIsEditingProductID(i);
+                                setIsEditingProductInventory(true);
+                              }}
+                            >
+                              Stock:
+                              {isEditingProductInventory ? (
+                                <input
+                                  className="indent input short-input"
+                                  name="nInventory"
+                                  defaultValue={t.nInventory}
+                                  type="text"
+                                  placeholder="Inventory"
+                                  onKeyPress={(e) => {
+                                    if (e.key === "Enter") {
+                                      updateProductEdit(e, i, "nInventory");
+                                      setIsEditingProductInventory(false);
+                                      setIsEditingProductID(null);
+                                    } else if (e.key === "Escape") {
+                                      setIsEditingProductInventory(false);
+                                      setIsEditingProductID(null);
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                <>{t.nInventory.toFixed(0)}&nbsp;</>
+                              )}
                             </div>
                             <button
                               className="delete-product-button button button-small"
@@ -666,25 +902,7 @@ export default function index() {
                               }
                               placeholder="Inventory Count"
                             />
-                            <label>Add audio: </label>
-                            {tracks && tracks.length > 0 ? (
-                              <select>
-                                <option value="None">None</option>
-                                {tracks.map((t, i) => (
-                                  <option value={t.vchTitle}>
-                                    {t.vchTitle}
-                                  </option>
-                                ))}
-                              </select>
-                            ) : (
-                              <>
-                                <div className="indent">
-                                  Upload audio to enhance product!
-                                </div>
-                              </>
-                            )}
                           </div>
-
                           <div className="product-submit-margin-top">
                             <button
                               className="button button-small"
@@ -720,7 +938,91 @@ export default function index() {
 
             <div className="box container no-shadow">
               <div className="heading subheading gray">My Orders</div>
-              <div className="orders indent">No pending orders.</div>
+              <div className="orders indent">
+                {(orderItem1 || orderItem2 || orderItem3) && (
+                  <div className="order">
+                    <div className="order-date header">Date</div>
+                    <div className="order-product-name header">Product</div>
+                    <div className="order-quantity header">Quantity</div>
+                    <div className="order-total header">Total</div>
+                  </div>
+                )}
+                {!orderItem1 && !orderItem2 && !orderItem3 && (
+                  <div className="indent bottom-margin">No orders yet.</div>
+                )}
+                {orderItem1 && (
+                  <div className="order">
+                    <div className="order-date ">4/12/24</div>
+                    <div className="order-product-name ">Klaatu CD</div>
+                    <div className="order-quantity ">3</div>
+                    <div className="order-total ">$32.50</div>
+                    <div
+                      className="cancel-order button"
+                      onClick={(e) => {
+                        setOrderItem1(false);
+                      }}
+                    >
+                      Cancel
+                    </div>
+                  </div>
+                )}
+                {orderItem2 && (
+                  <div className="order">
+                    <div className="order-date ">4/14/24</div>
+                    <div className="order-product-name ">
+                      Autographed photo of Tom Petty
+                    </div>
+                    <div className="order-quantity ">1</div>
+                    <div className="order-total ">$10.00</div>
+                    <div
+                      className="cancel-order button"
+                      onClick={(e) => {
+                        setOrderItem2(false);
+                      }}
+                    >
+                      Cancel
+                    </div>
+                  </div>
+                )}
+                {orderItem3 && (
+                  <div className="order">
+                    <div className="order-date ">4/16/24</div>
+                    <div className="order-product-name ">Tesla Model S</div>
+                    <div className="order-quantity ">1</div>
+                    <div className="order-total ">$122,000.00</div>
+                    <div
+                      className="cancel-order button"
+                      onClick={(e) => {
+                        setOrderItem3(false);
+                      }}
+                    >
+                      Cancel
+                    </div>
+                  </div>
+                )}
+                {
+                  /* {
+                                            orders && orders.length > 0
+                                            ? orders.map((t, i) => {
+                                                console.log("order:");
+                                                console.log(t);
+                                                let order_prod_id = t.nItemID;
+                                                let product = products.find(p => p.aID == order_prod_id);
+                                                let order_prod_name = product ? product.vchName : "";
+                                                console.log("order product name: " + order_prod_name);
+                                                return (
+                                                    <div className="order" key={i}>
+                                                        <div className="order-date">{t.insertDate}</div>
+                                                        <div className="order-product-name">{order_prod_name}</div>
+                                                        <div className="order-quantity">{t.nItemCount}</div>
+                                                        <div className="order-total">${t.fGrandTotal.toFixed(2)}</div>
+                                                    </div>
+                                                );
+                                            }) }
+                                            : */
+                  // <div className="indent bottom-margin">No orders yet.</div>
+                }
+              </div>
             </div>
           </>
         ) : (
