@@ -417,17 +417,12 @@ html {
     max-width: 670px;
     margin-left: 30px;
 }
-.product-name {
+.product-name, .track-title {
     font-weight: bold;
 }
 
-.product-description {
+.product-description, .track-description {
     font-style: italic;
-}
-
-
-.product-name {
-    font-weight: bold;
 }
 
 .delete-product-button {
@@ -475,3 +470,9 @@ html {
     height: 25px;
     padding-top: 0;
 }
+.payment-form {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    height: 30vh;
+  }
