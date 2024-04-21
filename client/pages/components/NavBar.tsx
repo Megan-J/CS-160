@@ -31,19 +31,19 @@ const NavBar = ({ children }: NavBarProps) => {
   return (
     <nav className="main">
       <ul>
+        <li>
+          <Link href="/">Home</Link>
+        </li>
         {me ? (
           <>
             <li>
               <Link href="/stores">Stores</Link>
             </li>
             <li>
-              <Link href="/upload">Upload Music</Link>
+              <Link href="/cart">Cart</Link>
             </li>
             <li>
               <Link href="/logout">Logout</Link>
-            </li>
-            <li>
-              <Link href="/cart">Cart</Link>
             </li>
           </>
         ) : (
@@ -58,7 +58,9 @@ const NavBar = ({ children }: NavBarProps) => {
         )}
         {initials ? (
           <li className="right">
-            <div className="initials">{initials}</div>
+            <Link className="initials" href="/user">
+              {initials}
+            </Link>
           </li>
         ) : (
           ""

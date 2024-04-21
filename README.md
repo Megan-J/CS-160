@@ -1,6 +1,7 @@
 # CS-160
 
 #### Notes:
+
 - all commands written below are for mac
 - install node.js if it isn't on your computer yet
 - download mysql from the mysql website, create a user with the connection of 3306, create a table called cloud
@@ -8,6 +9,7 @@
 ### Server (backend)
 
 first, go into the server directory
+
 ```bash
 cd server
 ```
@@ -41,6 +43,7 @@ to stop the server:
 ```
 
 to deactivate environment:
+
 ```bash
 deactivate
 ```
@@ -48,6 +51,7 @@ deactivate
 ### Client (frontend)
 
 you must be in the client directory when executing these commands
+
 ```bash
 cd client
 ```
@@ -59,6 +63,9 @@ npm run dev
 ```
 
 if dependencies not installed yet
+
 ```bash
 npm install
 ```
+
+for checkout, you need to get an application key and location key from ![Square Developer Dashboard](https://developer.squareup.com/us/en) and replace the REACT_APP_SQUARE_API_APPLICATION_KEY and REACT_APP_SQUARE_API_LOCATION_KEY with those values (the environment variables in .env file aren't working currently)
