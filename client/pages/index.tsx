@@ -12,7 +12,7 @@ export default function index() {
     user = user ? JSON.parse(user) : null;
 
     if (user && user.vchUsername !== null) {
-      router.push("/user");
+      router.push("/");
     }
   }, []);
 

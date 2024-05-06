@@ -9,9 +9,8 @@ function stores() {
     <Panel title="Stores">
       <p>Explore all the stores created by our very own users!</p>
       <div>
-        <SearchStores/>
+        <SearchStores />
       </div>
-
     </Panel>
   );
 }

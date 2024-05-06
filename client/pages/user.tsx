@@ -456,6 +456,27 @@ export default function index() {
       });
   };
 
+  const uploadFile = async (e) => {
+    console.log("UPLOADING FILE");
+    const file = e.target.files[0];
+    if (file != null) {
+      const data = new FormData();
+      data.append("file_from_react", file);
+
+      console.log("INSIDE UPLOAD");
+
+      let response = await fetch(`${backend}/url_route`, {
+        method: "POST",
+        body: data,
+      });
+
+      let res = await response.json();
+      if (res.status !== 200) {
+        alert("Error uploading file");
+      }
+    }
+  };
+
   useEffect(() => {
     console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
@@ -1070,16 +1091,10 @@ export default function index() {
             <div className="indent">No uploaded music yet.</div>
           </>
         )}
+        <br />
         <div className="center">
-          <form onSubmit={handleSubmitTrack}>
-            <input type="file" name="file" id="file-upload" />
-            <br />
-            <button
-              className="indent bottom-margin top-indent button button-small"
-              type="submit"
-            >
-              Upload a Track
-            </button>
+          <form>
+            <input type="file" onChange={uploadFile}></input>
           </form>
         </div>
       </div>

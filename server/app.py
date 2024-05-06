@@ -1,17 +1,19 @@
 #, jsonify, make_response
 from datetime import datetime
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask import request, jsonify, make_response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 # from models import app, db, Addresses, CCInfo, CCTypes, Countries, Followers, OrderItems, Orders, Products, States, StoreFollowers, Storefronts, Tracks, Users
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = "static/"
 db = SQLAlchemy(app)
 
 with app.app_context():
@@ -672,6 +674,25 @@ def get_tracks():
         return jsonify(tracks_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
+    
+@app.route('/url_route', methods=['POST'])
+def upload_file():
+    """Handles the upload of a file."""
+    print("I'M HERE")
+    d = {}
+    try:
+        file = request.files['file_from_react']
+        filename = secure_filename(file.filename)
+        print(f"Uploading file {filename}")
+        file.save(app.config['UPLOAD_FOLDER'] + filename)
+        d['status'] = 1
+
+    except Exception as e:
+        print(f"Couldn't upload file {e}")
+        d['status'] = 0
+    
+    return jsonify(d)
+
 
 #port should be 8080, pick one of the ports
 if __name__ == '__main__':

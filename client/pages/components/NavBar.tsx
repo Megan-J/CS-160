@@ -3,6 +3,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import SearchStores from "./searchStores";
 
 type NavBarProps = {
   children: React.ReactNode;
@@ -38,6 +39,9 @@ const NavBar = ({ children }: NavBarProps) => {
           <Link href="/stores">Stores</Link>
         </li>
         <li>
+          <input className="search" type="text" placeholder="Search" />
+        </li>
+        <li>
           <Link href="/cart">Cart</Link>
         </li>
         {me ? (
@@ -49,10 +53,10 @@ const NavBar = ({ children }: NavBarProps) => {
         ) : (
           <>
             <li>
-              <Link href="/signup">Sign Up</Link>
+              <Link href="/login">Sign In</Link>
             </li>
             <li>
-              <Link href="/login">Login</Link>
+              <Link href="/signup">Create account</Link>
             </li>
           </>
         )}
@@ -65,12 +69,6 @@ const NavBar = ({ children }: NavBarProps) => {
         ) : (
           ""
         )}
-        <li className="right">
-          <input className="search" type="text" placeholder="Search" />
-        </li>
-        <li className="right">
-          <Link href="/checkout">Checkout</Link>
-        </li>
       </ul>
     </nav>
   );
