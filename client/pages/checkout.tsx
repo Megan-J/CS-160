@@ -172,18 +172,6 @@ export default function placeOrder() {
               />
             </label>
           </p>
-          <div className="payment-form">
-            <PaymentForm
-              applicationId={process.env.REACT_APP_applicationIdAPIKey}
-              cardTokenizeResponseReceived={async (token, verifiedBuyer) => {
-                console.log("token:", token);
-                console.log("verifiedBuyer:", verifiedBuyer);
-              }}
-              locationId={process.env.REACT_APP_locationAPIKey}
-            >
-              <CreditCard />
-            </PaymentForm>
-          </div>
           <button onClick={handleSubmit}>Confirm Order</button>
         </form>
         <br />

@@ -32,16 +32,16 @@ const NavBar = ({ children }: NavBarProps) => {
     <nav className="main">
       <ul>
         <li>
-          <Link href="/">Home</Link>
+          <Link href="/ted">Home</Link>
+        </li>
+        <li>
+          <Link href="/stores">Stores</Link>
+        </li>
+        <li>
+          <Link href="/cart">Cart</Link>
         </li>
         {me ? (
           <>
-            <li>
-              <Link href="/stores">Stores</Link>
-            </li>
-            <li>
-              <Link href="/cart">Cart</Link>
-            </li>
             <li>
               <Link href="/logout">Logout</Link>
             </li>
