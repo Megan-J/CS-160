@@ -41,11 +41,12 @@ const NavBar = ({ children }: NavBarProps) => {
         <li>
           <input className="search" type="text" placeholder="Search" />
         </li>
-        <li>
-          <Link href="/cart">Cart</Link>
-        </li>
+
         {me ? (
           <>
+            <li>
+              <Link href="/cart">Cart</Link>
+            </li>
             <li>
               <Link href="/logout">Logout</Link>
             </li>

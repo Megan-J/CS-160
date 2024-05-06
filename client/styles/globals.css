@@ -476,3 +476,15 @@ html {
     align-content: center;
     height: 30vh;
   }
+
+  .left-column, .right-column {
+    padding: 20px;
+  }
+  
+  .left-column {
+    background-color: #f0f0f0;
+  }
+  
+  .right-column {
+    background-color: #e0e0e0;
+  }

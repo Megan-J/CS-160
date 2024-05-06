@@ -19,17 +19,7 @@ interface Inputs {
 }
 
 export default function placeOrder() {
-  require("dotenv").config({ debug: true });
-
   const [inputs, setInputs] = useState<Inputs>({});
-
-  const dummyOrder = {
-    items: [
-      { id: 1, name: "Product A", price: 50 },
-      { id: 2, name: "Product B", price: 120 },
-      { id: 3, name: "Product C", price: 15 },
-    ],
-  };
 
   const handleChange = (event: { target: { name: any; value: any } }) => {
     const name = event.target.name;
@@ -62,44 +52,15 @@ export default function placeOrder() {
 
   return (
     <Panel title="Checkout">
-      <h2 className="text-xl mb-4">Order</h2>
-      <div>
-        <ul>
-          {dummyOrder.items.map((item) => (
-            <li key={item.id}>
-              {item.name} - ${item.price}
-            </li>
-          ))}
-        </ul>
-        <p>Total: $185</p>
-      </div>
+      <button className="button button-small cancel">
+        Return to shopping cart
+      </button>
       <br />
       <div>
-        <form className="contact">
-          <a className="font-semibold">Contact</a>
-          <br />
-          <label>
-            <input
-              type="text"
-              placeholder="Email"
-              name="email"
-              value={inputs.email || ""}
-              onChange={handleChange}
-            />
-            <br />
-            <br />
-          </label>
-          <a className="font-semibold">Shipping Address</a>
-          <br />
-          <label>
-            Country/Region
-            <select onChange={handleChange}>
-              <option value={"United States" && inputs.country}>
-                United States
-              </option>
-            </select>
-          </label>
-          <br />
+        <h2 className="text-xl mb-4">Shipping Address</h2>
+      </div>
+      <div>
+        <form>
           <p>
             <label>
               <input
@@ -165,6 +126,15 @@ export default function placeOrder() {
             <label>
               <input
                 type="text"
+                placeholder="Email"
+                name="email"
+                value={inputs.email || ""}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              <input
+                type="text"
                 placeholder="Phone Number"
                 name="phoneNumber"
                 value={inputs.phoneNumber || ""}
@@ -172,15 +142,63 @@ export default function placeOrder() {
               />
             </label>
           </p>
-          <button onClick={handleSubmit}>Confirm Order</button>
         </form>
-        <br />
-        <br />
-        <br />
-        <a>
-          By placing your order you agree to Terms and Conditions, Privacy
+      </div>
+      <br />
+      <br />
+      <div>
+        <h2 className="text-xl mb-4">Delivery</h2>
+      </div>
+      <div>
+        <form>
+          <input
+            type="radio"
+            id="Standard Shipping"
+            value="Standard Shipping"
+          ></input>
+          <label>Standard Shipping</label>
+          <br />
+          <input
+            type="radio"
+            id="Express Shipping"
+            value="Express Shipping"
+          ></input>
+          <label>Express Shipping</label>
+        </form>
+      </div>
+      <br />
+      <br />
+      <div>
+        <h2 className="text-xl mb-4">Payment</h2>
+      </div>
+      <div className="payment-form">
+        <PaymentForm
+          applicationId="sq0idp-vcdvrG8K6y53ItYMyBFfsQ"
+          cardTokenizeResponseReceived={async (token, verifiedBuyer) => {
+            console.log("token:", token);
+            console.log("verifiedBuyer:", verifiedBuyer);
+          }}
+          locationId="EAAAl58xwT8s_Esh11rlgbT9Wde0bkLB33DEhpVD0ulvezR9rZmAd2qU8dwbAIs8"
+        >
+          <CreditCard />
+        </PaymentForm>
+      </div>
+      <div>
+        <input
+          type="radio"
+          id="Development Payment"
+          value="Development Payment"
+        ></input>
+        <label>Development Payment</label>
+      </div>
+      <br />
+      <br />
+      <div>
+        <h2 className="text-xl mb-4">Review</h2>
+        <p>
+          By placing your order you agree to our Terms and Conditions, Privacy
           Notice, and Cookie Policy.
-        </a>
+        </p>
       </div>
     </Panel>
   );
