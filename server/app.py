@@ -13,7 +13,8 @@ CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = "static/"
+app.config['UPLOAD_FOLDER'] = "../data/"
+ALLOWED_EXTENSIONS = set(['mp3', 'mp4', 'wav'])
 db = SQLAlchemy(app)
 
 with app.app_context():
@@ -675,17 +676,24 @@ def get_tracks():
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
     
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route('/url_route', methods=['POST'])
 def upload_file():
-    """Handles the upload of a file."""
-    print("I'M HERE")
     d = {}
     try:
+        
         file = request.files['file_from_react']
-        filename = secure_filename(file.filename)
-        print(f"Uploading file {filename}")
-        file.save(app.config['UPLOAD_FOLDER'] + filename)
-        d['status'] = 1
+        if file.filename == '':
+            print(f"No selected file")
+            d['status'] = 2
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            print(f"Uploading file {filename}")
+            file.save(app.config['UPLOAD_FOLDER'] + filename)
+            d['status'] = 1      
 
     except Exception as e:
         print(f"Couldn't upload file {e}")

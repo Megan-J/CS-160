@@ -89,8 +89,8 @@ export default function Confirmation() {
       <div className="box">
         <div className="heading">Your order was placed successfully</div>
         <div>
-          <p>Order date:</p>
-          <p>Order number:</p>
+          <p>Order date: {}</p>
+          <p>Order number: {}</p>
         </div>
         <br />
         <div>

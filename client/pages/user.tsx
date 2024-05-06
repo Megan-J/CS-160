@@ -463,15 +463,13 @@ export default function index() {
       const data = new FormData();
       data.append("file_from_react", file);
 
-      console.log("INSIDE UPLOAD");
-
       let response = await fetch(`${backend}/url_route`, {
         method: "POST",
         body: data,
       });
 
       let res = await response.json();
-      if (res.status !== 200) {
+      if (res.status !== 1) {
         alert("Error uploading file");
       }
     }
@@ -1075,8 +1073,8 @@ export default function index() {
 
       <div className="box">
         <div className="heading orange">My Music</div>
-        {music && music.length > 0 ? (
-          music.map((t, i) => (
+        {tracks && tracks.length > 0 ? (
+          tracks.map((t, i) => (
             <div className="track" key={i}>
               <div className="track-title">{t.vchTrackName}</div>
               <div className="track-description">{t.txtDescription}</div>
@@ -1096,6 +1094,7 @@ export default function index() {
           <form>
             <input type="file" onChange={uploadFile}></input>
           </form>
+          <br />
         </div>
       </div>
 
