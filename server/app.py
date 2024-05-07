@@ -702,6 +702,67 @@ def upload_file():
     return jsonify(d)
 
 
+@app.route('/checkout/shipping_address', methods=['POST'])
+def store_shipping_addr():
+    data = request.get_json()
+    try:
+        addresses = Addresses()
+        try:
+            a = addresses.query.filter_by(vchAddress1=data['shipAddr']).first()
+        except Exception as e:
+            return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e)}), 500)
+        if a:
+            return make_response(jsonify({'message': 'address already exists'}), 200)
+        else:
+            a = Addresses(
+                vchAddress1=data['shipAddr'],
+                vchCity=data['shipCity'],
+                nStateID=data['shipCity'],
+                vchZip=data['shipZip'],
+            )
+            db.session.add(a)
+            db.session.commit()
+            return jsonify({
+                'aID': a.aID,
+                'vchAddress1': a.vchAddress1,
+                'vchCity': a.vchCity,
+                'nStateID': a.nStateID,
+                'vchZip': a.vchZip,
+            }), 201
+    except Exception as e:
+        return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e), 'data':data}), 500)
+    
+@app.route('/checkout/billing_address', methods=['POST'])
+def store_billing_addr():
+    data = request.get_json()
+    try:
+        addresses = Addresses()
+        try:
+            a = addresses.query.filter_by(vchAddress1=data['shipAddr']).first()
+        except Exception as e:
+            return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e)}), 500)
+        if a:
+            return make_response(jsonify({'message': 'address already exists'}), 200)
+        else:
+            a = Addresses(
+                vchAddress1=data['billAddr'],
+                vchCity=data['billCity'],
+                nStateID=data['billCity'],
+                vchZip=data['billZip'],
+            )
+            db.session.add(a)
+            db.session.commit()
+            return jsonify({
+                'aID': a.aID,
+                'vchAddress1': a.vchAddress1,
+                'vchCity': a.vchCity,
+                'nStateID': a.nStateID,
+                'vchZip': a.vchZip,
+            }), 201
+    except Exception as e:
+        return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e), 'data':data}), 500)
+
+
 #port should be 8080, pick one of the ports
 if __name__ == '__main__':
     # with app.app_context():

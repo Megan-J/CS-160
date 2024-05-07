@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Panel from "./components/Panel";
 import { useRouter } from "next/router";
-import { PaymentForm, CreditCard } from "react-square-web-payments-sdk";
 import Link from "next/link";
+import { backend } from "./components/Constants";
 
 interface Inputs {
   email?: string;
@@ -24,7 +24,7 @@ export default function placeOrder() {
   const router = useRouter();
 
   const [formState, setFormState] = useState(null);
-  let [error, setError] = useState(null);
+  let [error, setError] = useState("");
 
   const [inputs, setInputs] = useState<Inputs>({});
   const [shipAddress, setShipAddress] = useState("");
@@ -45,10 +45,9 @@ export default function placeOrder() {
   const [billEmail, setBillEmail] = useState("");
   const [billPhoneNum, setBillPhoneNum] = useState("");
 
-  let sameBill = true;
-  let sameSelect = 0;
   let devPaymentSelect = 0;
 
+  //needed to get information from cart, cart isn't set up yet
   useEffect(() => {}, []);
 
   const handleChange = (event) => {
@@ -84,6 +83,49 @@ export default function placeOrder() {
   const handleFormSubmit = (event) => {
     event.preventDefault();
     console.log(formState);
+
+    let data = JSON.stringify(formState);
+    const lines = data.trim().split("\n");
+    const shipVariables: string[] = [];
+    const billVariables: string[] = [];
+
+    lines.forEach((line) => {
+      const key = line.split(":")[0].trim();
+
+      if (key.startsWith("ship")) {
+        shipVariables.push(line);
+      } else if (billVariables.push(line)) {
+      }
+    });
+
+    let shipSuccess = false;
+    let billSuccess = false;
+    fetch(`${backend}/checkout/shipping_address`, {
+      method: "POST",
+      body: JSON.stringify(shipVariables),
+    }).then((res) => {
+      console.log(res);
+      if (res.status === 200 || res.status === 201) {
+        shipSuccess = true;
+      } else {
+        setError("Invalid shipping address");
+      }
+    });
+
+    fetch(`${backend}/checkout/billing_address`, {
+      method: "POST",
+      body: JSON.stringify(billVariables),
+    }).then((res) => {
+      console.log(res);
+      if (res.status === 200 || res.status === 201) {
+        billSuccess = true;
+      } else {
+        setError("Invalid billing address");
+      }
+    });
+    if (shipSuccess && billSuccess) {
+      router.push("/confirmation");
+    }
   };
 
   const handleDevPayment = () => {
@@ -188,10 +230,22 @@ export default function placeOrder() {
           <div>
             <h2 className="text-xl mb-4">Delivery</h2>
           </div>
-          <input type="radio" id="Standard Shipping" name="shippingOpt"></input>
+          <input
+            type="radio"
+            id="Standard Shipping"
+            name="shippingOpt"
+            value="Standard Shipping"
+            onSelect={handleChange}
+          ></input>
           <label>Standard Shipping</label>
           <br />
-          <input type="radio" id="Express Shipping" name="shippingOpt"></input>
+          <input
+            type="radio"
+            id="Express Shipping"
+            name="shippingOpt"
+            value="Express Shipping"
+            onSelect={handleChange}
+          ></input>
           <label>Express Shipping</label>
           <br />
           <br />
@@ -216,7 +270,7 @@ export default function placeOrder() {
               <input
                 type="text"
                 placeholder="First Name"
-                name="bilFirstName"
+                name="billFirstName"
                 onChange={handleChange}
               />
             </label>
@@ -262,7 +316,6 @@ export default function placeOrder() {
                 type="text"
                 placeholder="ZIP Code"
                 name="billZip"
-                value={inputs.zip || ""}
                 onChange={handleChange}
               />
             </label>
@@ -272,7 +325,7 @@ export default function placeOrder() {
               <input
                 type="text"
                 placeholder="Email"
-                name="bilEmail"
+                name="billEmail"
                 onChange={handleChange}
               />
             </label>
@@ -280,7 +333,7 @@ export default function placeOrder() {
               <input
                 type="text"
                 placeholder="Phone Number"
-                name="bilPhoneNumber"
+                name="billPhoneNumber"
                 onChange={handleChange}
               />
             </label>
