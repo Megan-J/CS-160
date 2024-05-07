@@ -11,24 +11,35 @@ import { backend } from "./components/Constants";
 //   }
 //key={product.id}
 export default function Confirmation() {
-  let [bans, setBans] = useState(null);
-  let [user, setUser] = useState(null);
-  let [cart, setCart] = useState(null);
-  let [items, setItems] = useState(null);
-  let [products, setProducts] = useState(null);
+  let [bans, setBans] = useState("");
+  let [user, setUser] = useState("");
+  let [cart, setCart] = useState("");
+  let [items, setItems] = useState("");
+  let [products, setProducts] = useState("");
+  let [stores, setStores] = useState("");
+  let [order, setOrder] = useState("");
+  let [orderItems, setOrderItems] = useState("");
+  let [addresses, setAddresses] = useState("");
+
   const router = useRouter();
 
   useEffect(() => {
-    console.log("IN THE CART");
     console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
     let productsJson = sessionStorage.getItem("products");
     let cartJson = sessionStorage.getItem("cart");
-    let storeJson = sessionStorage.getItem("store");
+    let storesJson = sessionStorage.getItem("stores");
+    let orderJson = sessionStorage.getItem("order");
+    let orderItemsJson = sessionStorage.getItem("orderItems");
+    let addressesJson = sessionStorage.getItem("addresses");
 
     let user = userJson ? JSON.parse(userJson) : null;
+    let products = productsJson ? JSON.parse(productsJson) : null;
     let cart = cartJson ? JSON.parse(cartJson) : null;
-    let store = storeJson ? JSON.parse(storeJson) : null;
+    let stores = storesJson ? JSON.parse(storesJson) : null;
+    let order = orderJson ? JSON.parse(orderJson) : null;
+    let orderItems = orderItemsJson ? JSON.parse(orderItemsJson) : null;
+    let addresses = addressesJson ? JSON.parse(addressesJson) : null;
 
     setUser(user);
     console.log("user:");
@@ -39,70 +50,59 @@ export default function Confirmation() {
         initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
         initials = initials.toUpperCase();
       }
-      let products = productsJson ? JSON.parse(productsJson) : null;
-      //if (bansJson) setBans(bans);
-      fetchBanRequests(user.aID);
+
+      if (orderJson) setOrder(order);
+      if (productsJson) setProducts(products);
+      if (cartJson) setCart(cart);
+      if (storesJson) setStores(stores);
+      if (orderItemsJson) setOrderItems(orderItems);
+      if (addressesJson) setAddresses(addresses);
     }
   }, []);
 
-  const fetchBanRequests = () => {
-    // Fetch ban requests from the backend
-    fetch(`${backend}/cart/1`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBans(data);
-        console.log(data);
-      })
-      .catch((error) => console.error("Error fetching ban requests:", error));
-  };
-
-  const handleProceedToCheckout = () => {
-    router.push("/checkout");
-  };
-
-  const handleProceedToStores = () => {
-    router.push("/stores");
-  };
-
-  function deleteItem(
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    aID: any
-  ): void {
-    throw new Error("Function not implemented.");
-  }
-
-  let cartID: number, storeID: number, productID: number, quantity: number;
+  let orderID, cost, tax, shippingCost, shippingAddrID, billingAddrID, date;
   try {
-    cartID = cart.aID;
-    storeID = cart.nStoreID;
-    productID = cart.nStoreID;
-    quantity = cart.nQuantity;
+    orderID = order.aID;
+    cost = order.fCostTotal;
+    tax = order.fTaxTotal;
+    shippingCost = order.fShippingTotal;
+    shippingAddrID = order.nShippingAddressID;
+    billingAddrID = order.nBillingAddressID;
+    date = order.dtInsertDate;
   } catch (e) {
-    cartID = "";
-    storeID = "";
-    productID = "";
-    quantity = "";
+    orderID = "";
+    cost = "";
+    tax = "";
+    shippingCost = "";
+    shippingAddrID = "";
+    billingAddrID = "";
+    date = "";
   }
+  let shippingAddr, billingAddr;
 
   return (
     <Panel title="Thank you!">
       <div className="box">
         <div className="heading">Your order was placed successfully</div>
         <div>
-          <p>Order date: {}</p>
-          <p>Order number: {}</p>
+          <p>Order date: {orderID}</p>
+          <p>Order number: {date}</p>
         </div>
         <br />
         <div>
           <h2 className="text-xl mb-4">Shipping Address</h2>
         </div>
         <div>
-          <h2 className="text-xl mb-4">Delivery</h2>
+          <p>{shippingAddr}</p>
         </div>
         <div>
-          {" "}
+          <h2 className="text-xl mb-4">Delivery</h2>
+        </div>
+        {shippingCost}
+        <div>
           <h2 className="text-xl mb-4">Payment</h2>
         </div>
+        <div>{billingAddr}</div>
       </div>
     </Panel>
   );

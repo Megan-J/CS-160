@@ -471,6 +471,8 @@ export default function index() {
       let res = await response.json();
       if (res.status !== 1) {
         alert("Error uploading file");
+      } else {
+        router.push("/");
       }
     }
   };
