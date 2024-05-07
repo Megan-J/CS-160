@@ -62,6 +62,11 @@ class Tracks(db.Model):
 class Users(db.Model):
     __table__ = db.metadata.tables['Users']
 
+# NEED A PLAYLIST/MUSIC TABLE
+
+class Report(db.Model):
+    __table__ = db.metadata.tables['Reports']
+
 #test route; must navigate to this url after activating 8080
 @app.route('/home', methods=['GET'])
 def get_contacts():
@@ -1298,30 +1303,50 @@ def search_music():
     except Exception as e:
         return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
 
-#heart a song: currently missing heart model
+#heart a song: -needs a heart database
 @app.route('/tracks/<int:track_id>', methods=['POST'])
 def toggle_heart(track_id):
     data = request.get_json()
     user_id = data.get('user_id')
     try:
-        #
         heart = Heart.query.filter_by(track_id = track_id, user_id = user_id).first()
-        #
+
         if heart:
             db.session.delete(heart)
             db.session.commit()
             hearted = False
         else:
-            #
             new_heart = Heart(track_id = track_id, user_id = user_id)
-            #
             db.session.add(new_heart)
             db.session.commit()
             hearted = True
+
         return jsonify({'hearted': hearted}), 200
     except Exception as e:
         return jsonify({'message': 'Error toggling heart', 'error': str(e)}), 500
+    
+#report user/product: -needs a reports database
+@app.route('/api/report', methods=['POST'])
+def handle_report():
+    data = request.get_json()
+    if not data:
+        return jsonify({'message': 'No data provided'}), 400
+    
+    if 'reportType' not in data or 'description' not in data or 'identifier' not in data:
+        return jsonify({'message': 'Missing required fields'}), 400
+    
+    new_report = Report(
+        report_type=data['reportType'],
+        description=data['description'],
+        identifier=data['identifier']
+    )
 
+    db.session.add(new_report)
+    db.session.commit()
+
+    return jsonify({'message': 'Report received successfully'}), 201
+
+#
 @app.route('/product/<int:store_id>', methods=['GET'])
 def get_products_by_store(store_id):
     try:

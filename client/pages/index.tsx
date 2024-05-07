@@ -2,19 +2,26 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
+import Link from "next/link";
 
 export default function index() {
   const router = useRouter();
   let user = null;
 
   useEffect(() => {
-    user = sessionStorage.getItem("user");
-    user = user ? JSON.parse(user) : null;
+    const userJSON = sessionStorage.getItem("user");
+    let user = userJSON ? JSON.parse(userJSON) : null;
 
     if (user && user.vchUsername !== null) {
       router.push("/user");
     }
   }, []);
+
+  interface Track {
+    track_id: number;
+    title: string;
+    hearted: boolean;
+  }
 
   const [searchQuery, setSearchQuery] = useState("");
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -22,7 +29,7 @@ export default function index() {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/tracks");
+        const response = await fetch(`http://127.0.0.1:5000/tracks`);
         const data = await response.json();
         setTracks(data.tracks);
       } catch (error) {
@@ -42,7 +49,7 @@ export default function index() {
     event.preventDefault();
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/track?query=${encodeURIComponent(searchQuery)}"
+        `http://127.0.0.1:5000/track?query=${encodeURIComponent(searchQuery)}`
       );
       const data = await response.json();
       setTracks(data.results);
@@ -53,7 +60,7 @@ export default function index() {
 
   const toggleHeart = async (trackId: number) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/heart/${trackId}", {
+      const response = await fetch(`http://127.0.0.1:5000/heart/${trackId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,6 +145,13 @@ export default function index() {
             <button onClick={() => handleShare(track.track_id)}>Share</button>
           </div>
         ))}
+      </div>
+      <br />
+      <br />
+      <div>
+        <Link href="/report" className="button">
+          Report an Issue
+        </Link>
       </div>
     </Panel>
   );
