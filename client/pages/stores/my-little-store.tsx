@@ -27,6 +27,7 @@ export default function MyLittleStore() {
       let [bans, setBans] = useState(null);
       let [user, setUser] = useState(null);
       const router = useRouter();
+      const { storeID } = router.query; // Access storeID from router query
    // const { storeID } = router.query;
     //   const { state } = props.location;
     // const { storeID } = state;
@@ -61,7 +62,7 @@ export default function MyLittleStore() {
       let data = {
           nUserID: user.aID,
           nProductID: aID,
-          nStoreID: 1,
+          nStoreID: storeID,
           nQuantity: 1
       };
       console.log(data);
@@ -94,7 +95,7 @@ export default function MyLittleStore() {
   
       const fetchBanRequests = () => {
         // Fetch ban requests from the backend
-        const { storeID } = router.query; // Access storeID from router query
+        
         fetch(`${backend}/product/${storeID}`)
             .then(res => res.json())
             .then(data => {

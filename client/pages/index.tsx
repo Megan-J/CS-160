@@ -170,7 +170,7 @@ const fetchStores = () => {
       <div className="input_wrapper">
         <input
           type="text"
-          placeholder="Search Stores"
+          placeholder="Search Music: In Progress"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyPress={handleKeyPress}

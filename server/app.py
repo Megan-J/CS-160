@@ -1247,7 +1247,7 @@ def get_user(id):
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
 #get tracks for user
-@app.route('/tracks/<int:user_id>', methods=['GET'])
+@app.route('/tracks/user/<int:user_id>', methods=['GET'])
 def get_tracks_by_user(user_id):
     try:
         # Query track by store ID
@@ -1300,7 +1300,7 @@ def search_music():
         return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
 
 #heart a song: currently missing heart model
-@app.route('/tracks/<int:track_id>', methods=['POST'])
+@app.route('/tracks/heart/<int:track_id>', methods=['POST'])
 def toggle_heart(track_id):
     data = request.get_json()
     user_id = data.get('user_id')
