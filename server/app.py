@@ -645,23 +645,23 @@ def toggle_heart(track_id):
     except Exception as e:
         return jsonify({'message': 'Error toggling heart', 'error': str(e)}), 500
 
-@app.route('/product/<int:store_id>', methods=['GET'])
-def get_products_by_store(store_id):
-    try:
-        # Query products by store ID
-        products = Products.query.filter_by(nStoreID=store_id).all()
+# @app.route('/product/<int:store_id>', methods=['GET'])
+# def get_products_by_store(store_id):
+#     try:
+#         # Query products by store ID
+#         products = Products.query.filter_by(nStoreID=store_id).all()
         
-        # Convert products to JSON format
-        products_data = [{
-            'id': product.aID,
-            'name': product.vchProductName,
-            'description': product.vchProductDesc,
-            'price': product.fPrice
-        } for product in products]
+#         # Convert products to JSON format
+#         products_data = [{
+#             'id': product.aID,
+#             'name': product.vchProductName,
+#             'description': product.vchProductDesc,
+#             'price': product.fPrice
+#         } for product in products]
         
-        return jsonify(products_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+#         return jsonify(products_data), 200
+#     except Exception as e:
+#         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
 
 # get all tracks
 @app.route('/tracks/all', methods=['GET'])
