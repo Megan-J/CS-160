@@ -761,6 +761,20 @@ def store_billing_addr():
             }), 201
     except Exception as e:
         return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e), 'data':data}), 500)
+    
+
+#get store by id
+app.route('/store/{id}', methods=['GET'])
+def get_store(id):
+    try:
+        store = Stores.query.filter_by(id=id).first() #get first store with id
+        if store:
+            return make_response(jsonify({'store': store.json()}), 200)
+        return make_response(jsonify({'message': 'store not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
+
+
 
 
 #port should be 8080, pick one of the ports
