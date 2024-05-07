@@ -7,14 +7,25 @@ interface Product {
     price: number;
   }
 //key={product.id}
-export default function HardRockCafe() {
+// interface Props {
+//   storeID: number; // Define the prop for store ID
+// }
+//make store creation dynamic
+/**
+ * 
+ * <HardRockCafe storeID={123} />
+ */
+// export default function HardRockCafe( int: storeID) {
+  function HardRockCafe(props) {
       // Fetch all stores
       const [products, setProducts] = useState<Product[]>([]);
+      const { state } = props.location;
+      const { storeID } = state;
 
       useEffect(() => {
           const fetchProducts = async () => {
               try {
-                  const response = await fetch("http://127.0.0.1:8080/product/2");
+                  const response = await fetch(`http://127.0.0.1:5000/product/${storeID}`);
                   if (!response.ok) {
                       throw new Error("Failed to fetch products.");
                   }
@@ -79,4 +90,5 @@ export default function HardRockCafe() {
       </div>
     </div>
   );
-}
+};
+export default HardRockCafe;

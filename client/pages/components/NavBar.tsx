@@ -66,9 +66,6 @@ const NavBar = ({ children }: NavBarProps) => {
           ""
         )}
         <li className="right">
-          <input className="search" type="text" placeholder="Search" />
-        </li>
-        <li className="right">
           <Link href="/checkout">Checkout</Link>
         </li>
       </ul>

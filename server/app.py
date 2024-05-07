@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -650,33 +650,33 @@ def toggle_heart(track_id):
     except Exception as e:
         return jsonify({'message': 'Error toggling heart', 'error': str(e)}), 500
 
-@app.route('/product/<int:store_id>', methods=['GET'])
-def get_products_by_store(store_id):
-    try:
-        # Query products by store ID
-        products = Products.query.filter_by(nStoreID=store_id).all()
+# @app.route('/product/<int:store_id>', methods=['GET'])
+# def get_products_by_store(store_id):
+#     try:
+#         # Query products by store ID
+#         products = Products.query.filter_by(nStoreID=store_id).all()
         
-        # Convert products to JSON format
-        products_data = [{
-            'id': product.aID,
-            'name': product.vchProductName,
-            'description': product.vchProductDesc,
-            'price': product.fPrice
-        } for product in products]
+#         # Convert products to JSON format
+#         products_data = [{
+#             'id': product.aID,
+#             'name': product.vchProductName,
+#             'description': product.vchProductDesc,
+#             'price': product.fPrice
+#         } for product in products]
         
-        return jsonify(products_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+#         return jsonify(products_data), 200
+#     except Exception as e:
+#         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
 
 # get all tracks
-@app.route('/tracks/all', methods=['GET'])
-def get_tracks():
-    try:
-        tracks = Tracks.query.all()
-        tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
-        return jsonify(tracks_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
+# @app.route('/tracks/all', methods=['GET'])
+# def get_tracks():
+#     try:
+#         tracks = Tracks.query.all()
+#         tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
+#         return jsonify(tracks_data), 200
+#     except Exception as e:
+#         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #port should be 8080, pick one of the ports
 if __name__ == '__main__':
@@ -1252,7 +1252,7 @@ def get_user(id):
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
 #get tracks for user
-@app.route('/tracks/<int:user_id>', methods=['GET'])
+@app.route('/tracks/user/<int:user_id>', methods=['GET'])
 def get_tracks_by_user(user_id):
     try:
         # Query track by store ID
@@ -1260,9 +1260,10 @@ def get_tracks_by_user(user_id):
         
         # Convert tracks to JSON format
         tracks_data = [{
-            'id': track.aID,
-            'name': track.vchTitle,
-            'description': track.txtDescription,
+            'aID': track.aID,
+            'vchTitle': track.vchTitle,
+            'txtDescription': track.txtDescription,
+            'vchAudioURL': track.vchAudioURL
         } for track in tracks]
         
         return jsonify(tracks_data), 200
@@ -1303,8 +1304,8 @@ def search_music():
     except Exception as e:
         return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
 
-#heart a song: -needs a heart database
-@app.route('/tracks/<int:track_id>', methods=['POST'])
+#heart a song: currently missing heart model
+@app.route('/tracks/heart/<int:track_id>', methods=['POST'])
 def toggle_heart(track_id):
     data = request.get_json()
     user_id = data.get('user_id')
@@ -1355,10 +1356,12 @@ def get_products_by_store(store_id):
         
         # Convert products to JSON format
         products_data = [{
-            'id': product.aID,
-            'name': product.vchProductName,
-            'description': product.vchProductDesc,
-            'price': product.fPrice
+            'aID' : product.aID,
+            'vchName' : product.vchName,
+            'txtDescription' : product.txtDescription,
+            'fPrice' : product.fPrice,
+            'fShipping': product.fShipping,
+            'nInventory': product.nInventory
         } for product in products]
         
         return jsonify(products_data), 200
@@ -1370,7 +1373,7 @@ def get_products_by_store(store_id):
 def get_tracks():
     try:
         tracks = Tracks.query.all()
-        tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
+        tracks_data = [{'id': track.aID, 'author': track.nAuthorID, 'title':track.vchTitle, 'description':track.txtDescription, 'audio':track.vchAudioURL, 'genre':track.nGenreID } for track in tracks]
         return jsonify(tracks_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
@@ -1586,7 +1589,7 @@ def delete_cart():
      except Exception as e:
          return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
 
-#port should be 8080, pick one of the ports
+#port
 if __name__ == '__main__':
     # with app.app_context():
     #     db.create_all()
