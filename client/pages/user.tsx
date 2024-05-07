@@ -18,6 +18,7 @@ export default function index() {
   let [orderItem3, setOrderItem3] = useState(true);
   let [bans, setBans] = useState(null);
 
+
   let [creatingStore, setCreatingStore] = useState(null);
   let [editingStore, setEditingStore] = useState(null);
   let [addingProduct, setAddingProduct] = useState(null);
@@ -96,6 +97,10 @@ export default function index() {
 
   const handleAddTrack = () => {
     setAddingTrack(true);
+  };
+
+  const cancelAddTrack = () => {
+    setAddingTrack(false);
   };
 
   const handleAddBan = () => {
@@ -269,6 +274,7 @@ export default function index() {
         console.log(data);
         if (success) {
           setTracks(data.products);
+
           console.log("tracks updated");
           console.log(data);
           setAddingTrack(false);
@@ -456,6 +462,45 @@ export default function index() {
       });
   };
 
+  const handleSubmitBan = (e) => {
+    e.preventDefault();
+    let success = false;
+    let data = {
+        nRequesterUserID: user.aID,
+        nRequestedUserID: newRequestedID,
+        vchReason: newBanReason
+    };
+    fetch(`${backend}/add-ban`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(res => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+            success = true;
+            // clear the form
+            setNewRequestedID("");
+            setNewBanReason("");
+        }
+        return res.json();
+    })
+    .then(data => { 
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+            sessionStorage.setItem("bans", JSON.stringify(data));
+            setBans(data.bans);
+            console.log("bans updated");
+            console.log(data);
+            setAddingBan(false);
+        }
+        return data;
+        })
+}
+
   useEffect(() => {
     console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
@@ -512,6 +557,40 @@ export default function index() {
       })
       .catch((error) => console.error("Error fetching ban requests:", error));
   };
+
+  const deleteBan = (event, aID) => {
+    event.preventDefault();
+    let success = false;
+    let data = {
+        aID: aID,
+        nRequesterUserID: user.aID,
+    };
+    fetch(`${backend}/delete-ban`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(res => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+            success = true;
+        }
+        return res.json();
+    })
+    .then(data => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+            setBans(data.bans);
+            console.log("bans updated");
+            console.log(data);
+        }
+        return data;
+    });
+}
+
 
   function formatRequestDate(dateString: string | number | Date) {
     // Create a Date object from the provided date string
@@ -1053,35 +1132,111 @@ export default function index() {
       </div>
 
       <div className="box">
-        <div className="heading orange">My Music</div>
-        {music && music.length > 0 ? (
-          music.map((t, i) => (
-            <div className="track" key={i}>
-              <div className="track-title">{t.vchTrackName}</div>
-              <div className="track-description">{t.txtDescription}</div>
-              <div className="track-url">{t.vchAudioUrl}</div>
-              <button className="button button-small" onClick={deleteTrack}>
-                Delete
-              </button>
-            </div>
-          ))
+        <div className="heading orange">Upload Music</div>
+        {tracks && tracks.length > 0 ? (
+          <div className="all-products flex">
+            {tracks.map((t, i) => (
+              <div className="product" key={i}>
+                <div className="track-title">{t.vchTitle}</div>
+                <div className="track-description">{t.txtDescription}</div>
+                <div className="track-url">{t.vchAudioUrl}</div>
+                <button
+                  className="delete-product-button button button-small"
+                  onClick={(event) => deleteTrack(event, t.aID)}
+                  key={t.aID}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
         ) : (
           <>
-            <div className="indent">No uploaded music yet.</div>
+            <div className="indent bottom-margin">No Uploaded Tracks</div>
           </>
         )}
-        <div className="center">
-          <form onSubmit={handleSubmitTrack}>
-            <input type="file" name="file" id="file-upload" />
-            <br />
-            <button
-              className="indent bottom-margin top-indent button button-small"
-              type="submit"
-            >
-              Upload a Track
-            </button>
-          </form>
-        </div>
+
+        {addingTrack ? (
+          <>
+            <div className="div-center">
+              <div className="product-box box container new-product-container no-shadow">
+                <div className="heading subheading gray">
+                  Add New Track
+                </div>
+                <form onSubmit={handleSubmitTrack}>
+                  <div className="new-product-pane">
+                    <div>
+                      <input
+                        className="new-product-name input"
+                        type="text"
+                        name="newTrackName"
+                        value={newTrackName}
+                        onChange={(e) => setNewTrackName(e.target.value)}
+                        placeholder="Song Title"
+                      />
+                      <textarea
+                        className="new-product-description input"
+                        name="newTrackDescription"
+                        value={newTrackDescription}
+                        onChange={(e) => setNewTrackDescription(e.target.value)}
+                        placeholder="Song Description"
+                      />
+                      <p>Enter Audio file path below:</p>
+                      <input
+                        className="new-product-name input"
+                        type="file"
+                        name="newTrackAudioURL"
+                        value={newTrackAudioURL}
+                        onChange={(e) => setNewTrackAudioURL(e.target.value)}
+                        placeholder="Song File"
+                      />
+                      <p>Upload Image file path below:</p>
+                      <input
+                        className="new-product-name input"
+                        type="file"
+                        name="newTrackImagePath"
+                        value={newTrackImagePath}
+                        onChange={(e) => setNewTrackImagePath(e.target.value)}
+                        placeholder="Song Image File"
+                      />
+                      <input
+                        className="new-product-name input"
+                        type="text"
+                        name="newTrackGenreID"
+                        value={newTrackGenreID}
+                        onChange={(e) => setNewTrackGenreID(e.target.value)}
+                        placeholder="Genre ID"
+                      />
+                    </div>
+                    <div className="product-submit-margin-top">
+                      <button className="button button-small" type="submit">
+                        Submit
+                      </button>
+                      <button
+                        className="button button-small cancel"
+                        onClick={cancelAddTrack}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="center">
+              <button
+                className="indent bottom-margin top-indent button button-small"
+                onClick={handleAddTrack}
+              >
+                Upload a Track
+              </button>
+            </div>
+          </>
+        )}
+    
       </div>
 
       <div className="box">
@@ -1214,8 +1369,20 @@ export default function index() {
       </div>
 
       <div className="box">
-        <div className="heading"> Make Playlists</div>
+        <div className="heading"> Add to Playlist</div>
       </div>
     </Panel>
   );
 }
+{/* <div className="center">
+<form onSubmit={handleSubmitTrack}>
+  <input type="file" name="file" id="file-upload" />
+  <br />
+  <button
+    className="indent bottom-margin top-indent button button-small"
+    type="submit"
+  >
+    Upload a Track
+  </button>
+</form>
+</div> */}

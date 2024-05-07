@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -1255,9 +1255,10 @@ def get_tracks_by_user(user_id):
         
         # Convert tracks to JSON format
         tracks_data = [{
-            'id': track.aID,
-            'name': track.vchTitle,
-            'description': track.txtDescription,
+            'aID': track.aID,
+            'vchTitle': track.vchTitle,
+            'txtDescription': track.txtDescription,
+            'vchAudioURL': track.vchAudioURL
         } for track in tracks]
         
         return jsonify(tracks_data), 200
@@ -1330,10 +1331,12 @@ def get_products_by_store(store_id):
         
         # Convert products to JSON format
         products_data = [{
-            'id': product.aID,
-            'name': product.vchProductName,
-            'description': product.vchProductDesc,
-            'price': product.fPrice
+            'aID': product.aID,
+            'vchName': product.vchName,
+            'txtDescription': product.txtDescription,
+            'fPrice': product.fPrice,
+            'fShipping' : product.fShipping,
+            'nInventory' : product.nInventory
         } for product in products]
         
         return jsonify(products_data), 200
@@ -1345,7 +1348,7 @@ def get_products_by_store(store_id):
 def get_tracks():
     try:
         tracks = Tracks.query.all()
-        tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
+        tracks_data = [{'id': track.aID, 'author': track.nAuthorID, 'title':track.vchTitle, 'description':track.txtDescription, 'audio':track.vchAudioURL, 'genre':track.nGenreID } for track in tracks]
         return jsonify(tracks_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
@@ -1561,7 +1564,7 @@ def delete_cart():
      except Exception as e:
          return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
 
-#port should be 8080, pick one of the ports
+#port
 if __name__ == '__main__':
     # with app.app_context():
     #     db.create_all()

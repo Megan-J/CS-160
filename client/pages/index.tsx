@@ -2,10 +2,39 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
+import { backend } from './components/Constants';
+
+
+interface Track {
+  id: number;
+  author: string;
+  title: string;
+  decription: string;
+  audio: string;
+  genre: number;
+}
 
 export default function index() {
   const router = useRouter();
   let user = null;
+  const [text, setText] = React.useState("");
+
+  const [userList, setUserList] = useState<Track[]>([]);
+
+  useEffect(() => {
+    fetchStores();
+}, []);
+
+const fetchStores = () => {
+    // Fetch stores from the backend
+    fetch(`${backend}/tracks/all`)
+        .then(res => res.json())
+        .then(data => {
+            setUserList(data);
+            console.log(data);
+        })
+        .catch(error => console.error('Error fetching stores:', error));
+};
 
   useEffect(() => {
     user = sessionStorage.getItem("user");
@@ -66,7 +95,7 @@ export default function index() {
         const data = await response.json();
         setTracks((prevTracks) =>
           prevTracks.map((track) =>
-            track.track_id === trackId
+            track.id === trackId
               ? { ...track, hearted: data.hearted }
               : track
           )
@@ -103,13 +132,73 @@ export default function index() {
     }
   };
 
+  const handleOnClick = async () => {
+    // Fetch all tracks
+    const response = await fetch(`${backend}/tracks/all`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch tracks.");
+    }
+    const storesData = await response.json();
+
+    if (!text.trim()) {
+      //if there is no text entered into search
+      setUserList(storesData);
+      return;
+    }
+
+    const filteredStores = userList.filter(
+      (s) => s?.title.toLowerCase() === text.toLowerCase()
+    );
+    setUserList(filteredStores);
+
+   
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleOnClick();
+    }
+  };
+
   return (
     <Panel title="Welcome!">
       <div>
         <p>Start Listening today!</p>
       </div>
 
-      <br />
+      <div>
+      <div className="input_wrapper">
+        <input
+          type="text"
+          placeholder="Search Stores"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyPress={handleKeyPress}
+        />
+        <button disabled={!text} onClick={handleOnClick}>
+          Search
+        </button>
+      </div>
+      <div className="all-products flex">
+        {userList.map((product) => (
+          <div className="body_item">
+            <p>{product.title}</p>
+            <p>Owned by: {product.author}</p>
+            <p>{product.decription}</p>
+            <p>Audio: {product.audio}</p>
+            <p>Genre: {product.genre}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+     
+      
+    </Panel>
+  );
+}
+
+/**
+ *  <br />
       <div>
         <p>Listen to music!</p>
         <form onSubmit={handleSearchSubmit}>
@@ -122,13 +211,12 @@ export default function index() {
           />
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-          >
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg">
             Search
           </button>
         </form>
       </div>
-      <div>
+ * <div>
         {tracks.map((track) => (
           <div key={track.track_id}>
             <p>{track.title}</p>
@@ -139,6 +227,5 @@ export default function index() {
           </div>
         ))}
       </div>
-    </Panel>
-  );
-}
+      
+ */
