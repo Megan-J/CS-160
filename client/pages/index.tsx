@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
+import Link from "next/link";
 
 export default function index() {
   const router = useRouter();
@@ -144,6 +145,13 @@ export default function index() {
             <button onClick={() => handleShare(track.track_id)}>Share</button>
           </div>
         ))}
+      </div>
+      <br />
+      <br />
+      <div>
+        <Link href="/report" className="button">
+          Report an Issue
+        </Link>
       </div>
     </Panel>
   );

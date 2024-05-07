@@ -62,17 +62,10 @@ class Tracks(db.Model):
 class Users(db.Model):
     __table__ = db.metadata.tables['Users']
 
-#new models from Ryan
-class Heart(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    track_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+# NEED A PLAYLIST/MUSIC TABLE
 
 class Report(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    report_type = db.Column(db.String(120), nullable=False)
-    description = db.Column(db.String(255), nullable=False)
-    identifier = db.Column(db.String(120), nullable=False)
+    __table__ = db.metadata.tables['Reports']
 
 #test route; must navigate to this url after activating 8080
 @app.route('/home', methods=['GET'])
