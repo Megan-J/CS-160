@@ -83,7 +83,7 @@ export default function Signup() {
                 )}
               </div>
               <div className="flex items-center justify-center">
-                <button class="button change-hue">Sign Up</button>
+                <button className="button change-hue">Sign Up</button>
               </div>
             </form>
           </div>
