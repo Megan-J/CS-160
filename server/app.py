@@ -1331,12 +1331,12 @@ def get_products_by_store(store_id):
         
         # Convert products to JSON format
         products_data = [{
-            'aID': product.aID,
-            'vchName': product.vchName,
-            'txtDescription': product.txtDescription,
-            'fPrice': product.fPrice,
-            'fShipping' : product.fShipping,
-            'nInventory' : product.nInventory
+            'aID' : product.aID,
+            'vchName' : product.vchName,
+            'txtDescription' : product.txtDescription,
+            'fPrice' : product.fPrice,
+            'fShipping': product.fShipping,
+            'nInventory': product.nInventory
         } for product in products]
         
         return jsonify(products_data), 200
