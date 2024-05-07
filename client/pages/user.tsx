@@ -18,7 +18,6 @@ export default function index() {
   let [orderItem3, setOrderItem3] = useState(true);
   let [bans, setBans] = useState(null);
 
-
   let [creatingStore, setCreatingStore] = useState(null);
   let [editingStore, setEditingStore] = useState(null);
   let [addingProduct, setAddingProduct] = useState(null);
@@ -466,40 +465,40 @@ export default function index() {
     e.preventDefault();
     let success = false;
     let data = {
-        nRequesterUserID: user.aID,
-        nRequestedUserID: newRequestedID,
-        vchReason: newBanReason
+      nRequesterUserID: user.aID,
+      nRequestedUserID: newRequestedID,
+      vchReason: newBanReason,
     };
     fetch(`${backend}/add-ban`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     })
-    .then(res => {
+      .then((res) => {
         console.log(res);
         if (res.status === 200 || res.status === 201) {
-            success = true;
-            // clear the form
-            setNewRequestedID("");
-            setNewBanReason("");
+          success = true;
+          // clear the form
+          setNewRequestedID("");
+          setNewBanReason("");
         }
         return res.json();
-    })
-    .then(data => { 
+      })
+      .then((data) => {
         console.log("returned:");
         console.log(data);
         if (success) {
-            sessionStorage.setItem("bans", JSON.stringify(data));
-            setBans(data.bans);
-            console.log("bans updated");
-            console.log(data);
-            setAddingBan(false);
+          sessionStorage.setItem("bans", JSON.stringify(data));
+          setBans(data.bans);
+          console.log("bans updated");
+          console.log(data);
+          setAddingBan(false);
         }
         return data;
-        })
-}
+      });
+  };
 
   useEffect(() => {
     console.log(sessionStorage);
@@ -562,35 +561,34 @@ export default function index() {
     event.preventDefault();
     let success = false;
     let data = {
-        aID: aID,
-        nRequesterUserID: user.aID,
+      aID: aID,
+      nRequesterUserID: user.aID,
     };
     fetch(`${backend}/delete-ban`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     })
-    .then(res => {
+      .then((res) => {
         console.log(res);
         if (res.status === 200 || res.status === 201) {
-            success = true;
+          success = true;
         }
         return res.json();
-    })
-    .then(data => {
+      })
+      .then((data) => {
         console.log("returned:");
         console.log(data);
         if (success) {
-            setBans(data.bans);
-            console.log("bans updated");
-            console.log(data);
+          setBans(data.bans);
+          console.log("bans updated");
+          console.log(data);
         }
         return data;
-    });
-}
-
+      });
+  };
 
   function formatRequestDate(dateString: string | number | Date) {
     // Create a Date object from the provided date string
@@ -1035,13 +1033,15 @@ export default function index() {
                     <div className="order-product-name ">Klaatu CD</div>
                     <div className="order-quantity ">3</div>
                     <div className="order-total ">$32.50</div>
-                    <div
-                      className="cancel-order button"
-                      onClick={(e) => {
-                        setOrderItem1(false);
-                      }}
-                    >
-                      Cancel
+                    <div>
+                      <button
+                        className="cancel-order button"
+                        onClick={(e) => {
+                          setOrderItem1(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 )}
@@ -1053,13 +1053,15 @@ export default function index() {
                     </div>
                     <div className="order-quantity ">1</div>
                     <div className="order-total ">$10.00</div>
-                    <div
-                      className="cancel-order button"
-                      onClick={(e) => {
-                        setOrderItem2(false);
-                      }}
-                    >
-                      Cancel
+                    <div>
+                      <button
+                        className="cancel-order button"
+                        onClick={(e) => {
+                          setOrderItem2(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 )}
@@ -1069,38 +1071,18 @@ export default function index() {
                     <div className="order-product-name ">Tesla Model S</div>
                     <div className="order-quantity ">1</div>
                     <div className="order-total ">$122,000.00</div>
-                    <div
-                      className="cancel-order button"
-                      onClick={(e) => {
-                        setOrderItem3(false);
-                      }}
-                    >
-                      Cancel
+                    <div>
+                      <button
+                        className="cancel-order button"
+                        onClick={(e) => {
+                          setOrderItem2(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 )}
-                {
-                  /* {
-                                            orders && orders.length > 0
-                                            ? orders.map((t, i) => {
-                                                console.log("order:");
-                                                console.log(t);
-                                                let order_prod_id = t.nItemID;
-                                                let product = products.find(p => p.aID == order_prod_id);
-                                                let order_prod_name = product ? product.vchName : "";
-                                                console.log("order product name: " + order_prod_name);
-                                                return (
-                                                    <div className="order" key={i}>
-                                                        <div className="order-date">{t.insertDate}</div>
-                                                        <div className="order-product-name">{order_prod_name}</div>
-                                                        <div className="order-quantity">{t.nItemCount}</div>
-                                                        <div className="order-total">${t.fGrandTotal.toFixed(2)}</div>
-                                                    </div>
-                                                );
-                                            }) }
-                                            : */
-                  // <div className="indent bottom-margin">No orders yet.</div>
-                }
               </div>
             </div>
           </>
@@ -1160,9 +1142,7 @@ export default function index() {
           <>
             <div className="div-center">
               <div className="product-box box container new-product-container no-shadow">
-                <div className="heading subheading gray">
-                  Add New Track
-                </div>
+                <div className="heading subheading gray">Add New Track</div>
                 <form onSubmit={handleSubmitTrack}>
                   <div className="new-product-pane">
                     <div>
@@ -1236,7 +1216,6 @@ export default function index() {
             </div>
           </>
         )}
-    
       </div>
 
       <div className="box">
@@ -1374,7 +1353,8 @@ export default function index() {
     </Panel>
   );
 }
-{/* <div className="center">
+{
+  /* <div className="center">
 <form onSubmit={handleSubmitTrack}>
   <input type="file" name="file" id="file-upload" />
   <br />
@@ -1385,4 +1365,5 @@ export default function index() {
     Upload a Track
   </button>
 </form>
-</div> */}
+</div> */
+}
