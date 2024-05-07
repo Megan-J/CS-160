@@ -4,6 +4,7 @@ import { backend } from "./components/Constants";
 import { useParams } from "react-router-dom";
 
 export default function Storefront() {
+  //should hold the store id
   const param = useParams();
   console.log(param);
 
