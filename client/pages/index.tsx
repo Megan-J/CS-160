@@ -41,7 +41,7 @@ export default function index() {
     let user = userJSON ? JSON.parse(userJSON) : null;
 
     if (user && user.vchUsername !== null) {
-      router.push("/user");
+      router.push("/");
     }
   }, []);
 
@@ -175,13 +175,16 @@ export default function index() {
             placeholder="Search Music: In Progress"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            onKeyPress={handleKeyPress}
           />
-          <button disabled={!text} onClick={handleOnClick}>
-            Search
-          </button>
+          <button disabled={!text}>Search</button>
         </div>
         <div className="all-products flex"></div>
+      </div>
+      <br />
+      <div>
+        <Link href="/report" className="button">
+          Report an Issue
+        </Link>
       </div>
     </Panel>
   );

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { backend } from './Constants';
+import { backend } from "./Constants";
 import HardRockCafe from "../stores/hardrockcafe";
 //import { BrowserRouter as Router, Link } from 'react-router-dom'; // Import BrowserRouter
-import Link from 'next/link';
-import { useRouter } from 'next/router'; // Import useRouter
-
+import Link from "next/link";
+import { useRouter } from "next/router"; // Import useRouter
 
 interface Store {
   id: number;
@@ -20,18 +19,18 @@ const SearchStores: React.FC = () => {
 
   useEffect(() => {
     fetchStores();
-}, []);
+  }, []);
 
-const fetchStores = () => {
+  const fetchStores = () => {
     // Fetch stores from the backend
     fetch(`${backend}/store/all`)
-        .then(res => res.json())
-        .then(data => {
-            setUserList(data);
-            console.log(data);
-        })
-        .catch(error => console.error('Error fetching stores:', error));
-};
+      .then((res) => res.json())
+      .then((data) => {
+        setUserList(data);
+        console.log(data);
+      })
+      .catch((error) => console.error("Error fetching stores:", error));
+  };
 
   const handleOnClick = async () => {
     // Fetch all stores
@@ -52,8 +51,6 @@ const fetchStores = () => {
       (s) => s?.name.toLowerCase() === text.toLowerCase()
     );
     setUserList(filteredStores);
-
-   
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -64,6 +61,7 @@ const fetchStores = () => {
 
   return (
     <div>
+      <br />
       <div className="input_wrapper">
         <input
           type="text"
@@ -76,6 +74,7 @@ const fetchStores = () => {
           Search
         </button>
       </div>
+      <br />
       <div className="all-products flex">
         {userList.map((product) => (
           <div className="body_item">
@@ -85,8 +84,11 @@ const fetchStores = () => {
             {/* <Link to="/stores/my-little-store" state={{ storeID: product.id }}>
             <p>{product.name}</p>
             </Link> */}
-            <Link href="/stores/my-little-store" as={`/stores/my-little-store?storeID=${product.id}`}>
-            <p>{product.name}</p>
+            <Link
+              href="/stores/my-little-store"
+              as={`/stores/my-little-store?storeID=${product.id}`}
+            >
+              <p>{product.name}</p>
             </Link>
             <p>Owned by: {product.user}</p>
             <p>{product.txtDescription}</p>
@@ -98,35 +100,3 @@ const fetchStores = () => {
 };
 
 export default SearchStores;
-
-/*
-import React from "react";
-
-const searchStores: React.FC = () => {
-  const users = [
-    {
-      name: "Body Shop",
-      user: "alicesmith",
-      image: "@/public/store_img/user1",
-      description: "Buy Rad Pop products!",
-    },
-    {
-      name: "Hard Rock Cafe",
-      user: "johndoe",
-      image: "@/public/store_img/user3",
-      description: "Rock Your World, Dine with Soul",
-    },
-    {
-      name: "Bobity",
-      user: "johndoe",
-      image: "@/public/store_img/user3",
-      description: "Rock Your World, Dine with Soul",
-    },
-    {
-      name: "Vintage Record",
-      user: "bobjohnson",
-      image: "user2",
-      description: "Get my custom vinyl records: SALE",
-    },
-  ];
-  */

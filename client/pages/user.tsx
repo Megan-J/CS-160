@@ -461,6 +461,27 @@ export default function index() {
       });
   };
 
+  const uploadFile = async (e) => {
+    console.log("UPLOADING FILE");
+    const file = e.target.files[0];
+    if (file != null) {
+      const data = new FormData();
+      data.append("file_from_react", file);
+
+      let response = await fetch(`${backend}/url_route`, {
+        method: "POST",
+        body: data,
+      });
+
+      let res = await response.json();
+      if (res.status !== 1) {
+        alert("Error uploading file");
+      } else {
+        router.push("/");
+      }
+    }
+  };
+
   const handleSubmitBan = (e) => {
     e.preventDefault();
     let success = false;
@@ -1216,6 +1237,13 @@ export default function index() {
             </div>
           </>
         )}
+
+        <div className="center">
+          <form>
+            <input type="file" onChange={uploadFile}></input>
+          </form>
+          <br />
+        </div>
       </div>
 
       <div className="box">

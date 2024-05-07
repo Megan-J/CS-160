@@ -47,9 +47,9 @@ export default function Login() {
           sessionStorage.setItem("tracks", JSON.stringify(data.tracks));
           sessionStorage.setItem("followers", JSON.stringify(data.followers));
           sessionStorage.setItem("following", JSON.stringify(data.following));
-          console.log("sessionStorage:")
+          console.log("sessionStorage:");
           console.log(sessionStorage);
-          router.push("/user");
+          router.push("/");
         }
         return data;
       });
