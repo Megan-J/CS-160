@@ -664,14 +664,14 @@ def toggle_heart(track_id):
 #         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
 
 # get all tracks
-@app.route('/tracks/all', methods=['GET'])
-def get_tracks():
-    try:
-        tracks = Tracks.query.all()
-        tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
-        return jsonify(tracks_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
+# @app.route('/tracks/all', methods=['GET'])
+# def get_tracks():
+#     try:
+#         tracks = Tracks.query.all()
+#         tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
+#         return jsonify(tracks_data), 200
+#     except Exception as e:
+#         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #port should be 8080, pick one of the ports
 if __name__ == '__main__':
