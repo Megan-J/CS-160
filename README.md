@@ -69,3 +69,9 @@ npm install
 ```
 
 for checkout, you need to get an application key and location key from ![Square Developer Dashboard](https://developer.squareup.com/us/en) and replace the REACT_APP_SQUARE_API_APPLICATION_KEY and REACT_APP_SQUARE_API_LOCATION_KEY with those values (the environment variables in .env file aren't working currently)
+
+for playing music:
+
+```bash
+npm install react-icons bootstrap-icons
+```

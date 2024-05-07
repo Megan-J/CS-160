@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Panel from "../components/Panel";
 import { backend } from '../components/Constants';
+import { useRouter } from 'next/router';
+
+import {
+    BrowserRouter,
+    useParams,
+    Route,
+    Routes,
+    Link,
+    useNavigate,
+    useLocation,
+  } from "react-router-dom";
 
 
 // interface Product {
@@ -15,8 +26,13 @@ export default function MyLittleStore() {
       const [products, setProducts] = useState([]);
       let [bans, setBans] = useState(null);
       let [user, setUser] = useState(null);
-
-
+      const router = useRouter();
+      const { storeID } = router.query; // Access storeID from router query
+   // const { storeID } = router.query;
+    //   const { state } = props.location;
+    // const { storeID } = state;
+    //   const location = useLocation();
+   // const { storeID } = location.state ? location.state : "null";
 
 
       useEffect(() => {
@@ -35,9 +51,7 @@ export default function MyLittleStore() {
                 initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
                 initials = initials.toUpperCase();
             }
-            
-            //if (productsJson) setProducts(products);
-            //if (bansJson) setBans(bans);
+        
             fetchBanRequests();
         }
     }, []);
@@ -48,7 +62,7 @@ export default function MyLittleStore() {
       let data = {
           nUserID: user.aID,
           nProductID: aID,
-          nStoreID: 1,
+          nStoreID: storeID,
           nQuantity: 1
       };
       console.log(data);
@@ -81,7 +95,8 @@ export default function MyLittleStore() {
   
       const fetchBanRequests = () => {
         // Fetch ban requests from the backend
-        fetch(`${backend}/product/1`)
+        
+        fetch(`${backend}/product/${storeID}`)
             .then(res => res.json())
             .then(data => {
                 setBans(data);

@@ -33,13 +33,10 @@ const NavBar = ({ children }: NavBarProps) => {
     <nav className="main">
       <ul>
         <li>
-          <Link href="/ted">Home</Link>
+          <Link href="/">Home</Link>
         </li>
         <li>
           <Link href="/stores">Stores</Link>
-        </li>
-        <li>
-          <input className="search" type="text" placeholder="Search" />
         </li>
 
         {me ? (

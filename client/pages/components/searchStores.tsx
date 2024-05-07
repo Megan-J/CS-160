@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { backend } from "./Constants";
+import HardRockCafe from "../stores/hardrockcafe";
+//import { BrowserRouter as Router, Link } from 'react-router-dom'; // Import BrowserRouter
+import Link from "next/link";
+import { useRouter } from "next/router"; // Import useRouter
 
 interface Store {
   id: number;
@@ -9,7 +13,6 @@ interface Store {
 }
 
 const SearchStores: React.FC = () => {
-  //React.useState<{name: string; user: string; image: string; description: string}[] | undefined>(users);
   const [text, setText] = React.useState("");
 
   const [userList, setUserList] = useState<Store[]>([]);
@@ -19,7 +22,7 @@ const SearchStores: React.FC = () => {
   }, []);
 
   const fetchStores = () => {
-    // Fetch ban requests from the backend
+    // Fetch stores from the backend
     fetch(`${backend}/store/all`)
       .then((res) => res.json())
       .then((data) => {
@@ -58,14 +61,35 @@ const SearchStores: React.FC = () => {
 
   return (
     <div>
-      <div className="input_wrapper"></div>
+      <br />
+      <div className="input_wrapper">
+        <input
+          type="text"
+          placeholder="Search Stores"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyPress={handleKeyPress}
+        />
+        <button disabled={!text} onClick={handleOnClick}>
+          Search
+        </button>
+      </div>
       <br />
       <div className="all-products flex">
         {userList.map((product) => (
           <div className="body_item">
-            <a href="/stores/my-little-store">
-              <p className="heading">{product.name}</p>
-            </a>
+            {/* <a href={`/stores/<HardRockCafe storeID=${product.id}/>`}>
+              <p>{product.name}</p>
+            </a>  */}
+            {/* <Link to="/stores/my-little-store" state={{ storeID: product.id }}>
+            <p>{product.name}</p>
+            </Link> */}
+            <Link
+              href="/stores/my-little-store"
+              as={`/stores/my-little-store?storeID=${product.id}`}
+            >
+              <p>{product.name}</p>
+            </Link>
             <p>Owned by: {product.user}</p>
             <p>{product.txtDescription}</p>
           </div>

@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = "../data/"
 ALLOWED_EXTENSIONS = set(['mp3', 'mp4', 'wav'])
@@ -64,6 +64,11 @@ class Tracks(db.Model):
 
 class Users(db.Model):
     __table__ = db.metadata.tables['Users']
+
+# NEED A PLAYLIST/MUSIC TABLE
+
+class Report(db.Model):
+    __table__ = db.metadata.tables['Reports']
 
 #test route; must navigate to this url after activating 8080
 @app.route('/home', methods=['GET'])
@@ -648,23 +653,23 @@ def toggle_heart(track_id):
     except Exception as e:
         return jsonify({'message': 'Error toggling heart', 'error': str(e)}), 500
 
-@app.route('/product/<int:store_id>', methods=['GET'])
-def get_products_by_store(store_id):
-    try:
-        # Query products by store ID
-        products = Products.query.filter_by(nStoreID=store_id).all()
+# @app.route('/product/<int:store_id>', methods=['GET'])
+# def get_products_by_store(store_id):
+#     try:
+#         # Query products by store ID
+#         products = Products.query.filter_by(nStoreID=store_id).all()
         
-        # Convert products to JSON format
-        products_data = [{
-            'id': product.aID,
-            'name': product.vchProductName,
-            'description': product.vchProductDesc,
-            'price': product.fPrice
-        } for product in products]
+#         # Convert products to JSON format
+#         products_data = [{
+#             'id': product.aID,
+#             'name': product.vchProductName,
+#             'description': product.vchProductDesc,
+#             'price': product.fPrice
+#         } for product in products]
         
-        return jsonify(products_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+#         return jsonify(products_data), 200
+#     except Exception as e:
+#         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
 
 # get all tracks
 @app.route('/tracks/all', methods=['GET'])
@@ -774,10 +779,380 @@ def get_store(id):
     except Exception as e:
         return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
 
+#create user
+@app.route('/user/create', methods=['POST'])
+def create_user():
+    try:
+        data = request.get_json()
+        new_user = Users(
+            vchFirstName=data['vchFirstName'],
+            vchLastName=data['vchLastName'],
+            vchPassword=generate_password_hash(data['vchPassword']),
+            vchEmail=data['vchEmail']
+        )
+        db.session.add(new_user)
+        db.session.commit()
 
+        return jsonify({
+            'firstName': new_user.vchFirstName,
+            'lastName': new_user.vchLastName,
+            'password': new_user.vchPassword,
+            'email': new_user.vchEmail
+        }), 201
+    
+    except Exception as e:
+        return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
 
+#get user by id
+app.route('/user/{id}', methods=['GET'])
+def get_user(id):
+    try:
+        user = Users.query.filter_by(id=id).first() #get first user with id
+        if user:
+            return make_response(jsonify({'user': user.json()}), 200)
+        return make_response(jsonify({'message': 'user not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
-#port should be 8080, pick one of the ports
+#get tracks for user
+@app.route('/tracks/user/<int:user_id>', methods=['GET'])
+def get_tracks_by_user(user_id):
+    try:
+        # Query track by store ID
+        tracks = Tracks.query.filter_by(nAuthorID=user_id).all()
+        
+        # Convert tracks to JSON format
+        tracks_data = [{
+            'aID': track.aID,
+            'vchTitle': track.vchTitle,
+            'txtDescription': track.txtDescription,
+            'vchAudioURL': track.vchAudioURL
+        } for track in tracks]
+        
+        return jsonify(tracks_data), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+
+#listen to track/music by id
+@app.route('/track/<int:track_id>', methods=['GET'])
+def listen_to_music(track_id):
+    try:
+        track = Tracks.query.get(track_id)
+        if track:
+            #new for share link
+            track_data = track.to_json()
+            full_url = request.host_url + 'track/' + str(track_id)
+            track_data['share_url'] = full_url
+            #
+            return jsonify({'message': 'Listening to track', 'track': track.to_json()}), 200
+        else:
+            return jsonify({'message': 'Track not found'}), 404
+    except Exception as e:
+        return jsonify({'message': 'Error listening to music', 'error': str(e)}), 500
+
+#search for track/music
+@app.route('/track', methods=['GET'])
+def search_music():
+    try:
+        query = request.args.get('query')
+        if query:
+            tracks = Tracks.query.filter(Tracks.vchTitle.ilike(f'%{query}%')).all()
+            if tracks:
+                tracks_json = [track.to_json() for track in tracks]
+                return jsonify({'message': 'Search results', 'results': tracks_json}), 200
+            else:
+                return jsonify({'message': 'No results found'}), 404
+        else:
+            return jsonify({'message': 'Missing query'}), 400
+    except Exception as e:
+        return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
+
+#heart a song: currently missing heart model
+@app.route('/tracks/heart/<int:track_id>', methods=['POST'])
+def toggle_heart(track_id):
+    data = request.get_json()
+    user_id = data.get('user_id')
+    try:
+        heart = Heart.query.filter_by(track_id = track_id, user_id = user_id).first()
+
+        if heart:
+            db.session.delete(heart)
+            db.session.commit()
+            hearted = False
+        else:
+            new_heart = Heart(track_id = track_id, user_id = user_id)
+            db.session.add(new_heart)
+            db.session.commit()
+            hearted = True
+
+        return jsonify({'hearted': hearted}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error toggling heart', 'error': str(e)}), 500
+    
+#report user/product: -needs a reports database
+@app.route('/api/report', methods=['POST'])
+def handle_report():
+    data = request.get_json()
+    if not data:
+        return jsonify({'message': 'No data provided'}), 400
+    
+    if 'reportType' not in data or 'description' not in data or 'identifier' not in data:
+        return jsonify({'message': 'Missing required fields'}), 400
+    
+    new_report = Report(
+        report_type=data['reportType'],
+        description=data['description'],
+        identifier=data['identifier']
+    )
+
+    db.session.add(new_report)
+    db.session.commit()
+
+    return jsonify({'message': 'Report received successfully'}), 201
+
+#
+@app.route('/product/<int:store_id>', methods=['GET'])
+def get_products_by_store(store_id):
+    try:
+        # Query products by store ID
+        products = Products.query.filter_by(nStoreID=store_id).all()
+        
+        # Convert products to JSON format
+        products_data = [{
+            'aID' : product.aID,
+            'vchName' : product.vchName,
+            'txtDescription' : product.txtDescription,
+            'fPrice' : product.fPrice,
+            'fShipping': product.fShipping,
+            'nInventory': product.nInventory
+        } for product in products]
+        
+        return jsonify(products_data), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
+
+# get all tracks
+@app.route('/tracks/all', methods=['GET'])
+def get_tracks():
+    try:
+        tracks = Tracks.query.all()
+        tracks_data = [{'id': track.aID, 'author': track.nAuthorID, 'title':track.vchTitle, 'description':track.txtDescription, 'audio':track.vchAudioURL, 'genre':track.nGenreID } for track in tracks]
+        return jsonify(tracks_data), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
+
+#add ban
+@app.route('/add-ban', methods=['POST'])
+def add_ban():
+    response = {}
+    try:
+        data = request.get_json()
+        ban = BanRequests(
+            nRequesterUserID=data['nRequesterUserID'],
+            nRequestedUserID=data['nRequestedUserID'],
+            vchReason=data['vchReason']
+        )
+        db.session.add(ban)
+        db.session.commit()
+
+        response['ban'] = {
+            'aID': ban.aID,
+            'nRequesterUserID': ban.nRequesterUserID,
+            'nRequestedUserID': ban.nRequestedUserID,
+            'vchReason': ban.vchReason,
+            'dtRequested': ban.dtRequested.isoformat(),
+            'dtResolved': ban.dtResolved.isoformat() if ban.dtResolved else None,
+            'bResolved': ban.bResolved
+         }
+
+        return make_response(jsonify(response), 201)
+    except Exception as e:
+         return make_response(jsonify({'message': 'Ban not added', 'error': str(e), 'response': response}), 500)
+
+#delete ban
+@app.route('/delete-ban', methods=['POST'])
+def delete_ban():
+    response = {}
+    try:
+         data = request.get_json()
+         ban_id = data['aID']
+         ban = BanRequests.query.filter_by(aID=ban_id).first()
+         if ban:
+             db.session.delete(ban)
+             db.session.commit()
+             return make_response(jsonify({'message': 'Ban deleted successfully'}), 200)
+         return make_response(jsonify({'message': 'Ban not found'}), 404)
+    except Exception as e:
+         return make_response(jsonify({'message': 'Ban not deleted', 'error': str(e)}), 500)
+
+#get all bans
+@app.route('/ban/all', methods=['GET'])
+def get_bans():
+    try:
+         bans = BanRequests.query.all()  # 
+         bans_data = [{
+             'aID': ban.aID, 
+             'vchReason': ban.vchReason, 
+             'nRequesterUserID': ban.nRequesterUserID, 
+             'nRequestedUserID': ban.nRequestedUserID, 
+             'dtRequested': ban.dtRequested, 
+             'bResolved': ban.bResolved} for ban in bans]
+         return jsonify(bans_data), 200
+    except Exception as e:
+         return make_response(jsonify({'message': 'Error getting bans', 'error': str(e)}), 500)
+
+#get bans by requester
+@app.route('/bans/<int:requester_user_id>', methods=['GET'])
+def get_bans_by_requester(requester_user_id):
+    try:
+         # Query bans by requester user ID
+         bans = BanRequests.query.filter_by(nRequesterUserID=requester_user_id).all()
+
+         # Convert bans to JSON format
+         bans_data = [{
+             'aID': ban.aID,
+             'nRequesterUserID': ban.nRequesterUserID,
+             'nRequestedUserID': ban.nRequestedUserID,
+             'vchReason': ban.vchReason,
+             'dtRequested': ban.dtRequested.isoformat(),
+             'dtResolved': ban.dtResolved.isoformat() if ban.dtResolved else None,
+             'bResolved': ban.bResolved
+         } for ban in bans]
+
+         return jsonify(bans_data), 200
+    except Exception as e:
+         return make_response(jsonify({'message': 'Error getting bans', 'error': str(e)}), 500)
+
+#user update ban
+@app.route('/user-update-ban', methods=['POST'])
+def user_update_ban():
+    data = request.get_json()
+    try:
+         ban = Users.query.filter_by(aID=data['aID']).first()
+         if ban:
+             # Update ban request fields
+             ban.bIsBanned = data['bIsBanned']
+
+             # Commit changes to the database
+             db.session.commit()
+
+             return make_response(jsonify({
+                     'aID': ban.aID,
+                     'vchUsername': ban.vchUsername,
+                     'bIsBanned': ban.bIsBanned
+             }), 200)
+         return make_response(jsonify({'message': 'Ban request not found'}), 404)
+    except Exception as e:
+         return make_response(jsonify({'message': 'Ban request not updated', 'error': str(e), 'data': data}), 500)
+
+#update ban
+@app.route('/update-ban', methods=['POST'])
+def update_ban():
+    data = request.get_json()
+    try:
+         ban = BanRequests.query.filter_by(aID=data['aID']).first()
+         if ban:
+             # Update ban request fields
+             ban.aID = data['aID']
+             ban.dtResolved = data['dtResolved']
+             ban.bResolved = data['bResolved']
+             # Commit changes to the database
+             db.session.commit()
+
+             return make_response(jsonify({
+                     'aID': ban.aID,
+                     'nRequesterUserID': ban.nRequesterUserID,
+                     'nRequestedUserID': ban. nRequestedUserID,
+                     'dtResolved': ban.dtResolved,
+                     'bResolved': ban.bResolved
+             }), 200)
+         return make_response(jsonify({'message': 'Ban request not found'}), 404)
+    except Exception as e:
+         return make_response(jsonify({'message': 'Ban request not updated', 'error': str(e), 'data': data}), 500)
+
+#add to cart
+@app.route('/cart/add', methods=['POST'])
+def add_cart():
+    response = {}
+    try:
+         data = request.get_json()
+         ban = Cart(
+             nUserID= data['nUserID'],
+             nProductID= data['nProductID'],
+             nStoreID= data['nStoreID'],
+             nQuantity= data['nQuantity']
+         )
+         db.session.add(ban)
+         db.session.commit()
+
+         response['cart'] = {
+             'aID': ban.aID,
+             'nUserID': ban.nUserID,
+             'nProductID': ban.nProductID,
+             'nStoreID': ban.nStoreID,
+             'nQuantity': ban.nQuantity
+         }
+
+         return make_response(jsonify(response), 201)
+    except Exception as e:
+         return make_response(jsonify({'message': 'Ban not added', 'error': str(e), 'response': response}), 500)
+
+#get cart all by user id
+@app.route('/cart/<int:user_id>', methods=['GET'])
+def get_cart_by_user(user_id):
+     try:
+         # Query cart items by user ID
+         cart_items = Cart.query.filter_by(nUserID=user_id).all()
+
+         # Initialize an empty list to store formatted cart items
+         formatted_cart_items = []
+
+         # Iterate over each cart item
+         for cart_item in cart_items:
+             # Get the product associated with the cart item
+             product = Products.query.get(cart_item.nProductID)
+             if product:
+                 # Get the store associated with the product
+                 store = Stores.query.get(product.nStoreID)
+                 if store:
+                     # Create a dictionary representing the formatted cart item
+                     formatted_cart_item = {
+                         'cart_id': cart_item.aID,
+                         'user_id': cart_item.nUserID,
+                         'product_id': cart_item.nProductID,
+                         'store_id': cart_item.nStoreID,
+                         'quantity': cart_item.nQuantity,
+                         'product_name': product.vchName,  # Include product name
+                         'store_name': store.vchName,  # Include store name
+                         'product_price': product.fPrice,
+                         'shipping_cost': product.fShipping
+                     }
+                     # Append the formatted cart item to the list
+                     formatted_cart_items.append(formatted_cart_item)
+
+         # Return the formatted cart items as JSON response
+         return jsonify(formatted_cart_items), 200
+
+     except Exception as e:
+         return make_response(jsonify({'message': 'Error getting cart items', 'error': str(e)}), 500)
+
+#delete cart item by cart aid
+@app.route('/delete-cart', methods=['POST'])
+def delete_cart():
+     response = {}
+     try:
+         data = request.get_json()
+        # ban_id = data['aID']
+         ban = Cart.query.filter_by(aID=data['aID']).first()
+         if ban:
+             db.session.delete(ban)
+             db.session.commit()
+             return make_response(jsonify({'message': 'Item deleted successfully'}), 200)
+         return make_response(jsonify({'message': 'Item not found'}), 404)
+     except Exception as e:
+         return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
+
+#port
 if __name__ == '__main__':
     # with app.app_context():
     #     db.create_all()

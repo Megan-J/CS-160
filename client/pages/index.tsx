@@ -2,19 +2,54 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
+import Link from "next/link";
+import { backend } from "./components/Constants";
+
+interface Track {
+  id: number;
+  author: string;
+  title: string;
+  decription: string;
+  audio: string;
+  genre: number;
+}
 
 export default function index() {
   const router = useRouter();
   let user = null;
+  const [text, setText] = React.useState("");
+
+  const [userList, setUserList] = useState<Track[]>([]);
 
   useEffect(() => {
-    user = sessionStorage.getItem("user");
-    user = user ? JSON.parse(user) : null;
+    fetchStores();
+  }, []);
+
+  const fetchStores = () => {
+    // Fetch stores from the backend
+    fetch(`${backend}/tracks/all`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUserList(data);
+        console.log(data);
+      })
+      .catch((error) => console.error("Error fetching stores:", error));
+  };
+
+  useEffect(() => {
+    const userJSON = sessionStorage.getItem("user");
+    let user = userJSON ? JSON.parse(userJSON) : null;
 
     if (user && user.vchUsername !== null) {
       router.push("/");
     }
   }, []);
+
+  interface Track {
+    track_id: number;
+    title: string;
+    hearted: boolean;
+  }
 
   const [searchQuery, setSearchQuery] = useState("");
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -22,7 +57,7 @@ export default function index() {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/tracks");
+        const response = await fetch(`http://127.0.0.1:5000/tracks`);
         const data = await response.json();
         setTracks(data.tracks);
       } catch (error) {
@@ -42,7 +77,7 @@ export default function index() {
     event.preventDefault();
     try {
       const response = await fetch(
-        "http://127.0.0.1:5000/track?query=${encodeURIComponent(searchQuery)}"
+        `http://127.0.0.1:5000/track?query=${encodeURIComponent(searchQuery)}`
       );
       const data = await response.json();
       setTracks(data.results);
@@ -53,7 +88,7 @@ export default function index() {
 
   const toggleHeart = async (trackId: number) => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/heart/${trackId}", {
+      const response = await fetch(`http://127.0.0.1:5000/heart/${trackId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,9 +101,7 @@ export default function index() {
         const data = await response.json();
         setTracks((prevTracks) =>
           prevTracks.map((track) =>
-            track.track_id === trackId
-              ? { ...track, hearted: data.hearted }
-              : track
+            track.id === trackId ? { ...track, hearted: data.hearted } : track
           )
         );
       } else {
@@ -103,41 +136,55 @@ export default function index() {
     }
   };
 
+  const handleOnClick = async () => {
+    // Fetch all tracks
+    const response = await fetch(`${backend}/tracks/all`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch tracks.");
+    }
+    const storesData = await response.json();
+
+    if (!text.trim()) {
+      //if there is no text entered into search
+      setUserList(storesData);
+      return;
+    }
+
+    const filteredStores = userList.filter(
+      (s) => s?.title.toLowerCase() === text.toLowerCase()
+    );
+    setUserList(filteredStores);
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleOnClick();
+    }
+  };
+
   return (
     <Panel title="Welcome!">
       <div>
         <p>Start Listening today!</p>
       </div>
 
-      <br />
       <div>
-        <p>Listen to music!</p>
-        <form onSubmit={handleSearchSubmit}>
+        <div className="input_wrapper">
           <input
             type="text"
-            placeholder="Search for music..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="border border-gray-300 rounded-lg px-4 py-2 mt-4 mb-2 block w-full"
+            placeholder="Search Music: In Progress"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
           />
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-          >
-            Search
-          </button>
-        </form>
+          <button disabled={!text}>Search</button>
+        </div>
+        <div className="all-products flex"></div>
       </div>
+      <br />
       <div>
-        {tracks.map((track) => (
-          <div key={track.track_id}>
-            <p>{track.title}</p>
-            <button onClick={() => toggleHeart(track.track_id)}>
-              {track.hearted ? "♥" : "♡"}
-            </button>
-            <button onClick={() => handleShare(track.track_id)}>Share</button>
-          </div>
-        ))}
+        <Link href="/report" className="button">
+          Report an Issue
+        </Link>
       </div>
     </Panel>
   );

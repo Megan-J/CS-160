@@ -469,6 +469,7 @@ html {
     display: inline-block;
     height: 25px;
     padding-top: 0;
+    align-content: right;
 }
 .payment-form {
     display: grid;

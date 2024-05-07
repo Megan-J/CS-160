@@ -98,6 +98,10 @@ export default function index() {
     setAddingTrack(true);
   };
 
+  const cancelAddTrack = () => {
+    setAddingTrack(false);
+  };
+
   const handleAddBan = () => {
     setAddingBan(true);
   };
@@ -269,6 +273,7 @@ export default function index() {
         console.log(data);
         if (success) {
           setTracks(data.products);
+
           console.log("tracks updated");
           console.log(data);
           setAddingTrack(false);
@@ -477,6 +482,45 @@ export default function index() {
     }
   };
 
+  const handleSubmitBan = (e) => {
+    e.preventDefault();
+    let success = false;
+    let data = {
+      nRequesterUserID: user.aID,
+      nRequestedUserID: newRequestedID,
+      vchReason: newBanReason,
+    };
+    fetch(`${backend}/add-ban`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+          // clear the form
+          setNewRequestedID("");
+          setNewBanReason("");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          sessionStorage.setItem("bans", JSON.stringify(data));
+          setBans(data.bans);
+          console.log("bans updated");
+          console.log(data);
+          setAddingBan(false);
+        }
+        return data;
+      });
+  };
+
   useEffect(() => {
     console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
@@ -532,6 +576,39 @@ export default function index() {
         console.log(data);
       })
       .catch((error) => console.error("Error fetching ban requests:", error));
+  };
+
+  const deleteBan = (event, aID) => {
+    event.preventDefault();
+    let success = false;
+    let data = {
+      aID: aID,
+      nRequesterUserID: user.aID,
+    };
+    fetch(`${backend}/delete-ban`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          setBans(data.bans);
+          console.log("bans updated");
+          console.log(data);
+        }
+        return data;
+      });
   };
 
   function formatRequestDate(dateString: string | number | Date) {
@@ -977,13 +1054,15 @@ export default function index() {
                     <div className="order-product-name ">Klaatu CD</div>
                     <div className="order-quantity ">3</div>
                     <div className="order-total ">$32.50</div>
-                    <div
-                      className="cancel-order button"
-                      onClick={(e) => {
-                        setOrderItem1(false);
-                      }}
-                    >
-                      Cancel
+                    <div>
+                      <button
+                        className="cancel-order button"
+                        onClick={(e) => {
+                          setOrderItem1(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 )}
@@ -995,13 +1074,15 @@ export default function index() {
                     </div>
                     <div className="order-quantity ">1</div>
                     <div className="order-total ">$10.00</div>
-                    <div
-                      className="cancel-order button"
-                      onClick={(e) => {
-                        setOrderItem2(false);
-                      }}
-                    >
-                      Cancel
+                    <div>
+                      <button
+                        className="cancel-order button"
+                        onClick={(e) => {
+                          setOrderItem2(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 )}
@@ -1011,38 +1092,18 @@ export default function index() {
                     <div className="order-product-name ">Tesla Model S</div>
                     <div className="order-quantity ">1</div>
                     <div className="order-total ">$122,000.00</div>
-                    <div
-                      className="cancel-order button"
-                      onClick={(e) => {
-                        setOrderItem3(false);
-                      }}
-                    >
-                      Cancel
+                    <div>
+                      <button
+                        className="cancel-order button"
+                        onClick={(e) => {
+                          setOrderItem2(false);
+                        }}
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
                 )}
-                {
-                  /* {
-                                            orders && orders.length > 0
-                                            ? orders.map((t, i) => {
-                                                console.log("order:");
-                                                console.log(t);
-                                                let order_prod_id = t.nItemID;
-                                                let product = products.find(p => p.aID == order_prod_id);
-                                                let order_prod_name = product ? product.vchName : "";
-                                                console.log("order product name: " + order_prod_name);
-                                                return (
-                                                    <div className="order" key={i}>
-                                                        <div className="order-date">{t.insertDate}</div>
-                                                        <div className="order-product-name">{order_prod_name}</div>
-                                                        <div className="order-quantity">{t.nItemCount}</div>
-                                                        <div className="order-total">${t.fGrandTotal.toFixed(2)}</div>
-                                                    </div>
-                                                );
-                                            }) }
-                                            : */
-                  // <div className="indent bottom-margin">No orders yet.</div>
-                }
               </div>
             </div>
           </>
@@ -1074,24 +1135,109 @@ export default function index() {
       </div>
 
       <div className="box">
-        <div className="heading orange">My Music</div>
+        <div className="heading orange">Upload Music</div>
         {tracks && tracks.length > 0 ? (
-          tracks.map((t, i) => (
-            <div className="track" key={i}>
-              <div className="track-title">{t.vchTrackName}</div>
-              <div className="track-description">{t.txtDescription}</div>
-              <div className="track-url">{t.vchAudioUrl}</div>
-              <button className="button button-small" onClick={deleteTrack}>
-                Delete
-              </button>
-            </div>
-          ))
+          <div className="all-products flex">
+            {tracks.map((t, i) => (
+              <div className="product" key={i}>
+                <div className="track-title">{t.vchTitle}</div>
+                <div className="track-description">{t.txtDescription}</div>
+                <div className="track-url">{t.vchAudioUrl}</div>
+                <button
+                  className="delete-product-button button button-small"
+                  onClick={(event) => deleteTrack(event, t.aID)}
+                  key={t.aID}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
         ) : (
           <>
-            <div className="indent">No uploaded music yet.</div>
+            <div className="indent bottom-margin">No Uploaded Tracks</div>
           </>
         )}
-        <br />
+
+        {addingTrack ? (
+          <>
+            <div className="div-center">
+              <div className="product-box box container new-product-container no-shadow">
+                <div className="heading subheading gray">Add New Track</div>
+                <form onSubmit={handleSubmitTrack}>
+                  <div className="new-product-pane">
+                    <div>
+                      <input
+                        className="new-product-name input"
+                        type="text"
+                        name="newTrackName"
+                        value={newTrackName}
+                        onChange={(e) => setNewTrackName(e.target.value)}
+                        placeholder="Song Title"
+                      />
+                      <textarea
+                        className="new-product-description input"
+                        name="newTrackDescription"
+                        value={newTrackDescription}
+                        onChange={(e) => setNewTrackDescription(e.target.value)}
+                        placeholder="Song Description"
+                      />
+                      <p>Enter Audio file path below:</p>
+                      <input
+                        className="new-product-name input"
+                        type="file"
+                        name="newTrackAudioURL"
+                        value={newTrackAudioURL}
+                        onChange={(e) => setNewTrackAudioURL(e.target.value)}
+                        placeholder="Song File"
+                      />
+                      <p>Upload Image file path below:</p>
+                      <input
+                        className="new-product-name input"
+                        type="file"
+                        name="newTrackImagePath"
+                        value={newTrackImagePath}
+                        onChange={(e) => setNewTrackImagePath(e.target.value)}
+                        placeholder="Song Image File"
+                      />
+                      <input
+                        className="new-product-name input"
+                        type="text"
+                        name="newTrackGenreID"
+                        value={newTrackGenreID}
+                        onChange={(e) => setNewTrackGenreID(e.target.value)}
+                        placeholder="Genre ID"
+                      />
+                    </div>
+                    <div className="product-submit-margin-top">
+                      <button className="button button-small" type="submit">
+                        Submit
+                      </button>
+                      <button
+                        className="button button-small cancel"
+                        onClick={cancelAddTrack}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="center">
+              <button
+                className="indent bottom-margin top-indent button button-small"
+                onClick={handleAddTrack}
+              >
+                Upload a Track
+              </button>
+            </div>
+          </>
+        )}
+
         <div className="center">
           <form>
             <input type="file" onChange={uploadFile}></input>
@@ -1230,8 +1376,22 @@ export default function index() {
       </div>
 
       <div className="box">
-        <div className="heading"> Make Playlists</div>
+        <div className="heading"> Add to Playlist</div>
       </div>
     </Panel>
   );
+}
+{
+  /* <div className="center">
+<form onSubmit={handleSubmitTrack}>
+  <input type="file" name="file" id="file-upload" />
+  <br />
+  <button
+    className="indent bottom-margin top-indent button button-small"
+    type="submit"
+  >
+    Upload a Track
+  </button>
+</form>
+</div> */
 }
