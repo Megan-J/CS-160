@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = "../data/"
 ALLOWED_EXTENSIONS = set(['mp3', 'mp4', 'wav'])
@@ -542,30 +542,6 @@ def get_users():
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
-#create user
-@app.route('/user/create', methods=['POST'])
-def create_user():
-    try:
-        data = request.get_json()
-        new_user = Users(
-            vchFirstName=data['vchFirstName'],
-            vchLastName=data['vchLastName'],
-            vchPassword=generate_password_hash(data['vchPassword']),
-            vchEmail=data['vchEmail']
-        )
-        db.session.add(new_user)
-        db.session.commit()
-
-        return jsonify({
-            'firstName': new_user.vchFirstName,
-            'lastName': new_user.vchLastName,
-            'password': new_user.vchPassword,
-            'email': new_user.vchEmail
-        }), 201
-    
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
-
 #get user by id
 app.route('/user/{id}', methods=['GET'])
 def get_user(id):
@@ -611,75 +587,6 @@ def listen_to_music(track_id):
             return jsonify({'message': 'Track not found'}), 404
     except Exception as e:
         return jsonify({'message': 'Error listening to music', 'error': str(e)}), 500
-
-#search for track/music
-@app.route('/track', methods=['GET'])
-def search_music():
-    try:
-        query = request.args.get('query')
-        if query:
-            tracks = Tracks.query.filter(Tracks.vchTitle.ilike(f'%{query}%')).all()
-            if tracks:
-                tracks_json = [track.to_json() for track in tracks]
-                return jsonify({'message': 'Search results', 'results': tracks_json}), 200
-            else:
-                return jsonify({'message': 'No results found'}), 404
-        else:
-            return jsonify({'message': 'Missing query'}), 400
-    except Exception as e:
-        return jsonify({'message': 'Error searching music', 'error': str(e)}), 500
-
-#heart a song: currently missing heart model
-@app.route('/tracks/<int:track_id>', methods=['POST'])
-def toggle_heart(track_id):
-    data = request.get_json()
-    user_id = data.get('user_id')
-    try:
-        #
-        heart = Heart.query.filter_by(track_id = track_id, user_id = user_id).first()
-        #
-        if heart:
-            db.session.delete(heart)
-            db.session.commit()
-            hearted = False
-        else:
-            #
-            new_heart = Heart(track_id = track_id, user_id = user_id)
-            #
-            db.session.add(new_heart)
-            db.session.commit()
-            hearted = True
-        return jsonify({'hearted': hearted}), 200
-    except Exception as e:
-        return jsonify({'message': 'Error toggling heart', 'error': str(e)}), 500
-
-# @app.route('/product/<int:store_id>', methods=['GET'])
-# def get_products_by_store(store_id):
-#     try:
-#         # Query products by store ID
-#         products = Products.query.filter_by(nStoreID=store_id).all()
-        
-#         # Convert products to JSON format
-#         products_data = [{
-#             'id': product.aID,
-#             'name': product.vchProductName,
-#             'description': product.vchProductDesc,
-#             'price': product.fPrice
-#         } for product in products]
-        
-#         return jsonify(products_data), 200
-#     except Exception as e:
-#         return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
-
-# get all tracks
-@app.route('/tracks/all', methods=['GET'])
-def get_tracks():
-    try:
-        tracks = Tracks.query.all()
-        tracks_data = [{'id': tracks.aID, 'author': tracks.nAuthorID, 'title':tracks.vchTitle, 'heart':tracks.heart} for user in users]
-        return jsonify(tracks_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
     
 def allowed_file(filename):
     return '.' in filename and \
@@ -813,42 +720,6 @@ def get_user(id):
         return make_response(jsonify({'message': 'user not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
-
-#get tracks for user
-@app.route('/tracks/user/<int:user_id>', methods=['GET'])
-def get_tracks_by_user(user_id):
-    try:
-        # Query track by store ID
-        tracks = Tracks.query.filter_by(nAuthorID=user_id).all()
-        
-        # Convert tracks to JSON format
-        tracks_data = [{
-            'aID': track.aID,
-            'vchTitle': track.vchTitle,
-            'txtDescription': track.txtDescription,
-            'vchAudioURL': track.vchAudioURL
-        } for track in tracks]
-        
-        return jsonify(tracks_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting products', 'error': str(e)}), 500)
-
-#listen to track/music by id
-@app.route('/track/<int:track_id>', methods=['GET'])
-def listen_to_music(track_id):
-    try:
-        track = Tracks.query.get(track_id)
-        if track:
-            #new for share link
-            track_data = track.to_json()
-            full_url = request.host_url + 'track/' + str(track_id)
-            track_data['share_url'] = full_url
-            #
-            return jsonify({'message': 'Listening to track', 'track': track.to_json()}), 200
-        else:
-            return jsonify({'message': 'Track not found'}), 404
-    except Exception as e:
-        return jsonify({'message': 'Error listening to music', 'error': str(e)}), 500
 
 #search for track/music
 @app.route('/track', methods=['GET'])
