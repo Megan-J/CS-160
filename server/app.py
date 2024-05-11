@@ -65,8 +65,6 @@ class Tracks(db.Model):
 class Users(db.Model):
     __table__ = db.metadata.tables['Users']
 
-# NEED A PLAYLIST/MUSIC TABLE
-
 class Report(db.Model):
     __table__ = db.metadata.tables['Reports']
 
