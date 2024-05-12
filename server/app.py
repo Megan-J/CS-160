@@ -68,14 +68,11 @@ class Users(db.Model):
 class Report(db.Model):
     __table__ = db.metadata.tables['Reports']
 
-#test route; must navigate to this url after activating 8080
-@app.route('/home', methods=['GET'])
-def get_contacts():
-    data = {"message": "subscribe"}
-    return jsonify(data)
+
+### ------------- API ENDPOINTS ------------- ###
 
 # do login
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET','POST'])
 def do_login():
     try:
         data = request.get_json()
@@ -1021,8 +1018,16 @@ def delete_cart():
      except Exception as e:
          return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
 
-#port
+
+### ------------- TESTING ------------- ###
+
+#test route; must navigate to this url after activating 8080
+@app.route('/home', methods=['GET'])
+def get_contacts():
+    data = {"message": "subscribe"}
+    return jsonify(data)
+
+
+### ------------- RUN FLASK SERVER ------------- ###
 if __name__ == '__main__':
-    # with app.app_context():
-    #     db.create_all()
     app.run(debug=False, port=5000)

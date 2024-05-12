@@ -4,7 +4,7 @@
 
 Radar offers users with unique shopping experiences curated by their favorite music artists.
 
-## Installation:
+## Installation
 
 To install and set up the Radar application on your own machine, follow the steps below:
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { backend } from "./Constants";
-import HardRockCafe from "../stores/hardrockcafe";
 //import { BrowserRouter as Router, Link } from 'react-router-dom'; // Import BrowserRouter
 import Link from "next/link";
 import { useRouter } from "next/router"; // Import useRouter
@@ -78,16 +77,7 @@ const SearchStores: React.FC = () => {
       <div className="all-products flex">
         {userList.map((product) => (
           <div className="body_item">
-            {/* <a href={`/stores/<HardRockCafe storeID=${product.id}/>`}>
-              <p>{product.name}</p>
-            </a>  */}
-            {/* <Link to="/stores/my-little-store" state={{ storeID: product.id }}>
-            <p>{product.name}</p>
-            </Link> */}
-            <Link
-              href="/stores/my-little-store"
-              as={`/stores/my-little-store?storeID=${product.id}`}
-            >
+            <Link href="/storefront" as={`/storefront?storeID=${product.id}`}>
               <p>{product.name}</p>
             </Link>
             <p>Owned by: {product.user}</p>

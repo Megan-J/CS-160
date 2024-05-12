@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 
-export default function index() {
+export default function user() {
   const router = useRouter();
   let [user, setUser] = useState(null);
   let [store, setStore] = useState(null);
