@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { backend } from "./Constants";
-//import { BrowserRouter as Router, Link } from 'react-router-dom'; // Import BrowserRouter
+import { Routes, Route } from "react-router-dom"; // Import BrowserRouter
 import Link from "next/link";
 import { useRouter } from "next/router"; // Import useRouter
 
@@ -14,6 +14,7 @@ interface Store {
 const SearchStores: React.FC = () => {
   const [text, setText] = React.useState("");
 
+  let [ownerName, setOwnerName] = useState("");
   const [userList, setUserList] = useState<Store[]>([]);
 
   useEffect(() => {
@@ -75,13 +76,13 @@ const SearchStores: React.FC = () => {
       </div>
       <br />
       <div className="all-products flex">
-        {userList.map((product) => (
+        {userList.map((store) => (
           <div className="body_item">
-            <Link href="/storefront" as={`/storefront?storeID=${product.id}`}>
-              <p>{product.name}</p>
+            <Link href="/storefront" as={`/storefront?storeID=${store.id}`}>
+              <p>{store.name}</p>
+              <p>Owned by: {store.user}</p>
+              <p>{store.txtDescription}</p>
             </Link>
-            <p>Owned by: {product.user}</p>
-            <p>{product.txtDescription}</p>
           </div>
         ))}
       </div>

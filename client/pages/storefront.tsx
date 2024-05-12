@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
-import { useParams } from "react-router-dom";
 
 export default function Storefront() {
   //should hold the store id
-  const param = useParams();
-  console.log(param);
+  let urlString, url, storeID;
 
-  const [products, setProducts] = useState([]);
+  let [products, setProducts] = useState("");
   let [bans, setBans] = useState(null);
   let [user, setUser] = useState(null);
+  let [error, setError] = useState("");
+  let [storeName, setStoreName] = useState("");
+  let [storeDescription, setDescriptionName] = useState("");
 
   useEffect(() => {
+    urlString = window.location.href;
+    url = new URL(urlString);
+    storeID = url.searchParams.get("storeID");
+    console.log(storeID);
+
     let userJson = sessionStorage.getItem("user");
     let productsJson = sessionStorage.getItem("products");
 
@@ -28,12 +34,52 @@ export default function Storefront() {
         initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
         initials = initials.toUpperCase();
       }
-
-      //if (productsJson) setProducts(products);
-      //if (bansJson) setBans(bans);
+      getStoreAttributes();
+      getStoreProducts();
       fetchBanRequests();
     }
   }, []);
+
+  const getStoreAttributes = () => {
+    let success = false;
+    fetch(`${backend}/storefront/${storeID}`, {
+      method: "GET",
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          success = true;
+        } else {
+          setError("No store found");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (success) {
+          setStoreName(data.name);
+          setDescriptionName(data.description);
+        }
+      });
+  };
+
+  const getStoreProducts = () => {
+    let success = false;
+    fetch(`${backend}/products/${storeID}`, {
+      method: "GET",
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          success = true;
+        } else {
+          setError("Couldn't find products");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (success) {
+          setProducts(data);
+        }
+      });
+  };
 
   const AddProductToCart = (event, aID) => {
     event.preventDefault();
@@ -71,6 +117,7 @@ export default function Storefront() {
       });
   };
 
+  // this doesn't work
   const fetchBanRequests = () => {
     // Fetch ban requests from the backend
     fetch(`${backend}/product/1`)
@@ -83,20 +130,20 @@ export default function Storefront() {
   };
 
   return (
-    <Panel title="My Little Store">
+    <Panel title={storeName}>
+      <div>
+        <p>{storeDescription}</p>
+      </div>
       <div className="box">
-        <div className="heading"> Products</div>
-        {bans && bans.length > 0 ? (
+        <div className="heading">Products</div>
+        {products && products.length > 0 ? (
           <div className="all-products flex">
-            {bans.map((t, i) => (
+            {products.map((t, i) => (
               <div className="product" key={i}>
                 <div className="product-name">{t.vchName}</div>
                 <div className="product-description">{t.txtDescription}</div>
                 <div className="product-price">
                   Price: $ {`${t.fPrice.toFixed(2)}`}
-                </div>
-                <div className="product-shipping">
-                  Shipping: $ {`${t.fShipping.toFixed(2)}`}
                 </div>
                 <div className="product-inventory">Stock: {t.nInventory}</div>
                 <button
@@ -111,7 +158,7 @@ export default function Storefront() {
           </div>
         ) : (
           <>
-            <div className="indent bottom-margin">No Items in shop</div>
+            <div className="indent bottom-margin">Products Coming Soon!</div>
           </>
         )}
       </div>
