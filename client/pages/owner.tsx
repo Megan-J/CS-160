@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 export default function user() {
   const router = useRouter();
@@ -1115,28 +1116,6 @@ export default function user() {
       <div className="box greenbg">
         <div className="heading green">Tracks</div>
         {tracks && tracks.length > 0 ? (
-          tracks.map((t, i) => (
-            <div className="track" key={i}>
-              <div className="track-title">{t.vchTitle}</div>
-              <div className="track-description">{t.txtDescription}</div>
-              <div className="track-url">{t.vchAudioUrl}</div>
-              <button
-                className="button button-small"
-                onClick={(event) => deleteTrack(event, t.aID)}
-                key={t.aID}
-              >
-                Delete
-              </button>
-            </div>
-          ))
-        ) : (
-          <div className="indent bottom-margin">No tracks yet.</div>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="heading orange">Upload Music</div>
-        {tracks && tracks.length > 0 ? (
           <div className="all-products flex">
             {tracks.map((t, i) => (
               <div className="product" key={i}>
@@ -1154,11 +1133,10 @@ export default function user() {
             ))}
           </div>
         ) : (
-          <>
-            <div className="indent bottom-margin">No Uploaded Tracks</div>
-          </>
+          <div className="indent bottom-margin">No tracks yet.</div>
         )}
-
+        <br />
+        <br />
         {addingTrack ? (
           <>
             <div className="div-center">
@@ -1232,12 +1210,12 @@ export default function user() {
                 className="indent bottom-margin top-indent button button-small"
                 onClick={handleAddTrack}
               >
-                Upload a Track
+                Add Music
+                <i class="bi bi-file-earmark-music"></i>
               </button>
             </div>
           </>
         )}
-
         <div className="center">
           <form>
             <input type="file" onChange={uploadFile}></input>
@@ -1374,24 +1352,6 @@ export default function user() {
           </>
         )}
       </div>
-
-      <div className="box">
-        <div className="heading"> Add to Playlist</div>
-      </div>
     </Panel>
   );
-}
-{
-  /* <div className="center">
-<form onSubmit={handleSubmitTrack}>
-  <input type="file" name="file" id="file-upload" />
-  <br />
-  <button
-    className="indent bottom-margin top-indent button button-small"
-    type="submit"
-  >
-    Upload a Track
-  </button>
-</form>
-</div> */
 }

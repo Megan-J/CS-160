@@ -429,6 +429,10 @@ html {
     float: right;
 }
 
+.report-icon {
+    float: right;
+}
+
 .clear {
     clear: both;
 }

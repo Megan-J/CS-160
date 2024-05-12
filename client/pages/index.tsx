@@ -16,13 +16,27 @@ interface Track {
 
 export default function index() {
   const router = useRouter();
-  let user = null;
   const [text, setText] = React.useState("");
+  let [user, setUser] = useState(null);
 
   const [userList, setUserList] = useState<Track[]>([]);
 
   useEffect(() => {
-    fetchStores();
+    let userJson = sessionStorage.getItem("user");
+    let productsJson = sessionStorage.getItem("products");
+
+    let user = userJson ? JSON.parse(userJson) : null;
+    let products = productsJson ? JSON.parse(productsJson) : null;
+
+    setUser(user);
+
+    if (user && user.vchUsername !== null) {
+      let initials = "";
+      if (user.vchUsername != null) {
+        initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
+        initials = initials.toUpperCase();
+      }
+    }
   }, []);
 
   const fetchStores = () => {
@@ -165,14 +179,29 @@ export default function index() {
   return (
     <Panel title="Welcome!">
       <div>
-        <p>Start Listening today!</p>
+        {user ? (
+          <div>Dive back in</div>
+        ) : (
+          <div>
+            <p className="center">
+              You haven't heard on Radar? Well get on ours!
+            </p>
+            <p className="center">
+              Listen to your favorite songs from up and coming artists! Shop
+              around and see what they're selling while listening to their
+              songs!
+            </p>
+          </div>
+        )}
       </div>
+
+      <br />
 
       <div>
         <div className="input_wrapper">
           <input
             type="text"
-            placeholder="Search Music: In Progress"
+            placeholder="Search Music"
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
@@ -182,9 +211,24 @@ export default function index() {
       </div>
       <br />
       <div>
-        <Link href="/report" className="button">
-          Report an Issue
-        </Link>
+        <div className="box">
+          <div className="heading">Discover new songs</div>
+        </div>
+        <div className="box">
+          <div className="heading">Trending products</div>
+        </div>
+      </div>
+      <br />
+      <div>
+        {user ? (
+          <div>
+            <div className="box">
+              <div className="heading">My Playlists</div>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </Panel>
   );

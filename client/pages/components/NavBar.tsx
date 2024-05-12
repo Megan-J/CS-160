@@ -4,6 +4,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import SearchStores from "./searchStores";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 type NavBarProps = {
   children: React.ReactNode;
@@ -41,29 +42,37 @@ const NavBar = ({ children }: NavBarProps) => {
 
         {me ? (
           <>
-            <li>
-              <Link href="/cart">Cart</Link>
+            <li className="right">
+              <Link href="/cart">
+                Cart
+                <i class="bi bi-cart3"></i>
+              </Link>
             </li>
-            <li>
+            <li className="right">
               <Link href="/logout">Logout</Link>
             </li>
           </>
         ) : (
           <>
-            <li>
-              <Link href="/login">Sign In</Link>
-            </li>
-            <li>
+            <li className="right">
               <Link href="/signup">Create account</Link>
+            </li>
+            <li className="right">
+              <Link href="/login">Sign In</Link>
             </li>
           </>
         )}
         {initials ? (
-          <li className="right">
-            <Link className="initials" href="/user">
-              {initials}
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link href="/owner">My store</Link>
+            </li>
+            <li className="right">
+              <Link className="initials" href="/profile">
+                {initials}
+              </Link>
+            </li>
+          </>
         ) : (
           ""
         )}

@@ -348,12 +348,6 @@ export default function placeOrder() {
               </p>
             </div>
             <br />
-            <Link
-              className="center bottom-margin top-indent button button-large"
-              href="/confirmation"
-            >
-              Place Order
-            </Link>
           </div>
           <div className="flex items-center justify-center">
             <button className="button change-hue">Place Order</button>

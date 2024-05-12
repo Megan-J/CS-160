@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
+import Link from "next/link";
 
 export default function Storefront() {
   //should hold the store id
@@ -17,7 +19,7 @@ export default function Storefront() {
     urlString = window.location.href;
     url = new URL(urlString);
     storeID = url.searchParams.get("storeID");
-    console.log(storeID);
+    //console.log(storeID);
 
     let userJson = sessionStorage.getItem("user");
     let productsJson = sessionStorage.getItem("products");
@@ -26,8 +28,8 @@ export default function Storefront() {
     let products = productsJson ? JSON.parse(productsJson) : null;
 
     setUser(user);
-    console.log("user:");
-    console.log(user);
+    //console.log("user:");
+    //console.log(user);
     if (user && user.vchUsername !== null) {
       let initials = "";
       if (user.vchUsername != null) {
@@ -90,7 +92,7 @@ export default function Storefront() {
       nStoreID: 1,
       nQuantity: 1,
     };
-    console.log(data);
+    //console.log(data);
     fetch(`${backend}/cart/add`, {
       method: "POST",
       headers: {
@@ -99,19 +101,19 @@ export default function Storefront() {
       body: JSON.stringify(data),
     })
       .then((res) => {
-        console.log(res);
+        //console.log(res);
         if (res.status === 200 || res.status === 201) {
           success = true;
         }
         return res.json();
       })
       .then((data) => {
-        console.log("returned:");
-        console.log(data);
+        //console.log("returned:");
+        //console.log(data);
         if (success) {
           setProducts(data.products);
-          console.log("Add product to cart!");
-          console.log(data);
+          //console.log("Add product to cart!");
+          //console.log(data);
         }
         return data;
       });
@@ -124,7 +126,7 @@ export default function Storefront() {
       .then((res) => res.json())
       .then((data) => {
         setBans(data);
-        console.log(data);
+        //console.log(data);
       })
       .catch((error) => console.error("Error fetching ban requests:", error));
   };
@@ -153,6 +155,9 @@ export default function Storefront() {
                 >
                   Add Product
                 </button>
+                <Link classname="report-icon" href="/report">
+                  <i class="bi bi-exclamation-circle"></i>
+                </Link>
               </div>
             ))}
           </div>
@@ -161,6 +166,11 @@ export default function Storefront() {
             <div className="indent bottom-margin">Products Coming Soon!</div>
           </>
         )}
+      </div>
+      <div>
+        <Link className="report-icon" href="/report">
+          <i class="bi bi-exclamation-circle"></i>
+        </Link>
       </div>
     </Panel>
   );
