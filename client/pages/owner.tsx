@@ -667,9 +667,7 @@ export default function user() {
   let order_prod_name: string | null = null;
 
   return (
-    <Panel title="My Radar">
-      <p>Welcome{firstName && `, ${firstName} ${lastName}`}!</p>
-
+    <Panel title="Store Overview">
       <div className="box container bluebg">
         <div className="heading">My Store</div>
         {store && storeName != null ? (
