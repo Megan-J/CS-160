@@ -641,7 +641,7 @@ def get_store_with_owner(store_id):
                         'ownerID': store.nUserID,
                         'name' : store.vchName,
                         'description' : store.txtDescription,
-                        'ownerName': ownerName.vchUsername
+                        'ownerName': ownerName.vchUsername,
                     }
                     return make_response(jsonify(store_data), 200)
                 return make_response(jsonify({'message' : 'owner not found'}), 404)
@@ -649,6 +649,45 @@ def get_store_with_owner(store_id):
     except Exception as e:
         return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
     
+#get all data of user by id
+@app.route('/user/data/<int:user_id>', methods=['GET'])
+def get_data_user_by_id(user_id):
+    try:
+        #try to get the user by its id
+        user = Users.query.filter_by(aID=user_id).first()
+        if user:
+            store = Stores.query.filter_by(nUserID=user_id).first()
+            if store:
+                tracks = Tracks.query.filter_by(nAuthorID=user_id).all()
+                tracks_data = [{
+                    'trackID' : track.aID,
+                    'trackTitle': track.vchTitle,
+                    'trackDescription': track.txtDescription
+                } for track in tracks]
+                if tracks:
+                    followers = Followers.query.filter_by(nFollowingID=user_id).count()
+                    following = Followers.query.filter_by(nUserID=user_id).count()
+                    if followers >=0 and following >=0:
+                        user_data = {
+                            'userId': user.aID,
+                            'username': user.vchUsername,
+                            'bio': user.txtBio,
+                            'storeID': store.aID,
+                            'storeName': store.vchName,
+                            'storeDescription': store.txtDescription,
+                            'followerCount': followers,
+                            'followingCount': following,
+                            'tracksData': tracks_data
+                        }
+                        return make_response(jsonify(user_data), 200)
+                    return make_response(jsonify({'message': 'error getting following and followers'}), 500)
+            return make_response(jsonify({'message': 'error getting tracks'}), 500)
+        return make_response(jsonify({'message': 'error getting store'}), 500)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+
+
+
     
 #get user by id
 @app.route('/user/<int:user_id>', methods=['GET'])
@@ -667,9 +706,6 @@ def get_user_by_id(user_id):
         return make_response(jsonify({'message': 'user not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
-
-    
-
 
 #create user
 @app.route('/user/create', methods=['POST'])

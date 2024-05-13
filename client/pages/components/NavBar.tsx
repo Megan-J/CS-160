@@ -65,7 +65,7 @@ const NavBar = ({ children }: NavBarProps) => {
         {initials ? (
           <>
             <li>
-              <Link href="/owner">My Store</Link>
+              <Link href="/my-store">My Store</Link>
             </li>
             <li className="right">
               <Link className="initials" href="/self-profile">

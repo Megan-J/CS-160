@@ -4,7 +4,7 @@ import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-export default function user() {
+export default function MyStore() {
   const router = useRouter();
   let [user, setUser] = useState(null);
   let [store, setStore] = useState(null);

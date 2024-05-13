@@ -2,16 +2,23 @@ import React, { useState, useEffect } from "react";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Link from "next/link";
 
 export default function UserProfile() {
   let urlString, url, profileID;
 
   // user profile is the user's profile you're viewing
-  let [userProfile, setUserProfile] = useState(null);
+  let [userProfileName, setUserProfileName] = useState(null);
+  let [userProfileBio, setUserProfileBio] = useState(null);
+  let [userProfileStoreId, setUserProfileStoreId] = useState(null);
+  let [userProfileStoreName, setUserProfileStoreName] = useState(null);
+  let [userProfileStoreDes, setUserProfileStoreDes] = useState(null);
+  let [userProfileTracks, setUserProfileTracks] = useState(null);
 
   // user is you
   let [user, setUser] = useState(null);
   let [store, setStore] = useState(null);
+  let [error, setError] = useState("");
 
   let [following, setFollowing] = useState(null);
   let [followers, setFollowers] = useState(null);
@@ -32,10 +39,36 @@ export default function UserProfile() {
     let user = userJson ? JSON.parse(userJson) : null;
 
     setUser(user);
-    //getOwner;
+    getUserProfileData();
   }, []);
 
-  //  const getUserProfileData;
+  const getUserProfileData = () => {
+    let success = false;
+    fetch(`${backend}/user/data/${profileID}`, {
+      method: "GET",
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          success = true;
+        } else {
+          setError("Issue getting profile data");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (success) {
+          console.log(data);
+          setFollowers(data.followerCount);
+          setFollowing(data.followingCount);
+          setUserProfileName(data.username);
+          setUserProfileBio(data.bio);
+          setUserProfileStoreName(data.storeName);
+          setUserProfileStoreDes(data.storeDescription);
+          setUserProfileStoreId(data.storeID);
+          setUserProfileTracks(data.tracksData);
+        }
+      });
+  };
 
   let userID: number;
   try {
@@ -54,47 +87,62 @@ export default function UserProfile() {
   }
 
   return (
-    <Panel title="hello">
+    <Panel title={userProfileName}>
       <div>
-        Followers <i class="bi bi-radar"></i> Following
+        {followers} Followers <i class="bi bi-radar"></i> {following} Following
       </div>
-      <button>Follow</button>
       <br />
-
+      <button className="button">Follow</button>
+      <br />
+      <br />
       <div className="box">
         <div className="heading">Bio</div>
-        {/*
-        bio && bio.length > 0 ? (
+        {userProfileBio && userProfileBio.length > 0 ? (
           <div>
-            <div className="indent bottom-margin">{bio}</div>
+            <div className="indent bottom-margin">{userProfileBio}</div>
           </div>
         ) : (
           <>
             <div className="indent bottom-margin"></div>
             <br />
           </>
-        )*/}
+        )}
       </div>
 
-      {/*bio && bio.length > 0 ? (
+      {userProfileStoreName && userProfileStoreName.length > 0 ? (
         <>
           <div className="box">
             <div className="heading">Store</div>
+            <Link
+              href={`/storefront?storeID=${userProfileStoreId}`}
+              className="store-in-profile"
+            >
+              <div className="center">{userProfileStoreName}</div>
+              <div className="center">{userProfileStoreDes}</div>
+            </Link>
           </div>
         </>
       ) : (
         <></>
-      )*/}
+      )}
 
-      {/*bio && bio.length > 0 ? (
+      {userProfileTracks && userProfileTracks.length > 0 ? (
         <>
           <div className="box">
             <div className="heading">Music</div>
+            <div>
+              {userProfileTracks.map((t, i) => (
+                <div>
+                  <div className="indent">{t.trackTitle}</div>
+                  <br />
+                </div>
+              ))}
+            </div>
           </div>
         </>
       ) : (
         <></>
-      )*/}
+      )}
 
       {/*bio && bio.length > 0 ? (
         <>

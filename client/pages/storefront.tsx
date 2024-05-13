@@ -37,26 +37,6 @@ export default function Storefront() {
     }
   }, []);
 
-  const getOwnerName = () => {
-    let success = false;
-    fetch(`${backend}/user/${ownerId}`, {
-      method: "GET",
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          success = true;
-        } else {
-          setError("User not found");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (success) {
-          setOwner(data.username);
-        }
-      });
-  };
-
   const getStoreAttributes = () => {
     let success = false;
     fetch(`${backend}/storefront/owner/${storeID}`, {
