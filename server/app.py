@@ -444,7 +444,7 @@ if "-----[ track endpoints ]-----":
                     filename = secure_filename(file.filename)
                     # get the file and its extension
                     filename, file_extension = os.path.splitext(filename)
-                    filename = f'{filename}_{datetime.now().strftime('%Y%m%d%H%M%S')}{file_extension}'
+                    filename = f'{filename}_{datetime.now().strftime("%Y%m%d%H%M%S")}{file_extension}'
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 else:
                     filename = secure_filename(file.filename)
@@ -492,7 +492,7 @@ if "-----[ image endpoints ]-----":
                     filename = secure_filename(file.filename)
                     # get the file and its extension
                     filename, file_extension = os.path.splitext(filename)
-                    filename = f'{filename}_{datetime.now().strftime('%Y%m%d%H%M%S')}{file_extension}'
+                    filename = f'{filename}_{datetime.now().strftime("%Y%m%d%H%M%S")}{file_extension}'
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 else:
                     filename = secure_filename(file.filename)
