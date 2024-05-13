@@ -14,6 +14,8 @@ export default function Storefront() {
   let [error, setError] = useState("");
   let [storeName, setStoreName] = useState("");
   let [storeDescription, setDescriptionName] = useState("");
+  let [owner, setOwner] = useState("");
+  let [ownerId, setOwnerId] = useState("");
 
   useEffect(() => {
     urlString = window.location.href;
@@ -21,30 +23,43 @@ export default function Storefront() {
     storeID = url.searchParams.get("storeID");
     //console.log(storeID);
 
+    getStoreAttributes();
+    getStoreProducts();
+
     let userJson = sessionStorage.getItem("user");
-    let productsJson = sessionStorage.getItem("products");
 
     let user = userJson ? JSON.parse(userJson) : null;
-    let products = productsJson ? JSON.parse(productsJson) : null;
 
     setUser(user);
-    //console.log("user:");
-    //console.log(user);
+
     if (user && user.vchUsername !== null) {
-      let initials = "";
-      if (user.vchUsername != null) {
-        initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
-        initials = initials.toUpperCase();
-      }
-      getStoreAttributes();
-      getStoreProducts();
       fetchBanRequests();
     }
   }, []);
 
+  const getOwnerName = () => {
+    let success = false;
+    fetch(`${backend}/user/${ownerId}`, {
+      method: "GET",
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          success = true;
+        } else {
+          setError("User not found");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (success) {
+          setOwner(data.username);
+        }
+      });
+  };
+
   const getStoreAttributes = () => {
     let success = false;
-    fetch(`${backend}/storefront/${storeID}`, {
+    fetch(`${backend}/storefront/owner/${storeID}`, {
       method: "GET",
     })
       .then((res) => {
@@ -57,8 +72,11 @@ export default function Storefront() {
       })
       .then((data) => {
         if (success) {
+          console.log(data);
           setStoreName(data.name);
           setDescriptionName(data.description);
+          setOwnerId(data.ownerID);
+          setOwner(data.ownerName);
         }
       });
   };
@@ -133,6 +151,11 @@ export default function Storefront() {
 
   return (
     <Panel title={storeName}>
+      <div className="bold-text">
+        <Link href="/user-profile" as={`/user-profile?userID=${ownerId}`}>
+          {owner}
+        </Link>
+      </div>
       <div>
         <p>{storeDescription}</p>
       </div>

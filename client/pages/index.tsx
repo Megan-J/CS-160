@@ -218,7 +218,7 @@ export default function index() {
         ) : (
           <div>
             <p className="center">
-              You haven't heard on Radar? Well get on ours!
+              You haven't heard of Radar? Well get on ours!
             </p>
             <p className="center">
               Listen to your favorite songs from up and coming artists! Shop

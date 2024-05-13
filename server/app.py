@@ -484,15 +484,6 @@ def get_users():
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
     
-#get users by id
-@app.route('/user/<int:user_id>', methods=['GET'])
-def get_user_by_id(user_id):
-    try:
-        user = Users.query.filter_by(aID=user_id).first()
-        user_data = {'id': user.aID, 'username': user.vchUsername, 'email': user.vchEmail}
-        return jsonify(user_data), 200
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
 
 #get tracks for user
 @app.route('/tracks/<int:user_id>', methods=['GET'])
@@ -616,15 +607,16 @@ def store_billing_addr():
         return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e), 'data':data}), 500)
     
 
-#get store by id
-@app.route('/storefront/<int:user_id>', methods=['GET'])
-def get_store_by_id(user_id):
+#get store by id 
+@app.route('/storefront/<int:store_id>', methods=['GET'])
+def get_store_by_id(store_id):
     try:
         #try to get the store by its id
-        store = Stores.query.filter_by(aID=user_id).first()
+        store = Stores.query.filter_by(aID=store_id).first()
         if store:
             store_data ={
                 'id': store.aID,
+                'ownerID': store.nUserID,
                 'name' : store.vchName,
                 'description' : store.txtDescription
             }
@@ -632,6 +624,50 @@ def get_store_by_id(user_id):
         return make_response(jsonify({'message': 'store not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
+    
+#get store by id with owner name
+@app.route('/storefront/owner/<int:store_id>', methods=['GET'])
+def get_store_with_owner(store_id):
+    try:
+        #try to get the store by its id
+        store = Stores.query.filter_by(aID=store_id).first()
+        if store:
+            ownerID = store.nUserID
+            if ownerID:
+                ownerName = Users.query.filter_by(aID=ownerID).first()
+                if ownerName:
+                    store_data = {
+                        'id': store.aID,
+                        'ownerID': store.nUserID,
+                        'name' : store.vchName,
+                        'description' : store.txtDescription,
+                        'ownerName': ownerName.vchUsername
+                    }
+                    return make_response(jsonify(store_data), 200)
+                return make_response(jsonify({'message' : 'owner not found'}), 404)
+        return make_response(jsonify({'message': 'store not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
+    
+    
+#get user by id
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    try:
+        #try to get the user by its id
+        user = Users.query.filter_by(aID=user_id).first()
+        if user:
+            user_data ={
+                'id': user.aID,
+                'username': user.vchUsername,
+                'bio': user.txtBio,
+                'email': user.vchEmail,
+            }
+            return make_response(jsonify(user_data), 200)
+        return make_response(jsonify({'message': 'user not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+
     
 
 

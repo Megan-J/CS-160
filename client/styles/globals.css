@@ -259,6 +259,10 @@ nav input.search {
     padding-left: 5px;
 }
 
+.bold-text {
+    font-weight: bold;
+}
+
 .box {
     background-color: rgba(240,240,255,.5);
     border: 1px solid #037;
