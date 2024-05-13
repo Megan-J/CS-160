@@ -46,8 +46,10 @@ export default function placeOrder() {
   const [billZip, setBillZip] = useState("");
   const [billEmail, setBillEmail] = useState("");
   const [billPhoneNum, setBillPhoneNum] = useState("");
+  const [total, setTotal] = useState(0);
 
   let urlString, url, userIdUrl;
+  let tax = 0.1;
 
   let devPaymentSelect = 0;
 
@@ -58,6 +60,7 @@ export default function placeOrder() {
     //console.log(storeID);
     let userJson = sessionStorage.getItem("user");
     let user = userJson ? JSON.parse(userJson) : null;
+    setTotal(10);
 
     console.log("HELLO");
     console.log("userID from URL: " + userIdUrl);
@@ -67,6 +70,7 @@ export default function placeOrder() {
 
     if (user && user.vchUsername !== null) {
       getCartData();
+      deliveryClick();
     }
   }, []);
 
@@ -88,6 +92,10 @@ export default function placeOrder() {
           setItems(data);
         }
       });
+  };
+
+  const deliveryClick = () => {
+    console.log("I CLICKED IT");
   };
 
   const handleChange = (event) => {
@@ -140,7 +148,8 @@ export default function placeOrder() {
 
     let shipSuccess = false;
     let billSuccess = false;
-    fetch(`${backend}/checkout/shipping_address`, {
+
+    /*fetch(`${backend}/checkout/shipping_address`, {
       method: "POST",
       body: JSON.stringify(shipVariables),
     }).then((res) => {
@@ -165,7 +174,7 @@ export default function placeOrder() {
     });
     if (shipSuccess && billSuccess) {
       router.push("/confirmation");
-    }
+    }*/
   };
 
   const handleDevPayment = () => {
@@ -179,28 +188,29 @@ export default function placeOrder() {
 
   return (
     <Panel title="Checkout">
-      <Link
-        className="button button-small cancel"
-        href="/cart"
-        as={`/cart?userID=${userIdUrl}`}
-      >
-        Return to shopping cart
-        <i class="bi bi-cart3"></i>
-      </Link>
-      <br />
-      <div>
-        <h2 className="text-xl mb-4">Summary</h2>
+      <div className="box">
+        <h2 className="heading">Summary</h2>
+        <div>
+          <div className="product-name indent">Subtotal:</div>
+          <div className="indent">${`${total.toFixed(2)}`}</div>
+          <div className="product-name indent">Shipping:</div>
+          <div className="indent">${`${total.toFixed(2)}`}</div>
+          <div className="product-name indent">Taxes:</div>
+          <div className="indent">${`${(total * tax).toFixed(2)}`}</div>
+          <br />
+        </div>
+        <h2 className="heading">In Your Cart</h2>
         <div>
           {items && items.length > 0 ? (
             <>
               {items.map((t, i) => (
                 <div className="">
                   <div key={i}>
-                    <div className="product-name">{t.product_name}</div>
-                    <div className="product-description">
+                    <div className="product-name indent">{t.product_name}</div>
+                    <div className="product-description indent">
                       Quantity: {`${t.quantity}`}
                     </div>
-                    <div className="product-price">
+                    <div className="product-price indent">
                       ${`${(t.product_price * t.quantity).toFixed(2)}`}
                     </div>
                     <br />
@@ -213,10 +223,10 @@ export default function placeOrder() {
           )}
         </div>
       </div>
-      <div>
-        <h2 className="text-xl mb-4">Shipping Address</h2>
-      </div>
-      <div>
+      <div className="box">
+        <div>
+          <h2 className="heading">Shipping Address</h2>
+        </div>
         <form onSubmit={handleFormSubmit}>
           <p>
             <label>
@@ -292,36 +302,38 @@ export default function placeOrder() {
             </label>
           </p>
           <br />
-          <br />
 
           <div>
-            <h2 className="text-xl mb-4">Delivery</h2>
+            <h2 className="heading">Delivery</h2>
           </div>
           <input
             type="radio"
             id="Standard Shipping"
+            className="indent"
             name="shippingOpt"
             value="Standard Shipping"
-            onSelect={handleChange}
+            onSelect={deliveryClick}
           ></input>
-          <label>Standard Shipping</label>
+          <label>Standard Shipping: $10</label>
           <br />
           <input
             type="radio"
             id="Express Shipping"
+            className="indent"
             name="shippingOpt"
             value="Express Shipping"
-            onSelect={handleChange}
+            onSelect={deliveryClick}
           ></input>
-          <label>Express Shipping</label>
+          <label>Express Shipping: $15</label>
           <br />
           <br />
 
           <div>
-            <h2 className="text-xl mb-4">Payment</h2>
+            <h2 className="heading">Payment</h2>
           </div>
           <input
             type="checkbox"
+            className="indent"
             id="Development Payment"
             value="Development Payment"
             onChange={handleDevPayment}
@@ -330,7 +342,7 @@ export default function placeOrder() {
           <br />
           <br />
           <div>
-            <h2 className="text-xl mb-4">Billing Address</h2>
+            <h2 className="heading">Billing Address</h2>
           </div>
           <p>
             <label>
@@ -406,20 +418,20 @@ export default function placeOrder() {
             </label>
           </p>
           <br />
-          <br />
-          <div>
-            <div>
-              <p>
-                By placing your order you agree to Radar's Terms and Conditions,
-                Privacy Notice, and Cookie Policy.
-              </p>
-            </div>
-            <br />
-          </div>
-          <div className="flex items-center justify-center">
-            <button className="button change-hue">Place Order</button>
-          </div>
         </form>
+        <div>
+          <div>
+            <p style={{ padding: "10px" }}>
+              By placing your order you agree to Radar's Terms and Conditions,
+              Privacy Notice, and Cookie Policy.
+            </p>
+          </div>
+          <br />
+        </div>
+
+        <div className="flex items-center justify-center">
+          <button className="button change-hue">Place Order</button>
+        </div>
       </div>
     </Panel>
   );

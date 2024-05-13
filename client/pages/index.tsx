@@ -217,33 +217,25 @@ export default function index() {
           <div>Dive back in</div>
         ) : (
           <div>
-            <p className="center">
-              You haven't heard of Radar? Well get on ours!
-            </p>
-            <p className="center">
-              Listen to your favorite songs from up and coming artists! Shop
-              around and see what they're selling while listening to their
-              songs!
-            </p>
+            <br />
+            <div className="box">
+              <br />
+              <p className="center" style={{ padding: "10px" }}>
+                You haven't heard of Radar? Well get on ours!
+              </p>
+              <p className="center" style={{ padding: "10px" }}>
+                Listen to your favorite songs from up and coming artists! Shop
+                around and see what they're selling while listening to their
+                songs!
+              </p>
+              <br />
+            </div>
           </div>
         )}
       </div>
 
       <br />
 
-      <div>
-        <div className="input_wrapper">
-          <input
-            type="text"
-            placeholder="Search Music"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button disabled={!text}>Search</button>
-        </div>
-        <div className="all-products flex"></div>
-      </div>
-      <br />
       <div>
         <div className="box">
           <div className="heading">Discover new songs</div>
