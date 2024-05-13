@@ -14,6 +14,7 @@ type NavBarProps = {
 const NavBar = ({ children }: NavBarProps) => {
   let [me, setMe] = useState(null);
   let [initials, setInitials] = useState(null);
+  let [userID, setUserID] = useState(null);
 
   useEffect(() => {
     let userObj = sessionStorage.getItem("user");
@@ -28,6 +29,7 @@ const NavBar = ({ children }: NavBarProps) => {
       }
       setInitials(s);
       setMe(user);
+      setUserID(user.aID);
     }
   }, []);
   return (
@@ -43,7 +45,7 @@ const NavBar = ({ children }: NavBarProps) => {
         {me ? (
           <>
             <li className="right">
-              <Link href="/cart">
+              <Link href="/cart" as={`/cart?userID=${userID}`}>
                 Cart
                 <i class="bi bi-cart3"></i>
               </Link>
@@ -68,7 +70,7 @@ const NavBar = ({ children }: NavBarProps) => {
               <Link href="/my-store">My Store</Link>
             </li>
             <li className="right">
-              <Link className="initials" href="/self-profile">
+              <Link className="initials" href="/my-profile">
                 <i class="bi bi-person-circle"></i>
                 {initials}
               </Link>

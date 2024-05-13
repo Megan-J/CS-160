@@ -4,7 +4,7 @@ import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-export default function SelfProfile() {
+export default function MyProfile() {
   const router = useRouter();
   let [user, setUser] = useState(null);
   let [store, setStore] = useState(null);
@@ -218,9 +218,6 @@ export default function SelfProfile() {
     editStoreName = storeName = initStoreName = "";
     editStoreDescription = storeDescription = initStoreDescription = "";
   }
-
-  let order_prod_id: number | null = null;
-  let order_prod_name: string | null = null;
 
   return (
     <Panel title="My Radar">

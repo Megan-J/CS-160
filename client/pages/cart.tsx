@@ -15,46 +15,25 @@ export default function Cart() {
   let [user, setUser] = useState(null);
   let [cart, setCart] = useState(null);
   let [items, setItems] = useState(null);
+  let [idOfUser, setUserId] = useState(null);
   let [products, setProducts] = useState(null);
+  let [error, setError] = useState("");
   const router = useRouter();
+  let urlString, url, userIdUrl;
 
   useEffect(() => {
-    console.log("IN THE CART");
+    urlString = window.location.href;
+    url = new URL(urlString);
+    userIdUrl = url.searchParams.get("userID");
+
     console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
-    let productsJson = sessionStorage.getItem("products");
-    let cartJson = sessionStorage.getItem("cart");
-    let storeJson = sessionStorage.getItem("store");
-
     let user = userJson ? JSON.parse(userJson) : null;
-    let cart = cartJson ? JSON.parse(cartJson) : null;
-    let store = storeJson ? JSON.parse(storeJson) : null;
 
     setUser(user);
-    console.log("user:");
-    console.log(user);
-    if (user && user.vchUsername !== null) {
-      let initials = "";
-      if (user.vchUsername != null) {
-        initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
-        initials = initials.toUpperCase();
-      }
-      let products = productsJson ? JSON.parse(productsJson) : null;
-      //if (bansJson) setBans(bans);
-      fetchBanRequests(user.aID);
-    }
+    setUserId(userIdUrl);
+    getCartItems();
   }, []);
-
-  const fetchBanRequests = () => {
-    // Fetch ban requests from the backend
-    fetch(`${backend}/cart/1`)
-      .then((res) => res.json())
-      .then((data) => {
-        setBans(data);
-        console.log(data);
-      })
-      .catch((error) => console.error("Error fetching ban requests:", error));
-  };
 
   const handleProceedToCheckout = () => {
     router.push("/checkout");
@@ -64,26 +43,82 @@ export default function Cart() {
     router.push("/stores");
   };
 
-  let cartID: number, storeID: number, productID: number, quantity: number;
-  try {
-    cartID = cart.aID;
-    storeID = cart.nStoreID;
-    productID = cart.nStoreID;
-    quantity = cart.nQuantity;
-  } catch (e) {
-    cartID = "";
-    storeID = "";
-    productID = "";
-    quantity = "";
-  }
+  const getCartItems = () => {
+    let success = false;
+    fetch(`${backend}/cart/${userIdUrl}`, {
+      method: "GET",
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          success = true;
+        } else {
+          setError("Can't find cart");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (success) {
+          setProducts(data);
+          console.log(products);
+        }
+      });
+  };
+
+  const deleteItem = (event, item) => {
+    event.preventDefault();
+    let success = false;
+    let data = {
+      userId: item.user_id,
+      productId: item.id,
+      storeId: item.store_id,
+      nQuantity: item.quantity,
+      nActive: 1,
+    };
+    fetch(`${backend}/cart/delete-item`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then((res) => {
+      if (res.status === 200) {
+        success = true;
+      } else {
+        setError("Couldn't delete item");
+      }
+      return res.json();
+    });
+  };
 
   return (
     <Panel title="Cart">
       <div className="box">
-        <div className="heading"> Your Items</div>
+        <div className="heading">Your Items</div>
         {products && products.length > 0 ? (
           <>
-            <div className="all-products flex"></div>
+            <div className="">
+              {products.map((t, i) => (
+                <div className="product">
+                  <div key={i}>
+                    <div className="product-name">{t.product_name}</div>
+                    <div className="product-description">
+                      Quantity: {`${t.quantity}`}
+                    </div>
+                    <div className="product-price">
+                      ${`${(t.product_price * t.quantity).toFixed(2)}`}
+                    </div>
+                  </div>
+                  <button
+                    className="delete-product-button button button-small"
+                    onClick={(event) => deleteItem(event, t)}
+                    key={t.aID}
+                  >
+                    Remove from Cart
+                  </button>
+                </div>
+              ))}
+            </div>
+
             <div>
               <button
                 className="delete-product-button button button-small"

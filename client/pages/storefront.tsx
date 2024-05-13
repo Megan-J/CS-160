@@ -16,6 +16,7 @@ export default function Storefront() {
   let [storeDescription, setDescriptionName] = useState("");
   let [owner, setOwner] = useState("");
   let [ownerId, setOwnerId] = useState("");
+  let [IdOfStore, setIdOfStore] = useState("");
 
   useEffect(() => {
     urlString = window.location.href;
@@ -27,10 +28,10 @@ export default function Storefront() {
     getStoreProducts();
 
     let userJson = sessionStorage.getItem("user");
-
     let user = userJson ? JSON.parse(userJson) : null;
 
     setUser(user);
+    setIdOfStore(storeID);
 
     if (user && user.vchUsername !== null) {
       fetchBanRequests();
@@ -52,7 +53,7 @@ export default function Storefront() {
       })
       .then((data) => {
         if (success) {
-          console.log(data);
+          //console.log(data);
           setStoreName(data.name);
           setDescriptionName(data.description);
           setOwnerId(data.ownerID);
@@ -85,36 +86,25 @@ export default function Storefront() {
     event.preventDefault();
     let success = false;
     let data = {
-      nUserID: user.aID,
-      nProductID: aID,
-      nStoreID: 1,
+      userId: user.aID,
+      productId: aID,
+      storeId: IdOfStore,
       nQuantity: 1,
+      nActive: 1,
     };
-    //console.log(data);
     fetch(`${backend}/cart/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    })
-      .then((res) => {
-        //console.log(res);
-        if (res.status === 200 || res.status === 201) {
-          success = true;
-        }
-        return res.json();
-      })
-      .then((data) => {
-        //console.log("returned:");
-        //console.log(data);
-        if (success) {
-          setProducts(data.products);
-          //console.log("Add product to cart!");
-          //console.log(data);
-        }
-        return data;
-      });
+    }).then((res) => {
+      if (res.status === 201) {
+        success = true;
+        alert("Item added to cart");
+      }
+      return res.json();
+    });
   };
 
   // this doesn't work
@@ -139,6 +129,8 @@ export default function Storefront() {
       <div>
         <p>{storeDescription}</p>
       </div>
+      <br />
+
       <div className="box">
         <div className="heading">Products</div>
         {products && products.length > 0 ? (
@@ -147,16 +139,16 @@ export default function Storefront() {
               <div className="product" key={i}>
                 <div className="product-name">{t.vchName}</div>
                 <div className="product-description">{t.txtDescription}</div>
-                <div className="product-price">
-                  Price: $ {`${t.fPrice.toFixed(2)}`}
+                <div className="product-price">${`${t.fPrice.toFixed(2)}`}</div>
+                <div className="product-inventory">
+                  {t.nInventory === 0 ? "Out of stock" : ""}
                 </div>
-                <div className="product-inventory">Stock: {t.nInventory}</div>
                 <button
                   className="delete-product-button button button-small"
                   onClick={(event) => AddProductToCart(event, t.aID)}
                   key={t.aID}
                 >
-                  Add Product
+                  Add to Cart
                 </button>
                 <Link classname="report-icon" href="/report">
                   <i class="bi bi-exclamation-circle"></i>

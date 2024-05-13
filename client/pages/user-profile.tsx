@@ -23,9 +23,6 @@ export default function UserProfile() {
   let [following, setFollowing] = useState(null);
   let [followers, setFollowers] = useState(null);
 
-  let [theStoreName, setTheStoreName] = useState("");
-  let [theStoreDescription, setTheStoreDescription] = useState("");
-
   const unfollow = () => {
     console.log("unfollow " + 1);
   };
