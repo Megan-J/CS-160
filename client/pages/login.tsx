@@ -39,17 +39,18 @@ export default function Login() {
         console.log("returned:");
         console.log(data);
         if (success) {
-          sessionStorage.setItem("user", JSON.stringify(data.user));
-          sessionStorage.setItem("store", JSON.stringify(data.store));
-          sessionStorage.setItem("products", JSON.stringify(data.products));
-          sessionStorage.setItem("orders", JSON.stringify(data.orders));
-          sessionStorage.setItem("music", JSON.stringify(data.music));
-          sessionStorage.setItem("tracks", JSON.stringify(data.tracks));
-          sessionStorage.setItem("followers", JSON.stringify(data.followers));
-          sessionStorage.setItem("following", JSON.stringify(data.following));
-          console.log("sessionStorage:");
-          console.log(sessionStorage);
-          router.push("/");
+            sessionStorage.setItem("user", JSON.stringify(data.user));
+            // sessionStorage.setItem("store", JSON.stringify(data.store));
+            // sessionStorage.setItem("products", JSON.stringify(data.products));
+            // sessionStorage.setItem("genres", JSON.stringify(data.genres));
+            // sessionStorage.setItem("orders", JSON.stringify(data.orders));
+            // sessionStorage.setItem("music", JSON.stringify(data.music));
+            // sessionStorage.setItem("tracks", JSON.stringify(data.tracks));
+            // sessionStorage.setItem("followers", JSON.stringify(data.followers));
+            // sessionStorage.setItem("following", JSON.stringify(data.following));
+            console.log("sessionStorage:")
+            console.log(sessionStorage);
+            router.push("/");
         }
         return data;
       });
@@ -57,34 +58,34 @@ export default function Login() {
 
   return (
     <Panel title="Login">
-      <div className="flex items-center justify-center">
-        <form onSubmit={handleSubmit} autoComplete="off">
-          <div className="row">
-            <label>Username</label>
-            <input
-              className="input"
-              type="text"
-              name="username"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="row">
-            <label>Password</label>
-            <input
-              className="input"
-              type="password"
-              name="password"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="row">
-            {error ? <div className="error">{error}</div> : <div>&nbsp;</div>}
-          </div>
-          <div className="flex items-center justify-center">
-            <button className="button button-small change-hue">Submit</button>
-          </div>
-        </form>
-      </div>
+        <div className="flex items-center justify-center">
+            <form onSubmit={handleSubmit} autocomplete="off">
+            <div className="row">
+                <label>Username</label>
+                <input
+                className="input"
+                type="text"
+                name="username"
+                onChange={handleChange}
+                />
+            </div>
+            <div className="row">
+                <label>Password</label>
+                <input
+                className="input"
+                type="password"
+                name="password"
+                onChange={handleChange}
+                />
+            </div>
+            <div className="row">
+                {error ? <div className="error">{error}</div> : <div>&nbsp;</div>}
+            </div>
+            <div className="flex items-center justify-center">
+                <button className="button button-small change-hue">Submit</button>
+            </div>
+            </form>
+        </div>
     </Panel>
   );
 }

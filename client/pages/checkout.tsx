@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Panel from "./components/Panel";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { backend } from "./components/Constants";
+import NavBar from "./components/NavBar";
 
 interface Inputs {
   email?: string;
@@ -21,40 +19,20 @@ interface Inputs {
 }
 
 export default function placeOrder() {
-  const router = useRouter();
-
-  const [formState, setFormState] = useState(null);
-  let [error, setError] = useState("");
-
   const [inputs, setInputs] = useState<Inputs>({});
-  const [shipAddress, setShipAddress] = useState("");
-  const [shipFirstName, setShipFirstName] = useState("");
-  const [shipLastName, setShipLastName] = useState("");
-  const [shipCity, setShipCity] = useState("");
-  const [shipState, setShipState] = useState("");
-  const [shipZip, setShipZip] = useState("");
-  const [shipEmail, setShipEmail] = useState("");
-  const [shipPhoneNum, setShipPhoneNum] = useState("");
-  const [delivery, setDelivery] = useState("");
-  const [billAddress, setBillAddress] = useState("");
-  const [billFirstName, setBillFirstName] = useState("");
-  const [billLastName, setBillLastName] = useState("");
-  const [billCity, setBillCity] = useState("");
-  const [billState, setBillState] = useState("");
-  const [billZip, setBillZip] = useState("");
-  const [billEmail, setBillEmail] = useState("");
-  const [billPhoneNum, setBillPhoneNum] = useState("");
 
-  let devPaymentSelect = 0;
+  const dummyOrder = {
+    items: [
+      { id: 1, name: "Product A", price: 50 },
+      { id: 2, name: "Product B", price: 120 },
+      { id: 3, name: "Product C", price: 15 },
+    ],
+  };
 
-  //needed to get information from cart, cart isn't set up yet
-  useEffect(() => {}, []);
-
-  const handleChange = (event) => {
-    setFormState({
-      ...formState,
-      [event.target.name]: event.target.value,
-    });
+  const handleChange = (event: { target: { name: any; value: any } }) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setInputs((values) => ({ ...values, [name]: value }));
   };
 
   const handleSubmit = (event: { preventDefault: () => void }) => {
@@ -80,285 +58,216 @@ export default function placeOrder() {
     }
   };
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
-    console.log(formState);
-
-    let data = JSON.stringify(formState);
-    const lines = data.trim().split("\n");
-    const shipVariables: string[] = [];
-    const billVariables: string[] = [];
-
-    lines.forEach((line) => {
-      const key = line.split(":")[0].trim();
-
-      if (key.startsWith("ship")) {
-        shipVariables.push(line);
-      } else if (billVariables.push(line)) {
-      }
-    });
-
-    let shipSuccess = false;
-    let billSuccess = false;
-    fetch(`${backend}/checkout/shipping_address`, {
-      method: "POST",
-      body: JSON.stringify(shipVariables),
-    }).then((res) => {
-      console.log(res);
-      if (res.status === 200 || res.status === 201) {
-        shipSuccess = true;
-      } else {
-        setError("Invalid shipping address");
-      }
-    });
-
-    fetch(`${backend}/checkout/billing_address`, {
-      method: "POST",
-      body: JSON.stringify(billVariables),
-    }).then((res) => {
-      console.log(res);
-      if (res.status === 200 || res.status === 201) {
-        billSuccess = true;
-      } else {
-        setError("Invalid billing address");
-      }
-    });
-    if (shipSuccess && billSuccess) {
-      router.push("/confirmation");
-    }
-  };
-
-  const handleDevPayment = () => {
-    devPaymentSelect++;
-    if (devPaymentSelect % 2 == 0) {
-      console.log("not selected");
-    } else {
-      console.log("selected");
-    }
-  };
-
   return (
-    <Panel title="Checkout">
-      <Link className="button button-small cancel" href="/cart">
-        Return to shopping cart
-      </Link>
+    <Panel>
+      <NavBar />
+      <h2 className="text-xl mb-4">Order</h2>
+      <div>
+        <ul>
+          {dummyOrder.items.map((item) => (
+            <li key={item.id}>
+              {item.name} - ${item.price}
+            </li>
+          ))}
+        </ul>
+        <p>Total: $185</p>
+      </div>
       <br />
       <div>
-        <h2 className="text-xl mb-4">Summary</h2>
-      </div>
-      <div>
-        <h2 className="text-xl mb-4">Shipping Address</h2>
-      </div>
-      <div>
-        <form onSubmit={handleFormSubmit}>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="First Name"
-                name="shipFirstName"
-                onChange={handleChange}
-              />
-            </label>
-
-            <label>
-              <input
-                type="text"
-                placeholder="Last Name"
-                name="shipLastName"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Address"
-                name="shipAddr"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="City"
-                name="shipCity"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="State"
-                name="shipState"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="ZIP Code"
-                name="shipZip"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Email"
-                name="shipEmail"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="Phone Number"
-                name="shipPhoneNumber"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
+        <form className="contact">
+          <a className="font-semibold">Contact</a>
           <br />
-          <br />
-
-          <div>
-            <h2 className="text-xl mb-4">Delivery</h2>
-          </div>
-          <input
-            type="radio"
-            id="Standard Shipping"
-            name="shippingOpt"
-            value="Standard Shipping"
-            onSelect={handleChange}
-          ></input>
-          <label>Standard Shipping</label>
-          <br />
-          <input
-            type="radio"
-            id="Express Shipping"
-            name="shippingOpt"
-            value="Express Shipping"
-            onSelect={handleChange}
-          ></input>
-          <label>Express Shipping</label>
-          <br />
-          <br />
-
-          <div>
-            <h2 className="text-xl mb-4">Payment</h2>
-          </div>
-          <input
-            type="checkbox"
-            id="Development Payment"
-            value="Development Payment"
-            onChange={handleDevPayment}
-          ></input>
-          <label>Development Payment</label>
-          <br />
-          <br />
-          <div>
-            <h2 className="text-xl mb-4">Billing Address</h2>
-          </div>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="First Name"
-                name="billFirstName"
-                onChange={handleChange}
-              />
-            </label>
-
-            <label>
-              <input
-                type="text"
-                placeholder="Last Name"
-                name="billLastName"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Address"
-                name="billAddr"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="City"
-                name="billCity"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="State"
-                name="billState"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="ZIP Code"
-                name="billZip"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Email"
-                name="billEmail"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="Phone Number"
-                name="billPhoneNumber"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <br />
-          <br />
-          <div>
-            <div>
-              <p>
-                By placing your order you agree to Radar's Terms and Conditions,
-                Privacy Notice, and Cookie Policy.
-              </p>
-            </div>
+          <label>
+            <input
+              type="text"
+              placeholder="Email"
+              name="email"
+              value={inputs.email || ""}
+              onChange={handleChange}
+            />
             <br />
-            <Link
-              className="center bottom-margin top-indent button button-large"
-              href="/confirmation"
-            >
-              Place Order
-            </Link>
-          </div>
-          <div className="flex items-center justify-center">
-            <button className="button change-hue">Place Order</button>
-          </div>
+            <br />
+          </label>
+          <a className="font-semibold">Shipping Address</a>
+          <br />
+          <label>
+            Country/Region
+            <select onChange={handleChange}>
+              <option value={"United States" && inputs.country}>
+                United States
+              </option>
+            </select>
+          </label>
+          <br />
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="First Name"
+                name="firstName"
+                value={inputs.firstName || ""}
+                onChange={handleChange}
+              />
+            </label>
+
+            <label>
+              <input
+                type="text"
+                placeholder="Last Name"
+                name="lastName"
+                value={inputs.lastName || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="Address"
+                name="address"
+                value={inputs.address || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="City"
+                name="city"
+                value={inputs.city || ""}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              <input
+                type="text"
+                placeholder="State"
+                name="state"
+                value={inputs.state || ""}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              <input
+                type="text"
+                placeholder="ZIP Code"
+                name="zip"
+                value={inputs.zip || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="Phone Number"
+                name="phoneNumber"
+                value={inputs.phoneNumber || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <br />
+          <br />
+          <a className="font-semibold">Payment</a>
+          <br />
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="Card Number"
+                name="cardNumber"
+                value={inputs.cardNumber || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="Name on Card"
+                name="nameOnCard"
+                value={inputs.nameOnCard || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="Expiration date (MM/YY)"
+                name="expiration"
+                value={inputs.expiration || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input
+                type="text"
+                placeholder="Security Code"
+                name="securityCode"
+                value={inputs.securityCode || ""}
+                onChange={handleChange}
+              />
+            </label>
+          </p>
+          <br />
+          <br />
+          <a className="font-semibold">Billing Address</a>
+          <br />
+          <label>
+            Country/Region
+            <select>
+              <option value={"United States"}>United States</option>
+            </select>
+          </label>
+          <br />
+          <label>
+            <input type="text" placeholder="Email" name="email" />
+          </label>
+          <p>
+            <label>
+              <input type="text" placeholder="First Name" name="firstName" />
+            </label>
+
+            <label>
+              <input type="text" placeholder="Last Name" name="lastName" />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input type="text" placeholder="Address" name="address" />
+            </label>
+          </p>
+          <p>
+            <label>
+              <input type="text" placeholder="City" name="city" />
+            </label>
+            <label>
+              <input type="text" placeholder="State" name="state" />
+            </label>
+            <label>
+              <input type="text" placeholder="ZIP Code" name="zip" />
+            </label>
+          </p>
+          <br />
+          <button onClick={handleSubmit}>Confirm Order</button>
         </form>
+        <br />
+        <br />
+        <br />
+        <a>
+          By placing your order you agree to Terms and Conditions, Privacy
+          Notice, and Cookie Policy.
+        </a>
       </div>
     </Panel>
   );
