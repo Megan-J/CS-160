@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `cloudsound` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `cloudsound`;
 -- MySQL dump 10.13  Distrib 8.0.31, for macos12 (x86_64)
 --
 -- Host: 127.0.0.1    Database: cloudsound
@@ -17,7 +15,6 @@ USE `cloudsound`;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-use cloudsound;
 --
 -- Table structure for table `Addresses`
 --
@@ -68,7 +65,7 @@ CREATE TABLE `BanRequests` (
   `dtResolved` datetime DEFAULT NULL,
   `bResolved` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +74,7 @@ CREATE TABLE `BanRequests` (
 
 LOCK TABLES `BanRequests` WRITE;
 /*!40000 ALTER TABLE `BanRequests` DISABLE KEYS */;
-INSERT INTO `BanRequests` VALUES (3,1,2,'just cause','2024-04-15 19:44:07','2024-04-16 21:00:56',-1),(8,0,2,'i said so','2024-04-16 14:21:55','2024-04-16 21:22:00',1),(9,0,2,'wefwf','2024-04-16 14:27:00','2024-04-16 21:27:06',1),(10,0,2,'ererbeb','2024-04-16 14:32:42','2024-04-16 21:32:49',1);
+INSERT INTO `BanRequests` VALUES (3,1,2,'just cause','2024-04-15 19:44:07','2024-04-16 21:00:56',-1),(8,0,2,'i said so','2024-04-16 14:21:55','2024-04-16 21:22:00',1),(9,0,2,'wefwf','2024-04-16 14:27:00','2024-04-16 21:27:06',1),(10,0,2,'ererbeb','2024-04-16 14:32:42','2024-04-16 21:32:49',1),(11,1,2,'because','2024-04-16 17:06:30',NULL,0);
 /*!40000 ALTER TABLE `BanRequests` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +92,7 @@ CREATE TABLE `Cart` (
   `nProductID` int DEFAULT NULL,
   `nQuantity` int DEFAULT NULL,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,6 +310,30 @@ LOCK TABLES `Orders` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `PlaylistSongs`
+--
+
+DROP TABLE IF EXISTS `PlaylistSongs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `PlaylistSongs` (
+  `aID` int NOT NULL AUTO_INCREMENT,
+  `nUserID` int NOT NULL,
+  `nTrackID` int NOT NULL,
+  PRIMARY KEY (`aID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PlaylistSongs`
+--
+
+LOCK TABLES `PlaylistSongs` WRITE;
+/*!40000 ALTER TABLE `PlaylistSongs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PlaylistSongs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Products`
 --
 
@@ -343,6 +364,32 @@ LOCK TABLES `Products` WRITE;
 /*!40000 ALTER TABLE `Products` DISABLE KEYS */;
 INSERT INTO `Products` VALUES (3,2,'111','222',333,444,555,'',0,'2024-03-21 14:58:29',NULL),(4,2,'111','222',333,444,555,'',0,'2024-03-21 14:59:02',NULL),(5,2,'111','222',333,444,555,'',0,'2024-03-21 14:59:07',NULL),(6,2,'111','222',333,444,555,'',0,'2024-03-21 15:00:23',NULL),(7,2,'111','222',333,444,555,'',0,'2024-03-21 15:02:15',NULL),(8,2,'111','222',333,444,555,'',0,'2024-03-21 15:02:28',NULL),(9,2,'111','222',333,444,555,'',0,'2024-03-21 15:03:00',NULL),(10,2,'111','222',333,444,555,'',0,'2024-03-21 15:04:24',NULL),(11,2,'111','222',333,444,555,'',0,'2024-03-21 15:04:59',NULL),(12,2,'111','222',333,444,555,'',0,'2024-03-21 15:05:17',NULL),(15,1,'asdfasfd','adfsfdsa',22,33,44,'',0,'2024-03-21 15:40:42',NULL),(17,1,'My great product','This is cool',11.22,55.44,123,'',0,'2024-03-21 15:57:15',NULL),(18,4,'My brain','Not using anymore',5,1,1,'',0,'2024-03-21 16:02:46',NULL);
 /*!40000 ALTER TABLE `Products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Reports`
+--
+
+DROP TABLE IF EXISTS `Reports`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Reports` (
+  `idReports` int NOT NULL,
+  `ReportType` varchar(45) DEFAULT NULL,
+  `Description` varchar(255) DEFAULT NULL,
+  `UserID` int DEFAULT NULL,
+  `ProductID` int DEFAULT NULL,
+  PRIMARY KEY (`idReports`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Reports`
+--
+
+LOCK TABLES `Reports` WRITE;
+/*!40000 ALTER TABLE `Reports` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Reports` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -446,7 +493,7 @@ CREATE TABLE `Tracks` (
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT NULL,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -455,6 +502,7 @@ CREATE TABLE `Tracks` (
 
 LOCK TABLES `Tracks` WRITE;
 /*!40000 ALTER TABLE `Tracks` DISABLE KEYS */;
+INSERT INTO `Tracks` VALUES (1,1,'song1','best song','someurl',NULL,1,'2024-04-16 17:29:55',NULL),(2,1,'song2','description','basic',NULL,NULL,'2024-04-16 17:29:55',NULL),(3,1,'song3',NULL,NULL,NULL,NULL,'2024-04-16 17:29:55',NULL);
 /*!40000 ALTER TABLE `Tracks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -483,7 +531,7 @@ CREATE TABLE `Users` (
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -492,7 +540,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (1,'tmoquin','password',NULL,'Tyler','Moquin','TAM','tyler.moquin@sjsu.edu',1,'Student with a penchant for music.',NULL,NULL,NULL,0,'2024-03-18 16:55:55','2024-03-18 16:55:55'),(2,'kmoquin','password',NULL,'Kai','Moquin','Kainess','kai@gmail.com',1,'Just a kid.',NULL,NULL,NULL,0,'2024-03-19 16:54:12','2024-03-19 16:54:12'),(11,'tmoquin2','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:34:39','2024-03-20 18:34:39'),(12,'tmoquin22','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:35:32','2024-03-20 18:35:32'),(13,'cmoquin','password',NULL,'Carla','Moquin',NULL,'cmoquin@gmail.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 12:14:59','2024-03-21 12:14:59'),(14,'nmoquin','password',NULL,'Natasha','Moquin',NULL,'nmoquin@foo.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 16:02:15','2024-03-21 16:02:15');
+INSERT INTO `Users` VALUES (1,'tmoquin','password',NULL,'Tyler','Moquin','TAM','tyler.moquin@sjsu.edu',1,'Student with a penchant for music.',NULL,NULL,NULL,0,'2024-03-18 16:55:55','2024-03-18 16:55:55'),(2,'kmoquin','password',NULL,'Kai','Moquin','Kainess','kai@gmail.com',1,'Just a kid.',NULL,NULL,NULL,0,'2024-03-19 16:54:12','2024-03-19 16:54:12'),(11,'tmoquin2','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:34:39','2024-03-20 18:34:39'),(12,'tmoquin22','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:35:32','2024-03-20 18:35:32'),(13,'cmoquin','password',NULL,'Carla','Moquin',NULL,'cmoquin@gmail.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 12:14:59','2024-03-21 12:14:59'),(14,'nmoquin','password',NULL,'Natasha','Moquin',NULL,'nmoquin@foo.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 16:02:15','2024-03-21 16:02:15'),(15,'asdf','asdf',NULL,'asdf','asdf',NULL,'asdf',0,NULL,NULL,NULL,NULL,0,'2024-05-06 23:17:53','2024-05-06 23:17:53');
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -505,4 +553,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-16 14:45:57
+-- Dump completed on 2024-05-13  2:37:57
