@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
+import Link from "next/link";
 
 // interface Product {
 //     id: number;
@@ -120,13 +121,13 @@ export default function Cart() {
             </div>
 
             <div>
-              <button
+              <Link
                 className="delete-product-button button button-small"
-                onClick={handleProceedToCheckout}
+                href="/checkout"
+                as={`/checkout?userID=${idOfUser}`}
               >
-                {" "}
                 Proceed to Checkout
-              </button>
+              </Link>
             </div>
           </>
         ) : (

@@ -25,6 +25,8 @@ export default function placeOrder() {
 
   const [formState, setFormState] = useState(null);
   let [error, setError] = useState("");
+  let [user, setUser] = useState(null);
+  let [items, setItems] = useState(null);
 
   const [inputs, setInputs] = useState<Inputs>({});
   const [shipAddress, setShipAddress] = useState("");
@@ -45,10 +47,48 @@ export default function placeOrder() {
   const [billEmail, setBillEmail] = useState("");
   const [billPhoneNum, setBillPhoneNum] = useState("");
 
+  let urlString, url, userIdUrl;
+
   let devPaymentSelect = 0;
 
-  //needed to get information from cart, cart isn't set up yet
-  useEffect(() => {}, []);
+  useEffect(() => {
+    urlString = window.location.href;
+    url = new URL(urlString);
+    userIdUrl = url.searchParams.get("userID");
+    //console.log(storeID);
+    let userJson = sessionStorage.getItem("user");
+    let user = userJson ? JSON.parse(userJson) : null;
+
+    console.log("HELLO");
+    console.log("userID from URL: " + userIdUrl);
+    setUser(user);
+    console.log("user info: " + user);
+    console.log(user);
+
+    if (user && user.vchUsername !== null) {
+      getCartData();
+    }
+  }, []);
+
+  const getCartData = () => {
+    let success = false;
+    fetch(`${backend}/cart/${userIdUrl}`, {
+      method: "GET",
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          success = true;
+        } else {
+          setError("Error in retrieving items in cart");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (success) {
+          setItems(data);
+        }
+      });
+  };
 
   const handleChange = (event) => {
     setFormState({
@@ -139,12 +179,39 @@ export default function placeOrder() {
 
   return (
     <Panel title="Checkout">
-      <Link className="button button-small cancel" href="/cart">
+      <Link
+        className="button button-small cancel"
+        href="/cart"
+        as={`/cart?userID=${userIdUrl}`}
+      >
         Return to shopping cart
+        <i class="bi bi-cart3"></i>
       </Link>
       <br />
       <div>
         <h2 className="text-xl mb-4">Summary</h2>
+        <div>
+          {items && items.length > 0 ? (
+            <>
+              {items.map((t, i) => (
+                <div className="">
+                  <div key={i}>
+                    <div className="product-name">{t.product_name}</div>
+                    <div className="product-description">
+                      Quantity: {`${t.quantity}`}
+                    </div>
+                    <div className="product-price">
+                      ${`${(t.product_price * t.quantity).toFixed(2)}`}
+                    </div>
+                    <br />
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
       <div>
         <h2 className="text-xl mb-4">Shipping Address</h2>

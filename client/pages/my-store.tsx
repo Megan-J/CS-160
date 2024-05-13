@@ -1026,6 +1026,7 @@ export default function MyStore() {
                       className="indent bottom-margin top-indent button button-small"
                       onClick={handleAddProduct}
                     >
+                      <i class="bi bi-plus"></i>
                       Add Product
                     </button>
                   </div>
@@ -1208,8 +1209,8 @@ export default function MyStore() {
                 className="indent bottom-margin top-indent button button-small"
                 onClick={handleAddTrack}
               >
-                Add Music
-                <i class="bi bi-file-earmark-music"></i>
+                <i class="bi bi-plus"></i>
+                Upload Music
               </button>
             </div>
           </>

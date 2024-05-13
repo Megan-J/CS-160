@@ -86,10 +86,14 @@ export default function UserProfile() {
   return (
     <Panel title={userProfileName}>
       <div>
-        {followers} Followers <i class="bi bi-radar"></i> {following} Following
+        {followers} Followers <i class="bi bi-soundwave" /> {following}{" "}
+        Following
       </div>
       <br />
-      <button className="button">Follow</button>
+      <button className="button">
+        Follow
+        <i class="bi bi-person-plus-fill"></i>
+      </button>
       <br />
       <br />
       <div className="box">

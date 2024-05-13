@@ -3,7 +3,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import SearchStores from "./searchStores";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 type NavBarProps = {
