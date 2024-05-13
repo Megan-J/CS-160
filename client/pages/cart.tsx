@@ -11,10 +11,11 @@ import { backend } from "./components/Constants";
 //   }
 //key={product.id}
 export default function Cart() {
-  let [bans, setBans] = useState(null);
+  
   let [user, setUser] = useState(null);
-  let [cart, setCart] = useState(null);
-  let [items, setItems] = useState(null);
+  let [bans, setBans] = useState(null);
+  //let [cart, setCart] = useState(null);
+  //let [items, setItems] = useState(null);
   let [products, setProducts] = useState(null);
   const router = useRouter();
 
@@ -29,19 +30,20 @@ export default function Cart() {
     let user = userJson ? JSON.parse(userJson) : null;
     let cart = cartJson ? JSON.parse(cartJson) : null;
     let store = storeJson ? JSON.parse(storeJson) : null;
+    let products = productsJson ? JSON.parse(productsJson) : null;
 
     setUser(user);
     console.log("user:");
     console.log(user);
     if (user && user.vchUsername !== null) {
-      let initials = "";
-      if (user.vchUsername != null) {
-        initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
-        initials = initials.toUpperCase();
-      }
-      let products = productsJson ? JSON.parse(productsJson) : null;
+      // let initials = "";
+      // if (user.vchUsername != null) {
+      //   initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
+      //   initials = initials.toUpperCase();
+      // }
+      if (productsJson) setProducts(products);
       //if (bansJson) setBans(bans);
-      fetchBanRequests(user.aID);
+      fetchBanRequests();
     }
   }, []);
 

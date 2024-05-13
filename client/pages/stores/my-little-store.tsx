@@ -22,18 +22,55 @@ import {
 //   }
 //key={product.id}
 export default function MyLittleStore() {
+     const router = useRouter();
       // Fetch all stores
-      const [products, setProducts] = useState([]);
-      let [bans, setBans] = useState(null);
+      
       let [user, setUser] = useState(null);
-      const router = useRouter();
+      let [bans, setBans] = useState(null);
+    //   const [addingProducts, setAddingProducts] = useState(null);
+     
       const { storeID } = router.query; // Access storeID from router query
-   // const { storeID } = router.query;
-    //   const { state } = props.location;
-    // const { storeID } = state;
-    //   const location = useLocation();
-   // const { storeID } = location.state ? location.state : "null";
+  
+//    const handleAddProducts = () => {
+//     setAddingProducts(true);
+//   };
 
+   const AddProductToCart = (event, aID) => {
+    event.preventDefault();
+    let success = false;
+    let data = {
+        nUserID: user.aID,
+        nProductID: aID,
+        nStoreID: storeID,
+        nQuantity: 1
+    };
+    console.log(data);
+    fetch(`${backend}/cart/add`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(res => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+            success = true;
+        }
+        return res.json();
+    })
+    .then(data => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+            setBans(data.bans);
+            console.log("Add product to cart!");
+            console.log(data);
+            // setAddingProducts(false);
+        }
+        return data;
+    });
+}
 
       useEffect(() => {
         let userJson = sessionStorage.getItem("user");
@@ -46,54 +83,17 @@ export default function MyLittleStore() {
         console.log("user:");
         console.log(user);
         if (user && user.vchUsername !== null) {
-            let initials = '';
-            if (user.vchUsername != null) {
-                initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
-                initials = initials.toUpperCase();
-            }
+            // let initials = '';
+            // if (user.vchUsername != null) {
+            //     initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
+            //     initials = initials.toUpperCase();
+            // }
         
             fetchBanRequests();
         }
     }, []);
 
-    const AddProductToCart = (event, aID) => {
-      event.preventDefault();
-      let success = false;
-      let data = {
-          nUserID: user.aID,
-          nProductID: aID,
-          nStoreID: storeID,
-          nQuantity: 1
-      };
-      console.log(data);
-      fetch(`${backend}/cart/add`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-      })
-      .then(res => {
-          console.log(res);
-          if (res.status === 200 || res.status === 201) {
-              success = true;
-          }
-          return res.json();
-      })
-      .then(data => {
-          console.log("returned:");
-          console.log(data);
-          if (success) {
-              setProducts(data.products);
-              console.log("Add product to cart!");
-              console.log(data);
-          }
-          return data;
-      });
-  }
-
-  
-      const fetchBanRequests = () => {
+    const fetchBanRequests = () => {
         // Fetch ban requests from the backend
         if (!storeID) {
             console.error("Store information is not available");
