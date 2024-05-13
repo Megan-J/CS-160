@@ -150,6 +150,40 @@ export default function index() {
     }
   };
 
+  const uploadFile = async (e) => {
+    /*console.log("UPLOADING FILE");
+    const file = e.target.files[0];
+    if (file != null) {
+      const data = new FormData();
+      data.append("file_from_react", file);
+
+      let response = await fetch(`${backend}/url_route`, {
+        method: "POST",
+        body: data,
+      });
+
+      let res = await response.json();
+      if (res.status !== 1) {
+        alert("Error uploading file");
+      } else {
+        router.push("/");
+      }
+    }*/
+
+    const file = e.target.files[0];
+    if (file != null) {
+      fetch(`https://api.escuelajs.co/api/v1/files/upload`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: {
+          file: e,
+        },
+      });
+    }
+  };
+
   const handleOnClick = async () => {
     // Fetch all tracks
     const response = await fetch(`${backend}/tracks/all`);
@@ -229,6 +263,14 @@ export default function index() {
         ) : (
           <></>
         )}
+      </div>
+      <div>
+        <div className="center">
+          <form>
+            <input type="file" onChange={uploadFile}></input>
+          </form>
+          <br />
+        </div>
       </div>
     </Panel>
   );

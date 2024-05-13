@@ -68,7 +68,8 @@ const NavBar = ({ children }: NavBarProps) => {
               <Link href="/owner">My store</Link>
             </li>
             <li className="right">
-              <Link className="initials" href="/profile">
+              <Link className="initials" href="/self-profile">
+                <i class="bi bi-person-circle"></i>
                 {initials}
               </Link>
             </li>

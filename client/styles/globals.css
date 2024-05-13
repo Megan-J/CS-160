@@ -191,7 +191,7 @@ label {
 
 .initials {
     animation: hue-rotate 10s infinite linear;
-    background: #FF0;
+    background: rgb(141, 141, 2);
     border-radius: 12px;
     border: 1px solid #888;
     color: #000;
@@ -203,7 +203,7 @@ label {
     margin-top: 5px;
     padding-top: 2px;
     text-align: center;
-    width: 24px;
+    
 }
 
 nav input.search {

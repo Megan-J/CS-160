@@ -1214,12 +1214,6 @@ export default function user() {
             </div>
           </>
         )}
-        <div className="center">
-          <form>
-            <input type="file" onChange={uploadFile}></input>
-          </form>
-          <br />
-        </div>
       </div>
 
       <div className="box">

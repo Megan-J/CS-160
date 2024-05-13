@@ -961,6 +961,8 @@ def delete_cart():
          return make_response(jsonify({'message': 'Item not found'}), 404)
      except Exception as e:
          return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
+     
+
 
 
 ### ------------- TESTING ------------- ###
