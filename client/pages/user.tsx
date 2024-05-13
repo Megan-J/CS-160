@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
+import AudioPlayer from './AudioPlayer';
+
 
 export default function index() {
   const router = useRouter();
@@ -17,12 +19,14 @@ export default function index() {
   let [orderItem2, setOrderItem2] = useState(true);
   let [orderItem3, setOrderItem3] = useState(true);
   let [bans, setBans] = useState(null);
+  let [playlists, setPlaylists] = useState(null);
 
   let [creatingStore, setCreatingStore] = useState(null);
   let [editingStore, setEditingStore] = useState(null);
   let [addingProduct, setAddingProduct] = useState(null);
   let [addingTrack, setAddingTrack] = useState(null);
   let [addingBan, setAddingBan] = useState(null);
+  let [addingPlaylist, setAddingPlaylist] = useState(null);
 
   let [theStoreName, setTheStoreName] = useState("");
   let [theStoreDescription, setTheStoreDescription] = useState("");
@@ -63,6 +67,8 @@ export default function index() {
 
   let [newBanReason, setNewBanReason] = useState("");
   let [newRequestedID, setNewRequestedID] = useState("");
+
+  let [newPlaylistName, setNewPlaylistName] = useState("");
 
   const handleChangeCreateStoreName = (event) => {
     setCreateStoreName(event.target.value);
@@ -108,6 +114,14 @@ export default function index() {
 
   const cancelAddBan = () => {
     setAddingBan(false);
+  };
+
+  const handleAddPlaylist = () => {
+    setAddingPlaylist(true);
+  };
+
+  const cancelAddPlaylist = () => {
+    setAddingPlaylist(false);
   };
 
   const createStore = (e) => {
@@ -521,6 +535,43 @@ export default function index() {
       });
   };
 
+  const handleSubmitPlaylist = (e) => {
+    e.preventDefault();
+    let success = false;
+    let data = {
+      nUserID: user.aID,
+      vchName: newPlaylistName
+    };
+    fetch(`${backend}/add-playlist`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+          // clear the form
+          setNewPlaylistName("");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          sessionStorage.setItem("playlists", JSON.stringify(data));
+          setPlaylists(data.playlists);
+          console.log("playlists updated");
+          console.log(data);
+          setAddingPlaylist(false);
+        }
+        return data;
+      });
+  };
+
   useEffect(() => {
     console.log(sessionStorage);
     let userJson = sessionStorage.getItem("user");
@@ -605,6 +656,39 @@ export default function index() {
         if (success) {
           setBans(data.bans);
           console.log("bans updated");
+          console.log(data);
+        }
+        return data;
+      });
+  };
+
+  const deletePlaylist = (event, aID) => {
+    event.preventDefault();
+    let success = false;
+    let data = {
+      aID: aID,
+      nUserID: user.aID,
+    };
+    fetch(`${backend}/delete-playlist`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+          success = true;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("returned:");
+        console.log(data);
+        if (success) {
+          setPlaylists(data.playlists);
+          console.log("playlists updated");
           console.log(data);
         }
         return data;
@@ -1112,8 +1196,8 @@ export default function index() {
         )}
       </div>
 
-      <div className="box greenbg">
-        <div className="heading green">Tracks</div>
+      {/* <div className="box greenbg">
+        <div className="heading green">My Uploaded Tracks</div>
         {tracks && tracks.length > 0 ? (
           tracks.map((t, i) => (
             <div className="track" key={i}>
@@ -1132,10 +1216,10 @@ export default function index() {
         ) : (
           <div className="indent bottom-margin">No tracks yet.</div>
         )}
-      </div>
+      </div> */}
 
       <div className="box">
-        <div className="heading orange">Upload Music</div>
+        <div className="heading orange">My Tracks</div>
         {tracks && tracks.length > 0 ? (
           <div className="all-products flex">
             {tracks.map((t, i) => (
@@ -1238,12 +1322,12 @@ export default function index() {
           </>
         )}
 
-        <div className="center">
+        {/* <div className="center">
           <form>
             <input type="file" onChange={uploadFile}></input>
           </form>
           <br />
-        </div>
+        </div> */}
       </div>
 
       <div className="box">
@@ -1377,21 +1461,76 @@ export default function index() {
 
       <div className="box">
         <div className="heading"> Add to Playlist</div>
+        {playlists && playlists.length > 0 ? (
+          <div className="all-products flex">
+            {playlists.map((t, i) => (
+              <div className="product" key={i}>
+                <div className="name">Name: {t.song_name}</div>
+                <div className="display-tracks"> Display Tracks here</div>
+                <button
+                  className="delete-product-button button button-small"
+                  onClick={(event) => deletePlaylist(event, t.aID)}
+                  key={t.aID}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="indent bottom-margin">No tracks in playlist.</div>
+          </>
+        )}
+
+        {addingPlaylist ? (
+          <>
+            <div className="div-center">
+              <div className="product-box box container new-product-container no-shadow">
+                <div className="heading subheading gray">
+                  Add Track to Playlist!
+                </div>
+                <form onSubmit={handleSubmitPlaylist}>
+                  <div className="new-product-pane">
+                    <div>
+                      <input
+                        className="new-product-name input"
+                        type="text"
+                        name="newPlaylistName"
+                        value={newPlaylistName}
+                        onChange={(e) => setNewPlaylistName(e.target.value)}
+                        placeholder="Track Name"
+                      />
+                    </div>
+                    <div className="product-submit-margin-top">
+                      <button className="button button-small" type="submit">
+                        Submit
+                      </button>
+                      <button
+                        className="button button-small cancel"
+                        onClick={cancelAddPlaylist}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="center">
+              <button
+                className="indent bottom-margin top-indent button button-small"
+                onClick={handleAddPlaylist}
+              >
+                Add Tracks
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </Panel>
   );
-}
-{
-  /* <div className="center">
-<form onSubmit={handleSubmitTrack}>
-  <input type="file" name="file" id="file-upload" />
-  <br />
-  <button
-    className="indent bottom-margin top-indent button button-small"
-    type="submit"
-  >
-    Upload a Track
-  </button>
-</form>
-</div> */
 }

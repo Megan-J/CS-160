@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 CORS(app) # enable cors for all routes
 #url : mysql+mysqlconnector://username:password@localhost/db-name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password123@localhost/cloudsound'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost/cloudsound'
 app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = "../data/"
 ALLOWED_EXTENSIONS = set(['mp3', 'mp4', 'wav'])
@@ -49,6 +49,9 @@ class Orders(db.Model):
 
 class Products(db.Model):
     __table__ = db.metadata.tables['Products']
+
+class PlaylistSongs(db.Model):
+    __table__ = db.metadata.tables['PlaylistSongs']
 
 class States(db.Model):
     __table__ = db.metadata.tables['States']
@@ -1020,6 +1023,65 @@ def delete_cart():
          return make_response(jsonify({'message': 'Item not found'}), 404)
      except Exception as e:
          return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
+
+
+#add song to playlist with userid and songname
+#first search song name exists in tracks database and get trackid
+#add song to platlistsongs table with userid and trackid
+
+
+#get playlist songs by user id; 
+#return track id from playlistsongs table;
+#search tracks table by trackid and return songname and audiourl as well
+@app.route('/playlist/<int:user_id>', methods=['GET'])
+def get_playlists_by_user(user_id):
+     try:
+         # Query playlist songs by user ID
+         cart_items = PlaylistSongs.query.filter_by(nUserID=user_id).all()
+
+         # Initialize an empty list to store formatted cart items
+         formatted_cart_items = []
+
+         # Iterate over each song in playlist
+         for cart_item in cart_items:
+             # Get the id associated with the song 
+             product = Tracks.query.get(cart_item.nTrackID)
+             if product:
+                 # Create a dictionary representing the formatted cart item
+                 formatted_cart_item = {
+                         'playlist_id': cart_item.aID,
+                         'user_id': cart_item.nUserID,
+                         'track_id': cart_item.nTrackID,
+                         'product_name': product.vchTitle,  # Include product name
+                         'audio_url':product.vchAudioURL
+                 }
+                 # Append the formatted cart item to the list
+                 formatted_cart_items.append(formatted_cart_item)
+
+         # Return the formatted cart items as JSON response
+         return jsonify(formatted_cart_items), 200
+
+     except Exception as e:
+         return make_response(jsonify({'message': 'Error getting songs in playlist', 'error': str(e)}), 500)
+
+
+
+#delete playlist song
+@app.route('/delete-playlist', methods=['POST'])
+def delete_playlist():
+     response = {}
+     try:
+         data = request.get_json()
+        # ban_id = data['aID']
+         ban = PlaylistSongs.query.filter_by(aID=data['aID']).first()
+         if ban:
+             db.session.delete(ban)
+             db.session.commit()
+             return make_response(jsonify({'message': 'Song deleted from playlist successfully'}), 200)
+         return make_response(jsonify({'message': 'Song not found'}), 404)
+     except Exception as e:
+         return make_response(jsonify({'message': 'Song not deleted', 'error': str(e)}), 500)
+
 
 #port
 if __name__ == '__main__':

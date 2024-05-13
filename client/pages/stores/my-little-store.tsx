@@ -95,7 +95,11 @@ export default function MyLittleStore() {
   
       const fetchBanRequests = () => {
         // Fetch ban requests from the backend
-        
+        if (!storeID) {
+            console.error("Store information is not available");
+            return;
+        }
+        //console.log(storeID); //checks that value is set
         fetch(`${backend}/product/${storeID}`)
             .then(res => res.json())
             .then(data => {
