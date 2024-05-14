@@ -8,7 +8,15 @@ import song1 from "../../data/newSongs/ai-generated-7926621_640.jpg";
 import song2 from "../../data/newSongs/ai-generated-8716960_640.jpg";
 import song3 from "../../data/newSongs/universe-8418706_640.jpg";
 import song4 from "../../data/newSongs/walkTogether.jpg";
-import song5 from "../../data/newSongs/background-7625677_640.jpg";
+import song5 from "../../data/newSongs/LoFi Chill.png";
+import product1 from "../../data/trendingProducts/duck.jpg";
+import product2 from "../../data/trendingProducts/sweater.jpg";
+import product3 from "../../data/trendingProducts/ring.jpg";
+import product4 from "../../data/trendingProducts/art.jpg";
+import product5 from "../../data/trendingProducts/teddyBear.jpg";
+import listen1 from "../../data/recentlyListened/riseAndShine.jpg";
+import listen2 from "../../data/recentlyListened/i will be here.png";
+import listen3 from "../../data/recentlyListened/OneStepFurther.png";
 
 interface Track {
   id: number;
@@ -155,40 +163,6 @@ export default function index() {
     }
   };
 
-  const uploadFile = async (e) => {
-    /*console.log("UPLOADING FILE");
-    const file = e.target.files[0];
-    if (file != null) {
-      const data = new FormData();
-      data.append("file_from_react", file);
-
-      let response = await fetch(`${backend}/url_route`, {
-        method: "POST",
-        body: data,
-      });
-
-      let res = await response.json();
-      if (res.status !== 1) {
-        alert("Error uploading file");
-      } else {
-        router.push("/");
-      }
-    }*/
-
-    const file = e.target.files[0];
-    if (file != null) {
-      fetch(`https://api.escuelajs.co/api/v1/files/upload`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: {
-          file: e,
-        },
-      });
-    }
-  };
-
   const handleOnClick = async () => {
     // Fetch all tracks
     const response = await fetch(`${backend}/tracks/all`);
@@ -246,6 +220,35 @@ export default function index() {
           <div>
             <div className="box">
               <div className="heading">Recently Listened To</div>
+              <div className="all-images">
+                <div className="center">
+                  <img
+                    src={listen1.src}
+                    style={{ padding: "15px", boxSizing: "border-box" }}
+                    alt="Song 1 Image"
+                  />
+                  <p className="song-names">Rise & Shine</p>
+                  <i className="bi bi-play-circle-fill"></i>
+                </div>
+                <div className="center">
+                  <img
+                    src={listen2.src}
+                    style={{ padding: "15px", boxSizing: "border-box" }}
+                    alt="Song 2 Image"
+                  />
+                  <p className="song-names">I'll be here</p>
+                  <i className="bi bi-play-circle-fill"></i>
+                </div>
+                <div className="center">
+                  <img
+                    src={listen3.src}
+                    style={{ padding: "15px", boxSizing: "border-box" }}
+                    alt="Song 3 Image"
+                  />
+                  <p className="song-names">One Step Further</p>
+                  <i className="bi bi-play-circle-fill"></i>
+                </div>
+              </div>
             </div>
           </div>
         ) : (
@@ -263,7 +266,8 @@ export default function index() {
                 style={{ padding: "15px", boxSizing: "border-box" }}
                 alt="Song 1 Image"
               />
-              <p>Call to the Soul</p>
+              <p className="song-names">Call to the Soul</p>
+              <i className="bi bi-play-circle-fill"></i>
             </div>
             <div className="center">
               <img
@@ -271,40 +275,90 @@ export default function index() {
                 style={{ padding: "15px", boxSizing: "border-box" }}
                 alt="Song 2 Image"
               />
-              <label>Powerful Rock</label>
+              <p className="song-names">Powerful Rock</p>
+              <i className="bi bi-play-circle-fill"></i>
             </div>
-
             <div className="center">
               <img
                 src={song3.src}
                 style={{ padding: "15px", boxSizing: "border-box" }}
                 alt="Song 3 Image"
               />
-              <label>Funk Kingdom</label>
+              <p className="song-names">Funk Kingdom</p>
+              <i className="bi bi-play-circle-fill"></i>
             </div>
 
             <div className="center">
               <img
                 src={song4.src}
-                style={{ padding: "10px", boxSizing: "border-box" }}
+                style={{ padding: "15px", boxSizing: "border-box" }}
                 alt="Song 4 Image"
               />
-              <p>Walk Together</p>
+              <p className="song-names">Walk Together</p>
+              <i className="bi bi-play-circle-fill"></i>
             </div>
 
             <div className="center">
               <img
                 src={song5.src}
-                style={{ padding: "10px", boxSizing: "border-box" }}
+                style={{ padding: "15px", boxSizing: "border-box" }}
                 alt="Song 3 Image"
               />
-              <p>LoFi Chill</p>
+              <p className="song-names">LoFi Chill</p>
+              <i className="bi bi-play-circle-fill"></i>
             </div>
           </div>
         </div>
         <br />
         <div className="box">
           <div className="heading">Trending products</div>
+          <div className="all-images">
+            <div className="center">
+              <img
+                src={product1.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 1 Image"
+              />
+              <p className="song-names">Crochet Duck</p>
+              <i className="bi bi-cart-plus"></i>
+            </div>
+            <div className="center">
+              <img
+                src={product2.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 2 Image"
+              />
+              <p className="song-names">Sweater</p>
+              <i className="bi bi-cart-plus"></i>
+            </div>
+            <div className="center">
+              <img
+                src={product3.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 1 Image"
+              />
+              <p className="song-names">Ring</p>
+              <i className="bi bi-cart-plus"></i>
+            </div>
+            <div className="center">
+              <img
+                src={product4.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 2 Image"
+              />
+              <p className="song-names">Art Print</p>
+              <i className="bi bi-cart-plus"></i>
+            </div>
+            <div className="center">
+              <img
+                src={product5.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 2 Image"
+              />
+              <p className="song-names">Teddy Bear</p>
+              <i className="bi bi-cart-plus"></i>
+            </div>
+          </div>
         </div>
       </div>
     </Panel>

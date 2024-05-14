@@ -148,33 +148,6 @@ export default function placeOrder() {
 
     let shipSuccess = false;
     let billSuccess = false;
-
-    /*fetch(`${backend}/checkout/shipping_address`, {
-      method: "POST",
-      body: JSON.stringify(shipVariables),
-    }).then((res) => {
-      console.log(res);
-      if (res.status === 200 || res.status === 201) {
-        shipSuccess = true;
-      } else {
-        setError("Invalid shipping address");
-      }
-    });
-
-    fetch(`${backend}/checkout/billing_address`, {
-      method: "POST",
-      body: JSON.stringify(billVariables),
-    }).then((res) => {
-      console.log(res);
-      if (res.status === 200 || res.status === 201) {
-        billSuccess = true;
-      } else {
-        setError("Invalid billing address");
-      }
-    });
-    if (shipSuccess && billSuccess) {
-      router.push("/confirmation");
-    }*/
   };
 
   const handleDevPayment = () => {
