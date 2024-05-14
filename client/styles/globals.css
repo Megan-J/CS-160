@@ -1,12 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Filename: styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
 
 @font-face {
     font-family: 'radar';
     font-style: normal;
     font-weight: normal;
     src: url('/radar.ttf') format('truetype');
+}
+
+body {
+    font-family: "Work Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 nav.main {

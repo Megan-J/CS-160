@@ -68,26 +68,17 @@ const SearchStores: React.FC = () => {
   return (
     <div>
       <br />
-      <div className="input_wrapper">
-        <input
-          type="text"
-          placeholder="Search Stores"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-        <button disabled={!text} onClick={handleOnClick}>
-          Search
-        </button>
-      </div>
-      <br />
       <div className="all-products flex">
         {userList.map((store) => (
           <div className="body_item">
+            <div className="center">
+              <h1 className="bi bi-shop"></h1>
+            </div>
+            <br />
             <Link href="/storefront" as={`/storefront?storeID=${store.id}`}>
               <img src={storefront1.src} />
               <br />
-              <p className="heading">{store.name}</p>
+              <p className="heading-center">{store.name}</p>
               <p className="indent">Owned by: {store.user}</p>
               <p className="indent">{store.txtDescription}</p>
             </Link>
