@@ -80,22 +80,33 @@ const SearchStores: React.FC = () => {
                 </div>
                 {store.name}
               </p>
-              <p
-                style={{
-                  marginLeft: "20px",
-                  padding: "10px",
-                  fontWeight: "bold",
-                }}
-              >
-                Owned by: {store.user}
-              </p>
-              <p className="center">{store.txtDescription}</p>
             </Link>
+            <p
+              style={{
+                marginLeft: "20px",
+                padding: "10px",
+                fontWeight: "bold",
+              }}
+            >
+              Owned by: {store.user}
+            </p>
+            <p className="center">{store.txtDescription}</p>
+
             <br />
-            <div className="indent">
+            <div
+              style={{
+                marginLeft: "5px",
+                padding: "5px",
+              }}
+            >
               <i className="bi bi-play-circle-fill"></i> Top Hit
             </div>
-            <div className="indent">
+            <div
+              style={{
+                marginLeft: "5px",
+                padding: "5px",
+              }}
+            >
               <i className="bi bi-play-circle-fill"></i> Newest Song
             </div>
           </div>
