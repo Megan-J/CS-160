@@ -68,11 +68,8 @@ class Users(db.Model):
 class Report(db.Model):
     __table__ = db.metadata.tables['Reports']
 
-#test route; must navigate to this url after activating 8080
-@app.route('/home', methods=['GET'])
-def get_contacts():
-    data = {"message": "subscribe"}
-    return jsonify(data)
+
+### ------------- API ENDPOINTS ------------- ###
 
 # do login
 @app.route('/login', methods=['POST'])
@@ -467,59 +464,6 @@ def delete_track():
         return make_response(jsonify({'message': 'track not deleted', 'error':str(e), 'response':response}), 500)
 
 
-#test get users
-@app.route('/test1', methods=['GET'])
-def get_user():
-    try:
-        id = 1
-        users = Users()
-        try:
-            allusers = users.query.all()
-        except Exception as e:
-            return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
-        print("All users",allusers)
-        if allusers:
-            data = [{
-                'aID': user.aID,
-                'vchUsername': user.vchUsername,
-                'vchEmail': user.vchEmail,
-                'vchPassword': user.vchPassword,
-                'vchFirstName': user.vchFirstName,
-                'vchLastName': user.vchLastName,
-                'bIsVerified': user.bIsVerified,
-                'txtBio': user.txtBio,
-                'vchProfilePicPath': user.vchProfilePicPath,
-                'bIsBanned': user.bIsBanned
-            } for user in allusers]
-            return jsonify(data), 200
-        return make_response(jsonify({'message': 'user not found'}), 404)
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
-
-#test create new user
-@app.route('/test2', methods=['GET'])
-def make_user():
-    try:
-        new_user = Users(
-            vchFirstName='Joe',
-            vchLastName='Sixpack',
-            vchUsername='j6',
-            vchPassword='mypass',
-            vchEmail='j6@j6.org'
-        )
-        db.session.add(new_user)
-        db.session.commit()
-
-        return jsonify({
-            'vchFirstName': new_user.vchFirstName,
-            'vchLastName': new_user.vchLastName,
-            'vchPassword': new_user.vchPassword,
-            'vchEmail': new_user.vchEmail
-        }), 201
-    
-    except Exception as e:
-        return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
-
 #get all stores
 @app.route('/store/all', methods=['GET'])
 def get_stores():
@@ -539,17 +483,7 @@ def get_users():
         return jsonify(users_data), 200
     except Exception as e:
         return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
-
-#get user by id
-app.route('/user/{id}', methods=['GET'])
-def get_user(id):
-    try:
-        user = Users.query.filter_by(id=id).first() #get first user with id
-        if user:
-            return make_response(jsonify({'user': user.json()}), 200)
-        return make_response(jsonify({'message': 'user not found'}), 404)
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+    
 
 #get tracks for user
 @app.route('/tracks/<int:user_id>', methods=['GET'])
@@ -673,16 +607,105 @@ def store_billing_addr():
         return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e), 'data':data}), 500)
     
 
-#get store by id
-app.route('/store/{id}', methods=['GET'])
-def get_store(id):
+#get store by id 
+@app.route('/storefront/<int:store_id>', methods=['GET'])
+def get_store_by_id(store_id):
     try:
-        store = Stores.query.filter_by(id=id).first() #get first store with id
+        #try to get the store by its id
+        store = Stores.query.filter_by(aID=store_id).first()
         if store:
-            return make_response(jsonify({'store': store.json()}), 200)
+            store_data ={
+                'id': store.aID,
+                'ownerID': store.nUserID,
+                'name' : store.vchName,
+                'description' : store.txtDescription
+            }
+            return make_response(jsonify(store_data), 200)
         return make_response(jsonify({'message': 'store not found'}), 404)
     except Exception as e:
         return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
+    
+#get store by id with owner name
+@app.route('/storefront/owner/<int:store_id>', methods=['GET'])
+def get_store_with_owner(store_id):
+    try:
+        #try to get the store by its id
+        store = Stores.query.filter_by(aID=store_id).first()
+        if store:
+            ownerID = store.nUserID
+            if ownerID:
+                ownerName = Users.query.filter_by(aID=ownerID).first()
+                if ownerName:
+                    store_data = {
+                        'id': store.aID,
+                        'ownerID': store.nUserID,
+                        'name' : store.vchName,
+                        'description' : store.txtDescription,
+                        'ownerName': ownerName.vchUsername,
+                    }
+                    return make_response(jsonify(store_data), 200)
+                return make_response(jsonify({'message' : 'owner not found'}), 404)
+        return make_response(jsonify({'message': 'store not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
+    
+#get all data of user by id
+@app.route('/user/data/<int:user_id>', methods=['GET'])
+def get_data_user_by_id(user_id):
+    try:
+        #try to get the user by its id
+        user = Users.query.filter_by(aID=user_id).first()
+        if user:
+            store = Stores.query.filter_by(nUserID=user_id).first()
+            if store:
+                tracks = Tracks.query.filter_by(nAuthorID=user_id).all()
+                tracks_data = [{
+                    'trackID' : track.aID,
+                    'trackTitle': track.vchTitle,
+                    'trackDescription': track.txtDescription
+                } for track in tracks]
+                if tracks:
+                    followers = Followers.query.filter_by(nFollowingID=user_id).count()
+                    following = Followers.query.filter_by(nUserID=user_id).count()
+                    if followers >=0 and following >=0:
+                        user_data = {
+                            'userId': user.aID,
+                            'username': user.vchUsername,
+                            'bio': user.txtBio,
+                            'storeID': store.aID,
+                            'storeName': store.vchName,
+                            'storeDescription': store.txtDescription,
+                            'followerCount': followers,
+                            'followingCount': following,
+                            'tracksData': tracks_data
+                        }
+                        return make_response(jsonify(user_data), 200)
+                    return make_response(jsonify({'message': 'error getting following and followers'}), 500)
+            return make_response(jsonify({'message': 'error getting tracks'}), 500)
+        return make_response(jsonify({'message': 'error getting store'}), 500)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+
+
+
+    
+#get user by id
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    try:
+        #try to get the user by its id
+        user = Users.query.filter_by(aID=user_id).first()
+        if user:
+            user_data ={
+                'id': user.aID,
+                'username': user.vchUsername,
+                'bio': user.txtBio,
+                'email': user.vchEmail,
+            }
+            return make_response(jsonify(user_data), 200)
+        return make_response(jsonify({'message': 'user not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
 #create user
 @app.route('/user/create', methods=['POST'])
@@ -708,16 +731,6 @@ def create_user():
     except Exception as e:
         return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
 
-#get user by id
-app.route('/user/{id}', methods=['GET'])
-def get_user(id):
-    try:
-        user = Users.query.filter_by(id=id).first() #get first user with id
-        if user:
-            return make_response(jsonify({'user': user.json()}), 200)
-        return make_response(jsonify({'message': 'user not found'}), 404)
-    except Exception as e:
-        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
 
 #search for track/music
 @app.route('/track', methods=['GET'])
@@ -780,7 +793,7 @@ def handle_report():
     return jsonify({'message': 'Report received successfully'}), 201
 
 #
-@app.route('/product/<int:store_id>', methods=['GET'])
+@app.route('/products/<int:store_id>', methods=['GET'])
 def get_products_by_store(store_id):
     try:
         # Query products by store ID
@@ -939,39 +952,45 @@ def update_ban():
     except Exception as e:
          return make_response(jsonify({'message': 'Ban request not updated', 'error': str(e), 'data': data}), 500)
 
-#add to cart
+#add product to cart
 @app.route('/cart/add', methods=['POST'])
-def add_cart():
-    response = {}
+def add_to_cart():
     try:
+         
          data = request.get_json()
-         ban = Cart(
-             nUserID= data['nUserID'],
-             nProductID= data['nProductID'],
-             nStoreID= data['nStoreID'],
-             nQuantity= data['nQuantity']
-         )
-         db.session.add(ban)
+         cart_item = Cart.query.filter_by(nUserID=data['userId']).filter_by(nActive=1).filter_by(nProductID=data['productId']).first()
+         
+         if cart_item:
+            cart_item.nQuantity += 1
+         else:
+            cart_item = Cart(
+                nUserID= data['userId'],
+                nStoreID= data['storeId'],
+                nProductID= data['productId'],
+                nQuantity= data['nQuantity'],
+                nActive=data['nActive']
+            )
+
+         db.session.merge(cart_item)
          db.session.commit()
 
-         response['cart'] = {
-             'aID': ban.aID,
-             'nUserID': ban.nUserID,
-             'nProductID': ban.nProductID,
-             'nStoreID': ban.nStoreID,
-             'nQuantity': ban.nQuantity
-         }
-
-         return make_response(jsonify(response), 201)
+         return make_response(jsonify({
+             'aID': cart_item.aID,
+             'nUserID': cart_item.nUserID,
+             'nStoreID': cart_item.nStoreID,
+             'nProductID': cart_item.nProductID,
+             'nQuantity': cart_item.nQuantity,
+             'nActive': cart_item.nActive
+         }), 201)
     except Exception as e:
-         return make_response(jsonify({'message': 'Ban not added', 'error': str(e), 'response': response}), 500)
+         return make_response(jsonify({'message': 'Product not added', 'error': str(e), 'response': response}), 500)
 
 #get cart all by user id
 @app.route('/cart/<int:user_id>', methods=['GET'])
 def get_cart_by_user(user_id):
      try:
          # Query cart items by user ID
-         cart_items = Cart.query.filter_by(nUserID=user_id).all()
+         cart_items = Cart.query.filter_by(nUserID=user_id).filter_by(nActive=1).all()
 
          # Initialize an empty list to store formatted cart items
          formatted_cart_items = []
@@ -1001,28 +1020,89 @@ def get_cart_by_user(user_id):
 
          # Return the formatted cart items as JSON response
          return jsonify(formatted_cart_items), 200
-
      except Exception as e:
          return make_response(jsonify({'message': 'Error getting cart items', 'error': str(e)}), 500)
 
 #delete cart item by cart aid
-@app.route('/delete-cart', methods=['POST'])
+@app.route('/cart/delete-item', methods=['POST'])
 def delete_cart():
      response = {}
      try:
          data = request.get_json()
-        # ban_id = data['aID']
-         ban = Cart.query.filter_by(aID=data['aID']).first()
-         if ban:
-             db.session.delete(ban)
+         item = Cart.query.filter_by(nUserID=data['userId']).filter_by(nActive=1).filter_by(nProductID=data['productId']).first()
+         if item:
+             db.session.delete(item)
              db.session.commit()
              return make_response(jsonify({'message': 'Item deleted successfully'}), 200)
          return make_response(jsonify({'message': 'Item not found'}), 404)
      except Exception as e:
          return make_response(jsonify({'message': 'Item not deleted', 'error': str(e)}), 500)
+     
 
-#port
+
+
+### ------------- TESTING ------------- ###
+
+#test route; must navigate to this url after activating 8080
+@app.route('/home', methods=['GET'])
+def get_contacts():
+    data = {"message": "i'm in the api"}
+    return jsonify(data)
+
+#test get users
+@app.route('/test1', methods=['GET'])
+def get_user():
+    try:
+        id = 1
+        users = Users()
+        try:
+            allusers = users.query.all()
+        except Exception as e:
+            return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
+        print("All users",allusers)
+        if allusers:
+            data = [{
+                'aID': user.aID,
+                'vchUsername': user.vchUsername,
+                'vchEmail': user.vchEmail,
+                'vchPassword': user.vchPassword,
+                'vchFirstName': user.vchFirstName,
+                'vchLastName': user.vchLastName,
+                'bIsVerified': user.bIsVerified,
+                'txtBio': user.txtBio,
+                'vchProfilePicPath': user.vchProfilePicPath,
+                'bIsBanned': user.bIsBanned
+            } for user in allusers]
+            return jsonify(data), 200
+        return make_response(jsonify({'message': 'user not found'}), 404)
+    except Exception as e:
+        return make_response(jsonify({'message': 'error getting user', 'error':str(e)}), 500)
+
+#test create new user
+@app.route('/test2', methods=['GET'])
+def make_user():
+    try:
+        new_user = Users(
+            vchFirstName='Joe',
+            vchLastName='Sixpack',
+            vchUsername='j6',
+            vchPassword='mypass',
+            vchEmail='j6@j6.org'
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({
+            'vchFirstName': new_user.vchFirstName,
+            'vchLastName': new_user.vchLastName,
+            'vchPassword': new_user.vchPassword,
+            'vchEmail': new_user.vchEmail
+        }), 201
+    
+    except Exception as e:
+        return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
+
+
+### ------------- RUN FLASK SERVER ------------- ###
 if __name__ == '__main__':
-    # with app.app_context():
-    #     db.create_all()
     app.run(debug=False, port=5000)

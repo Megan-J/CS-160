@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-export default function index() {
+export default function MyStore() {
   const router = useRouter();
   let [user, setUser] = useState(null);
   let [store, setStore] = useState(null);
@@ -666,9 +667,7 @@ export default function index() {
   let order_prod_name: string | null = null;
 
   return (
-    <Panel title="My Radar">
-      <p>Welcome{firstName && `, ${firstName} ${lastName}`}!</p>
-
+    <Panel title="Store Overview">
       <div className="box container bluebg">
         <div className="heading">My Store</div>
         {store && storeName != null ? (
@@ -1027,6 +1026,7 @@ export default function index() {
                       className="indent bottom-margin top-indent button button-small"
                       onClick={handleAddProduct}
                     >
+                      <i class="bi bi-plus"></i>
                       Add Product
                     </button>
                   </div>
@@ -1115,28 +1115,6 @@ export default function index() {
       <div className="box greenbg">
         <div className="heading green">Tracks</div>
         {tracks && tracks.length > 0 ? (
-          tracks.map((t, i) => (
-            <div className="track" key={i}>
-              <div className="track-title">{t.vchTitle}</div>
-              <div className="track-description">{t.txtDescription}</div>
-              <div className="track-url">{t.vchAudioUrl}</div>
-              <button
-                className="button button-small"
-                onClick={(event) => deleteTrack(event, t.aID)}
-                key={t.aID}
-              >
-                Delete
-              </button>
-            </div>
-          ))
-        ) : (
-          <div className="indent bottom-margin">No tracks yet.</div>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="heading orange">Upload Music</div>
-        {tracks && tracks.length > 0 ? (
           <div className="all-products flex">
             {tracks.map((t, i) => (
               <div className="product" key={i}>
@@ -1154,11 +1132,10 @@ export default function index() {
             ))}
           </div>
         ) : (
-          <>
-            <div className="indent bottom-margin">No Uploaded Tracks</div>
-          </>
+          <div className="indent bottom-margin">No tracks yet.</div>
         )}
-
+        <br />
+        <br />
         {addingTrack ? (
           <>
             <div className="div-center">
@@ -1232,166 +1209,13 @@ export default function index() {
                 className="indent bottom-margin top-indent button button-small"
                 onClick={handleAddTrack}
               >
-                Upload a Track
+                <i class="bi bi-plus"></i>
+                Upload Music
               </button>
             </div>
           </>
         )}
-
-        <div className="center">
-          <form>
-            <input type="file" onChange={uploadFile}></input>
-          </form>
-          <br />
-        </div>
-      </div>
-
-      <div className="box">
-        <div className="heading">Following</div>
-        {following && following.length > 0 ? (
-          following.map((t, i) => (
-            <div className="following" key={i}>
-              <div className="following-name">{`${t.vchFirstName} ${t.vchLastName} (${t.vchUsername})`}</div>
-              <button className="button button-small" onClick={unfollow}>
-                Unfollow
-              </button>
-            </div>
-          ))
-        ) : (
-          <>
-            <div className="indent bottom-margin">
-              You are not following anyone.
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="heading">Followers</div>
-        {followers && followers.length > 0 ? (
-          followers.map((t, i) => (
-            <div className="follower" key={i}>
-              <div className="follower-name">{t.vchTrackName}</div>
-              <div className="track-description">{t.txtDescription}</div>
-              <div className="track-url">{t.vchAudioUrl}</div>
-              <button className="button button-small" onClick={unfollow}>
-                Unfollow
-              </button>
-            </div>
-          ))
-        ) : (
-          <>
-            <div className="indent bottom-margin">No followers</div>
-          </>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="heading"> Ban Requests</div>
-        {bans && bans.length > 0 ? (
-          <div className="all-products flex">
-            {bans.map((t, i) => (
-              <div className="product" key={i}>
-                <div className="product-name">
-                  Requested by: {t.nRequesterUserID}
-                </div>
-                <div className="requested-user">
-                  User to be banned: {t.nRequestedUserID}
-                </div>
-                <div className="reason">Reason: {t.vchReason}</div>
-                <div className="request-date">
-                  Request Date: {formatRequestDate(t.dtRequested)}
-                </div>
-                <div className="resolved">Resolved Status: {t.bResolved}</div>
-                <button
-                  className="delete-product-button button button-small"
-                  onClick={(event) => deleteBan(event, t.aID)}
-                  key={t.aID}
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            <div className="indent bottom-margin">No open ban requests.</div>
-          </>
-        )}
-
-        {addingBan ? (
-          <>
-            <div className="div-center">
-              <div className="product-box box container new-product-container no-shadow">
-                <div className="heading subheading gray">
-                  Create Ban Request
-                </div>
-                <form onSubmit={handleSubmitBan}>
-                  <div className="new-product-pane">
-                    <div>
-                      <input
-                        className="new-product-name input"
-                        type="text"
-                        name="newRequestedID"
-                        value={newRequestedID}
-                        onChange={(e) => setNewRequestedID(e.target.value)}
-                        placeholder="Username/UserID"
-                      />
-                      <textarea
-                        className="new-product-description input"
-                        name="newBanReason"
-                        value={newBanReason}
-                        onChange={(e) => setNewBanReason(e.target.value)}
-                        placeholder="Reason"
-                      />
-                    </div>
-                    <div className="product-submit-margin-top">
-                      <button className="button button-small" type="submit">
-                        Submit
-                      </button>
-                      <button
-                        className="button button-small cancel"
-                        onClick={cancelAddBan}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="center">
-              <button
-                className="indent bottom-margin top-indent button button-small"
-                onClick={handleAddBan}
-              >
-                Create Ban
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="heading"> Add to Playlist</div>
       </div>
     </Panel>
   );
-}
-{
-  /* <div className="center">
-<form onSubmit={handleSubmitTrack}>
-  <input type="file" name="file" id="file-upload" />
-  <br />
-  <button
-    className="indent bottom-margin top-indent button button-small"
-    type="submit"
-  >
-    Upload a Track
-  </button>
-</form>
-</div> */
 }

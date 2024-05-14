@@ -3,7 +3,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import SearchStores from "./searchStores";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 type NavBarProps = {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ type NavBarProps = {
 const NavBar = ({ children }: NavBarProps) => {
   let [me, setMe] = useState(null);
   let [initials, setInitials] = useState(null);
+  let [userID, setUserID] = useState(null);
 
   useEffect(() => {
     let userObj = sessionStorage.getItem("user");
@@ -27,6 +28,7 @@ const NavBar = ({ children }: NavBarProps) => {
       }
       setInitials(s);
       setMe(user);
+      setUserID(user.aID);
     }
   }, []);
   return (
@@ -41,29 +43,38 @@ const NavBar = ({ children }: NavBarProps) => {
 
         {me ? (
           <>
-            <li>
-              <Link href="/cart">Cart</Link>
+            <li className="right">
+              <Link href="/cart" as={`/cart?userID=${userID}`}>
+                Cart
+                <i class="bi bi-cart3"></i>
+              </Link>
             </li>
-            <li>
+            <li className="right">
               <Link href="/logout">Logout</Link>
             </li>
           </>
         ) : (
           <>
-            <li>
-              <Link href="/login">Sign In</Link>
-            </li>
-            <li>
+            <li className="right">
               <Link href="/signup">Create account</Link>
+            </li>
+            <li className="right">
+              <Link href="/login">Sign In</Link>
             </li>
           </>
         )}
         {initials ? (
-          <li className="right">
-            <Link className="initials" href="/user">
-              {initials}
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link href="/my-store">My Store</Link>
+            </li>
+            <li className="right">
+              <Link className="initials" href="/my-profile">
+                <i class="bi bi-person-circle"></i>
+                {initials}
+              </Link>
+            </li>
+          </>
         ) : (
           ""
         )}

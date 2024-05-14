@@ -1,10 +1,17 @@
-# CS-160
+# Radar
 
-#### Notes:
+## Description
 
-- all commands written below are for mac
-- install node.js if it isn't on your computer yet
-- download mysql from the mysql website, create a user with the connection of 3306, create a table called cloud
+Radar offers users with unique shopping experiences curated by their favorite music artists.
+
+## Installation
+
+To install and set up the Radar application on your own machine, follow the steps below:
+
+### Prerequistics
+
+- **Node.js**: Check if Node.js is installed. If not, download and install Node.js from [their website](https://nodejs.org/)
+- **MySQL Workbench**: Check if you have MySQL Workbench is downloaded. If not, download and install from [their website](https://www.mysql.com/products/workbench/). Open the application, create a user with the connection of 3306, run the dump file located the database folder.
 
 ### Server (backend)
 
@@ -56,22 +63,14 @@ you must be in the client directory when executing these commands
 cd client
 ```
 
-to run the client server
-
-```bash
-npm run dev
-```
-
-if dependencies not installed yet
+install dependencies
 
 ```bash
 npm install
 ```
 
-for checkout, you need to get an application key and location key from ![Square Developer Dashboard](https://developer.squareup.com/us/en) and replace the REACT_APP_SQUARE_API_APPLICATION_KEY and REACT_APP_SQUARE_API_LOCATION_KEY with those values (the environment variables in .env file aren't working currently)
-
-for playing music:
+run the client server
 
 ```bash
-npm install react-icons bootstrap-icons
+npm run dev
 ```

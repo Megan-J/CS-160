@@ -191,7 +191,7 @@ label {
 
 .initials {
     animation: hue-rotate 10s infinite linear;
-    background: #FF0;
+    background: rgb(141, 141, 2);
     border-radius: 12px;
     border: 1px solid #888;
     color: #000;
@@ -203,7 +203,7 @@ label {
     margin-top: 5px;
     padding-top: 2px;
     text-align: center;
-    width: 24px;
+    
 }
 
 nav input.search {
@@ -257,6 +257,10 @@ nav input.search {
     background-color: #1d4f93;
     color: #fff;
     padding-left: 5px;
+}
+
+.bold-text {
+    font-weight: bold;
 }
 
 .box {
@@ -411,6 +415,21 @@ html {
     background-color: rgb(206, 255, 253);
 }
 
+.store-in-profile {
+    border: 1px solid #888;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #888;
+    margin-bottom: 10px;
+    padding: 5px;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    margin-left: 5px;
+    margin-right: 15px;
+    background-color: rgb(206, 255, 253);
+}
+
 .all-products {
     flex-wrap: wrap;
     display: flex;
@@ -426,6 +445,10 @@ html {
 }
 
 .delete-product-button {
+    float: right;
+}
+
+.report-icon {
     float: right;
 }
 

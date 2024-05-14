@@ -85,24 +85,23 @@ export default function Confirmation() {
       <div className="box">
         <div className="heading">Your order was placed successfully</div>
         <div>
-          <p>Order date: {orderID}</p>
-          <p>Order number: {date}</p>
+          <p className="indent">Order date: {date}</p>
+          <p className="indent">Order number: {orderID}</p>
         </div>
         <br />
         <div>
-          <h2 className="text-xl mb-4">Shipping Address</h2>
+          <h2 className="heading">Summary</h2>
         </div>
         <div>
           <p>{shippingAddr}</p>
         </div>
+        <br />
         <div>
-          <h2 className="text-xl mb-4">Delivery</h2>
+          <h2 className="heading">Shipping Address</h2>
         </div>
-        {shippingCost}
         <div>
-          <h2 className="text-xl mb-4">Payment</h2>
+          <p>{shippingAddr}</p>
         </div>
-        <div>{billingAddr}</div>
       </div>
     </Panel>
   );

@@ -16,13 +16,27 @@ interface Track {
 
 export default function index() {
   const router = useRouter();
-  let user = null;
   const [text, setText] = React.useState("");
+  let [user, setUser] = useState(null);
 
   const [userList, setUserList] = useState<Track[]>([]);
 
   useEffect(() => {
-    fetchStores();
+    let userJson = sessionStorage.getItem("user");
+    let productsJson = sessionStorage.getItem("products");
+
+    let user = userJson ? JSON.parse(userJson) : null;
+    let products = productsJson ? JSON.parse(productsJson) : null;
+
+    setUser(user);
+
+    if (user && user.vchUsername !== null) {
+      let initials = "";
+      if (user.vchUsername != null) {
+        initials = user.vchFirstName.charAt(0) + user.vchLastName.charAt(0);
+        initials = initials.toUpperCase();
+      }
+    }
   }, []);
 
   const fetchStores = () => {
@@ -136,6 +150,40 @@ export default function index() {
     }
   };
 
+  const uploadFile = async (e) => {
+    /*console.log("UPLOADING FILE");
+    const file = e.target.files[0];
+    if (file != null) {
+      const data = new FormData();
+      data.append("file_from_react", file);
+
+      let response = await fetch(`${backend}/url_route`, {
+        method: "POST",
+        body: data,
+      });
+
+      let res = await response.json();
+      if (res.status !== 1) {
+        alert("Error uploading file");
+      } else {
+        router.push("/");
+      }
+    }*/
+
+    const file = e.target.files[0];
+    if (file != null) {
+      fetch(`https://api.escuelajs.co/api/v1/files/upload`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: {
+          file: e,
+        },
+      });
+    }
+  };
+
   const handleOnClick = async () => {
     // Fetch all tracks
     const response = await fetch(`${backend}/tracks/all`);
@@ -165,26 +213,56 @@ export default function index() {
   return (
     <Panel title="Welcome!">
       <div>
-        <p>Start Listening today!</p>
+        {user ? (
+          <div>Dive back in</div>
+        ) : (
+          <div>
+            <br />
+            <div className="box">
+              <br />
+              <p className="center" style={{ padding: "10px" }}>
+                You haven't heard of Radar? Well get on ours!
+              </p>
+              <p className="center" style={{ padding: "10px" }}>
+                Listen to your favorite songs from up and coming artists! Shop
+                around and see what they're selling while listening to their
+                songs!
+              </p>
+              <br />
+            </div>
+          </div>
+        )}
       </div>
 
+      <br />
+
       <div>
-        <div className="input_wrapper">
-          <input
-            type="text"
-            placeholder="Search Music: In Progress"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button disabled={!text}>Search</button>
+        <div className="box">
+          <div className="heading">Discover new songs</div>
         </div>
-        <div className="all-products flex"></div>
+        <div className="box">
+          <div className="heading">Trending products</div>
+        </div>
       </div>
       <br />
       <div>
-        <Link href="/report" className="button">
-          Report an Issue
-        </Link>
+        {user ? (
+          <div>
+            <div className="box">
+              <div className="heading">My Playlists</div>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+      <div>
+        <div className="center">
+          <form>
+            <input type="file" onChange={uploadFile}></input>
+          </form>
+          <br />
+        </div>
       </div>
     </Panel>
   );
