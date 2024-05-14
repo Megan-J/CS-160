@@ -256,14 +256,6 @@ export default function index() {
           <></>
         )}
       </div>
-      <div>
-        <div className="center">
-          <form>
-            <input type="file" onChange={uploadFile}></input>
-          </form>
-          <br />
-        </div>
-      </div>
     </Panel>
   );
 }
