@@ -71,19 +71,33 @@ const SearchStores: React.FC = () => {
       <div className="all-products flex">
         {userList.map((store) => (
           <div className="body_item">
-            <div className="center">
-              <h1 className="bi bi-shop"></h1>
-            </div>
-            <br />
             <Link href="/storefront" as={`/storefront?storeID=${store.id}`}>
               <img src={storefront1.src} />
               <br />
-              <p className="heading-center">{store.name}</p>
-              <p className="indent">Owned by: {store.user}</p>
-              <p className="indent">{store.txtDescription}</p>
+              <p className="heading-center">
+                <div style={{ padding: "5px" }}>
+                  <h1 className="bi bi-shop"></h1>
+                </div>
+                {store.name}
+              </p>
+              <p
+                style={{
+                  marginLeft: "20px",
+                  padding: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                Owned by: {store.user}
+              </p>
+              <p className="center">{store.txtDescription}</p>
             </Link>
-            <div>Top Hit</div>
-            <div>Newest Album</div>
+            <br />
+            <div className="indent">
+              <i className="bi bi-play-circle-fill"></i> Top Hit
+            </div>
+            <div className="indent">
+              <i className="bi bi-play-circle-fill"></i> Newest Song
+            </div>
           </div>
         ))}
       </div>
