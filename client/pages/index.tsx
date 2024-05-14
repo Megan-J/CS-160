@@ -221,34 +221,41 @@ export default function index() {
             <div className="box">
               <div className="heading">Recently Listened To</div>
               <div className="all-images">
-                <div className="center">
-                  <img
-                    src={listen1.src}
-                    style={{ padding: "15px", boxSizing: "border-box" }}
-                    alt="Song 1 Image"
-                  />
-                  <p className="song-names">Rise & Shine</p>
-                  <button className="bi bi-play-circle-fill"></button>
+                <div className="img-hover-shadow">
+                  <div className="center">
+                    <img
+                      src={listen1.src}
+                      style={{ padding: "15px", boxSizing: "border-box" }}
+                      alt="Song 1 Image"
+                    />
+                    <p className="song-names">Rise & Shine</p>
+                    <button className="bi bi-play-circle-fill button-hover-grow"></button>
+                  </div>
                 </div>
-                <div className="center">
-                  <img
-                    src={listen2.src}
-                    style={{ padding: "15px", boxSizing: "border-box" }}
-                    alt="Song 2 Image"
-                  />
-                  <p className="song-names">I'll be here</p>
-                  <button className="bi bi-play-circle-fill"></button>
+                <div className="img-hover-shadow">
+                  <div className="center">
+                    <img
+                      src={listen2.src}
+                      style={{ padding: "15px", boxSizing: "border-box" }}
+                      alt="Song 2 Image"
+                    />
+                    <p className="song-names">I'll be here</p>
+                    <button className="bi bi-play-circle-fill button-hover-grow"></button>
+                  </div>
                 </div>
-                <div className="center">
-                  <img
-                    src={listen3.src}
-                    style={{ padding: "15px", boxSizing: "border-box" }}
-                    alt="Song 3 Image"
-                  />
-                  <p className="song-names">One Step Further</p>
-                  <button className="bi bi-play-circle-fill"></button>
+                <div className="img-hover-shadow">
+                  <div className="center">
+                    <img
+                      src={listen3.src}
+                      style={{ padding: "15px", boxSizing: "border-box" }}
+                      alt="Song 3 Image"
+                    />
+                    <p className="song-names">One Step Further</p>
+                    <button className="bi bi-play-circle-fill button-hover-grow"></button>
+                  </div>
                 </div>
               </div>
+              <br />
             </div>
           </div>
         ) : (
@@ -267,7 +274,7 @@ export default function index() {
                 alt="Song 1 Image"
               />
               <p className="song-names">Call to the Soul</p>
-              <button className="bi bi-play-circle-fill"></button>
+              <button className="bi bi-play-circle-fill button-hover-grow"></button>
             </div>
             <div className="center">
               <img
@@ -276,7 +283,7 @@ export default function index() {
                 alt="Song 2 Image"
               />
               <p className="song-names">Powerful Rock</p>
-              <button className="bi bi-play-circle-fill"></button>
+              <button className="bi bi-play-circle-fill button-hover-grow"></button>
             </div>
             <div className="center">
               <img
@@ -285,7 +292,7 @@ export default function index() {
                 alt="Song 3 Image"
               />
               <p className="song-names">Funk Kingdom</p>
-              <button className="bi bi-play-circle-fill"></button>
+              <button className="bi bi-play-circle-fill button-hover-grow"></button>
             </div>
 
             <div className="center">
@@ -295,7 +302,7 @@ export default function index() {
                 alt="Song 4 Image"
               />
               <p className="song-names">Walk Together</p>
-              <button className="bi bi-play-circle-fill"></button>
+              <button className="bi bi-play-circle-fill button-hover-grow"></button>
             </div>
 
             <div className="center">
@@ -305,9 +312,10 @@ export default function index() {
                 alt="Song 3 Image"
               />
               <p className="song-names">LoFi Chill</p>
-              <button className="bi bi-play-circle-fill"></button>
+              <button className="bi bi-play-circle-fill button-hover-grow"></button>
             </div>
           </div>
+          <br />
         </div>
         <br />
         <div className="box">
@@ -320,7 +328,7 @@ export default function index() {
                 alt="Song 1 Image"
               />
               <p className="song-names">Crochet Duck</p>
-              <button className="bi bi-cart-plus"></button>
+              <button className="bi bi-cart-plus button-hover-grow"></button>
             </div>
             <div className="center">
               <img
@@ -329,7 +337,7 @@ export default function index() {
                 alt="Song 2 Image"
               />
               <p className="song-names">Sweater</p>
-              <button className="bi bi-cart-plus"></button>
+              <button className="bi bi-cart-plus button-hover-grow"></button>
             </div>
             <div className="center">
               <img
@@ -338,7 +346,7 @@ export default function index() {
                 alt="Song 1 Image"
               />
               <p className="song-names">Ring</p>
-              <button className="bi bi-cart-plus"></button>
+              <button className="bi bi-cart-plus button-hover-grow"></button>
             </div>
             <div className="center">
               <img
@@ -347,7 +355,7 @@ export default function index() {
                 alt="Song 2 Image"
               />
               <p className="song-names">Art Print</p>
-              <button className="bi bi-cart-plus"></button>
+              <button className="bi bi-cart-plus button-hover-grow"></button>
             </div>
             <div className="center">
               <img
@@ -356,9 +364,10 @@ export default function index() {
                 alt="Song 2 Image"
               />
               <p className="song-names">Teddy Bear</p>
-              <button className="bi bi-cart-plus"></button>
+              <button className="bi bi-cart-plus button-hover-grow"></button>
             </div>
           </div>
+          <br />
         </div>
       </div>
     </Panel>

@@ -121,6 +121,7 @@ export default function Cart() {
             </div>
 
             <div>
+              <br />
               <Link
                 className="delete-product-button button button-small"
                 href="/checkout"

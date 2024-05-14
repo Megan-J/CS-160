@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
+import Link from "next/link";
 
 // interface Product {
 //     id: number;
@@ -81,27 +82,18 @@ export default function Confirmation() {
   let shippingAddr, billingAddr;
 
   return (
-    <Panel title="Thank you!">
+    <Panel title="Thank you">
       <div className="box">
-        <div className="heading">Your order was placed successfully</div>
-        <div>
-          <p className="indent">Order date: {date}</p>
-          <p className="indent">Order number: {orderID}</p>
+        <br />
+        <div className="center">Your order was placed successfully!</div>
+        <br />
+
+        <div className="flex items-center justify-center">
+          <Link href="/" className="button-small">
+            Return to Home
+          </Link>
         </div>
         <br />
-        <div>
-          <h2 className="heading">Summary</h2>
-        </div>
-        <div>
-          <p>{shippingAddr}</p>
-        </div>
-        <br />
-        <div>
-          <h2 className="heading">Shipping Address</h2>
-        </div>
-        <div>
-          <p>{shippingAddr}</p>
-        </div>
       </div>
     </Panel>
   );

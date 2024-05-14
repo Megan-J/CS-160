@@ -403,7 +403,9 @@ export default function placeOrder() {
         </div>
 
         <div className="flex items-center justify-center">
-          <button className="button change-hue">Place Order</button>
+          <Link href="/confirmation" className="button change-hue">
+            Place Order
+          </Link>
         </div>
       </div>
     </Panel>
