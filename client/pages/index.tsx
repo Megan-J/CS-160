@@ -4,6 +4,11 @@ import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import Link from "next/link";
 import { backend } from "./components/Constants";
+import song1 from "../../data/newSongs/ai-generated-7926621_640.jpg";
+import song2 from "../../data/newSongs/ai-generated-8716960_640.jpg";
+import song3 from "../../data/newSongs/universe-8418706_640.jpg";
+import song4 from "../../data/newSongs/walkTogether.jpg";
+import song5 from "../../data/newSongs/background-7625677_640.jpg";
 
 interface Track {
   id: number;
@@ -237,31 +242,69 @@ export default function index() {
       <br />
 
       <div>
-        <div className="box">
-          <div className="heading">Discover new songs</div>
-        </div>
-        <div className="box">
-          <div className="heading">Trending products</div>
-        </div>
-      </div>
-      <br />
-      <div>
         {user ? (
           <div>
             <div className="box">
-              <div className="heading">My Playlists</div>
+              <div className="heading">Recently Listened To</div>
             </div>
           </div>
         ) : (
           <></>
         )}
       </div>
+      <br />
       <div>
-        <div className="center">
-          <form>
-            <input type="file" onChange={uploadFile}></input>
-          </form>
-          <br />
+        <div className="box">
+          <div className="heading">Discover new songs</div>
+          <div className="all-images">
+            <div className="center">
+              <img
+                src={song1.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 1 Image"
+              />
+              <p>Call to the Soul</p>
+            </div>
+            <div className="center">
+              <img
+                src={song2.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 2 Image"
+              />
+              <label>Powerful Rock</label>
+            </div>
+
+            <div className="center">
+              <img
+                src={song3.src}
+                style={{ padding: "15px", boxSizing: "border-box" }}
+                alt="Song 3 Image"
+              />
+              <label>Funk Kingdom</label>
+            </div>
+
+            <div className="center">
+              <img
+                src={song4.src}
+                style={{ padding: "10px", boxSizing: "border-box" }}
+                alt="Song 4 Image"
+              />
+              <p>Walk Together</p>
+            </div>
+
+            <div className="center">
+              <img
+                src={song5.src}
+                style={{ padding: "10px", boxSizing: "border-box" }}
+                alt="Song 3 Image"
+              />
+              <p>LoFi Chill</p>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div className="box">
+          <div className="heading">Trending products</div>
         </div>
       </div>
     </Panel>

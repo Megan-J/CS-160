@@ -29,15 +29,6 @@ class BanRequests(db.Model):
 class Cart(db.Model):
     __table__ = db.metadata.tables['Cart']
 
-class CCInfo(db.Model):
-    __table__ = db.metadata.tables['CCInfo']
-
-class CCTypes(db.Model):
-    __table__ = db.metadata.tables['CCTypes']
-
-class Countries(db.Model):
-    __table__ = db.metadata.tables['Countries']
-
 class Followers(db.Model):
     __table__ = db.metadata.tables['Followers']
 
@@ -49,9 +40,6 @@ class Orders(db.Model):
 
 class Products(db.Model):
     __table__ = db.metadata.tables['Products']
-
-class States(db.Model):
-    __table__ = db.metadata.tables['States']
 
 class StoreFollowers(db.Model):
     __table__ = db.metadata.tables['StoreFollowers']

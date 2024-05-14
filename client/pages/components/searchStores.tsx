@@ -3,6 +3,12 @@ import { backend } from "./Constants";
 import { Routes, Route } from "react-router-dom"; // Import BrowserRouter
 import Link from "next/link";
 import { useRouter } from "next/router"; // Import useRouter
+import storefront1 from "../../../data/storeFronts/1.png";
+import storefront2 from "../../../data/storeFronts/2.png";
+import storefront3 from "../../../data/storeFronts/3.png";
+import storefront4 from "../../../data/storeFronts/4.png";
+import storefront5 from "../../../data/storeFronts/5.png";
+import storefront6 from "../../../data/storeFronts/6.png";
 
 interface Store {
   id: number;
@@ -79,10 +85,14 @@ const SearchStores: React.FC = () => {
         {userList.map((store) => (
           <div className="body_item">
             <Link href="/storefront" as={`/storefront?storeID=${store.id}`}>
-              <p>{store.name}</p>
-              <p>Owned by: {store.user}</p>
-              <p>{store.txtDescription}</p>
+              <img src={storefront1.src} />
+              <br />
+              <p className="heading">{store.name}</p>
+              <p className="indent">Owned by: {store.user}</p>
+              <p className="indent">{store.txtDescription}</p>
             </Link>
+            <div>Top Hit</div>
+            <div>Newest Album</div>
           </div>
         ))}
       </div>

@@ -512,3 +512,14 @@ html {
   .right-column {
     background-color: #e0e0e0;
   }
+
+  .all-images {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .song-names{
+        padding: 15px;
+    }
