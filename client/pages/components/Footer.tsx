@@ -25,6 +25,7 @@ const Footer = () => (
         <audio
           controls
           autoPlay
+          src="./troubles.mp3"
           className="w-1/2 focus:outline-none transition-transform duration-300"
         />
       </div>
