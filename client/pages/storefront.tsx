@@ -3,6 +3,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import Link from "next/link";
+import Footer from "./components/Footer";
 
 export default function Storefront() {
   //should hold the store id
@@ -120,53 +121,58 @@ export default function Storefront() {
   };
 
   return (
-    <Panel title={storeName}>
-      <div className="bold-text">
-        <Link href="/user-profile" as={`/user-profile?userID=${ownerId}`}>
-          {owner}
-        </Link>
-      </div>
-      <div>
-        <p>{storeDescription}</p>
-      </div>
-      <br />
+    <>
+      <Panel title={storeName}>
+        <div className="bold-text">
+          <Link href="/user-profile" as={`/user-profile?userID=${ownerId}`}>
+            {owner}
+          </Link>
+        </div>
+        <div>
+          <p>{storeDescription}</p>
+        </div>
+        <br />
 
-      <div className="box">
-        <div className="heading">Products</div>
-        {products && products.length > 0 ? (
-          <div className="all-products flex">
-            {products.map((t, i) => (
-              <div className="product" key={i}>
-                <div className="product-name">{t.vchName}</div>
-                <div className="product-description">{t.txtDescription}</div>
-                <div className="product-price">${`${t.fPrice.toFixed(2)}`}</div>
-                <div className="product-inventory">
-                  {t.nInventory === 0 ? "Out of stock" : ""}
+        <div className="box">
+          <div className="heading">Products</div>
+          {products && products.length > 0 ? (
+            <div className="all-products flex">
+              {products.map((t, i) => (
+                <div className="product" key={i}>
+                  <div className="product-name">{t.vchName}</div>
+                  <div className="product-description">{t.txtDescription}</div>
+                  <div className="product-price">
+                    ${`${t.fPrice.toFixed(2)}`}
+                  </div>
+                  <div className="product-inventory">
+                    {t.nInventory === 0 ? "Out of stock" : ""}
+                  </div>
+                  <button
+                    className="delete-product-button button button-small"
+                    onClick={(event) => AddProductToCart(event, t.aID)}
+                    key={t.aID}
+                  >
+                    Add to Cart
+                  </button>
+                  <Link classname="report-icon" href="/report">
+                    <i class="bi bi-exclamation-circle"></i>
+                  </Link>
                 </div>
-                <button
-                  className="delete-product-button button button-small"
-                  onClick={(event) => AddProductToCart(event, t.aID)}
-                  key={t.aID}
-                >
-                  Add to Cart
-                </button>
-                <Link classname="report-icon" href="/report">
-                  <i class="bi bi-exclamation-circle"></i>
-                </Link>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            <div className="indent bottom-margin">Products Coming Soon!</div>
-          </>
-        )}
-      </div>
-      <div>
-        <Link className="report-icon" href="/report">
-          <i class="bi bi-exclamation-circle"></i>
-        </Link>
-      </div>
-    </Panel>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="indent bottom-margin">Products Coming Soon!</div>
+            </>
+          )}
+        </div>
+        <div>
+          <Link className="report-icon" href="/report">
+            <i class="bi bi-exclamation-circle"></i>
+          </Link>
+        </div>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

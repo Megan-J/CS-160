@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Footer from "./components/Footer";
 
 export default function MyProfile() {
   const router = useRouter();
@@ -220,153 +221,156 @@ export default function MyProfile() {
   }
 
   return (
-    <Panel title="My Radar">
-      <p>Welcome{firstName && `, ${firstName} ${lastName}`}!</p>
+    <>
+      <Panel title="My Radar">
+        <p>Welcome{firstName && `, ${firstName} ${lastName}`}!</p>
 
-      <div className="box">
-        <div className="heading">
-          Bio <i class="bi bi-pencil-square"></i>
-        </div>
-        {bio && bio.length > 0 ? (
-          <div>
-            <div className="indent bottom-margin">{bio}</div>
+        <div className="box">
+          <div className="heading">
+            Bio <i class="bi bi-pencil-square"></i>
           </div>
-        ) : (
-          <>
-            <div className="indent bottom-margin"></div>
-            <div>Add a bio!</div>
-          </>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="heading">Following</div>
-        {following && following.length > 0 ? (
-          following.map((t, i) => (
-            <div className="following" key={i}>
-              <div className="following-name">{`${t.vchFirstName} ${t.vchLastName} (${t.vchUsername})`}</div>
-              <button className="button button-small" onClick={unfollow}>
-                Unfollow
-              </button>
+          {bio && bio.length > 0 ? (
+            <div>
+              <div className="indent bottom-margin">{bio}</div>
             </div>
-          ))
-        ) : (
-          <>
-            <div className="indent bottom-margin">
-              You are not following anyone.
-            </div>
-          </>
-        )}
-      </div>
+          ) : (
+            <>
+              <div className="indent bottom-margin"></div>
+              <div>Add a bio!</div>
+            </>
+          )}
+        </div>
 
-      <div className="box">
-        <div className="heading">Followers</div>
-        {followers && followers.length > 0 ? (
-          followers.map((t, i) => (
-            <div className="follower" key={i}>
-              <div className="follower-name">{t.vchTrackName}</div>
-              <div className="track-description">{t.txtDescription}</div>
-              <div className="track-url">{t.vchAudioUrl}</div>
-              <button className="button button-small" onClick={unfollow}>
-                Unfollow
-              </button>
-            </div>
-          ))
-        ) : (
-          <>
-            <div className="indent bottom-margin">No followers</div>
-          </>
-        )}
-      </div>
-
-      <div className="box">
-        <div className="heading"> Ban Requests</div>
-        {bans && bans.length > 0 ? (
-          <div className="all-products flex">
-            {bans.map((t, i) => (
-              <div className="product" key={i}>
-                <div className="product-name">
-                  Requested by: {t.nRequesterUserID}
-                </div>
-                <div className="requested-user">
-                  User to be banned: {t.nRequestedUserID}
-                </div>
-                <div className="reason">Reason: {t.vchReason}</div>
-                <div className="request-date">
-                  Request Date: {formatRequestDate(t.dtRequested)}
-                </div>
-                <div className="resolved">Resolved Status: {t.bResolved}</div>
-                <button
-                  className="delete-product-button button button-small"
-                  onClick={(event) => deleteBan(event, t.aID)}
-                  key={t.aID}
-                >
-                  Delete
+        <div className="box">
+          <div className="heading">Following</div>
+          {following && following.length > 0 ? (
+            following.map((t, i) => (
+              <div className="following" key={i}>
+                <div className="following-name">{`${t.vchFirstName} ${t.vchLastName} (${t.vchUsername})`}</div>
+                <button className="button button-small" onClick={unfollow}>
+                  Unfollow
                 </button>
               </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            <div className="indent bottom-margin">No open ban requests.</div>
-          </>
-        )}
-
-        {addingBan ? (
-          <>
-            <div className="div-center">
-              <div className="product-box box container new-product-container no-shadow">
-                <div className="heading subheading gray">
-                  Create Ban Request
-                </div>
-                <form onSubmit={handleSubmitBan}>
-                  <div className="new-product-pane">
-                    <div>
-                      <input
-                        className="new-product-name input"
-                        type="text"
-                        name="newRequestedID"
-                        value={newRequestedID}
-                        onChange={(e) => setNewRequestedID(e.target.value)}
-                        placeholder="Username/UserID"
-                      />
-                      <textarea
-                        className="new-product-description input"
-                        name="newBanReason"
-                        value={newBanReason}
-                        onChange={(e) => setNewBanReason(e.target.value)}
-                        placeholder="Reason"
-                      />
-                    </div>
-                    <div className="product-submit-margin-top">
-                      <button className="button button-small" type="submit">
-                        Submit
-                      </button>
-                      <button
-                        className="button button-small cancel"
-                        onClick={cancelAddBan}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </form>
+            ))
+          ) : (
+            <>
+              <div className="indent bottom-margin">
+                You are not following anyone.
               </div>
+            </>
+          )}
+        </div>
+
+        <div className="box">
+          <div className="heading">Followers</div>
+          {followers && followers.length > 0 ? (
+            followers.map((t, i) => (
+              <div className="follower" key={i}>
+                <div className="follower-name">{t.vchTrackName}</div>
+                <div className="track-description">{t.txtDescription}</div>
+                <div className="track-url">{t.vchAudioUrl}</div>
+                <button className="button button-small" onClick={unfollow}>
+                  Unfollow
+                </button>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="indent bottom-margin">No followers</div>
+            </>
+          )}
+        </div>
+
+        <div className="box">
+          <div className="heading"> Ban Requests</div>
+          {bans && bans.length > 0 ? (
+            <div className="all-products flex">
+              {bans.map((t, i) => (
+                <div className="product" key={i}>
+                  <div className="product-name">
+                    Requested by: {t.nRequesterUserID}
+                  </div>
+                  <div className="requested-user">
+                    User to be banned: {t.nRequestedUserID}
+                  </div>
+                  <div className="reason">Reason: {t.vchReason}</div>
+                  <div className="request-date">
+                    Request Date: {formatRequestDate(t.dtRequested)}
+                  </div>
+                  <div className="resolved">Resolved Status: {t.bResolved}</div>
+                  <button
+                    className="delete-product-button button button-small"
+                    onClick={(event) => deleteBan(event, t.aID)}
+                    key={t.aID}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
             </div>
-          </>
-        ) : (
-          <>
-            <div className="center">
-              <button
-                className="indent bottom-margin top-indent button button-small"
-                onClick={handleAddBan}
-              >
-                Create Ban
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </Panel>
+          ) : (
+            <>
+              <div className="indent bottom-margin">No open ban requests.</div>
+            </>
+          )}
+
+          {addingBan ? (
+            <>
+              <div className="div-center">
+                <div className="product-box box container new-product-container no-shadow">
+                  <div className="heading subheading gray">
+                    Create Ban Request
+                  </div>
+                  <form onSubmit={handleSubmitBan}>
+                    <div className="new-product-pane">
+                      <div>
+                        <input
+                          className="new-product-name input"
+                          type="text"
+                          name="newRequestedID"
+                          value={newRequestedID}
+                          onChange={(e) => setNewRequestedID(e.target.value)}
+                          placeholder="Username/UserID"
+                        />
+                        <textarea
+                          className="new-product-description input"
+                          name="newBanReason"
+                          value={newBanReason}
+                          onChange={(e) => setNewBanReason(e.target.value)}
+                          placeholder="Reason"
+                        />
+                      </div>
+                      <div className="product-submit-margin-top">
+                        <button className="button button-small" type="submit">
+                          Submit
+                        </button>
+                        <button
+                          className="button button-small cancel"
+                          onClick={cancelAddBan}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="center">
+                <button
+                  className="indent bottom-margin top-indent button button-small"
+                  onClick={handleAddBan}
+                >
+                  Create Ban
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

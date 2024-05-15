@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
+import Footer from "./components/Footer";
 
 export default function Signup() {
   const [formState, setFormState] = useState(null);
@@ -48,47 +49,50 @@ export default function Signup() {
   };
 
   return (
-    <Panel title="Sign Up">
-      <div>
+    <>
+      <Panel title="Sign Up">
         <div>
-          <div className="flex items-center justify-center">
-            <form onSubmit={handleSubmit}>
-              <div className="row">
-                <label>First Name</label>
-                <input type="text" name="firstName" onChange={handleChange} />
-                <label>Last Name</label>
-                <input type="text" name="lastName" onChange={handleChange} />
-              </div>
-              <div className="row">
-                <label>Email</label>
-                <input type="text" name="email" onChange={handleChange} />
-              </div>
-              <div className="row">
-                <label>Username</label>
-                <input type="text" name="username" onChange={handleChange} />
-              </div>
-              <div className="row">
-                <label>Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                {error ? (
-                  <div className="error">{error}</div>
-                ) : (
-                  <div>&nbsp;</div>
-                )}
-              </div>
-              <div className="flex items-center justify-center">
-                <button className="button change-hue">Sign Up</button>
-              </div>
-            </form>
+          <div>
+            <div className="flex items-center justify-center">
+              <form onSubmit={handleSubmit}>
+                <div className="row">
+                  <label>First Name</label>
+                  <input type="text" name="firstName" onChange={handleChange} />
+                  <label>Last Name</label>
+                  <input type="text" name="lastName" onChange={handleChange} />
+                </div>
+                <div className="row">
+                  <label>Email</label>
+                  <input type="text" name="email" onChange={handleChange} />
+                </div>
+                <div className="row">
+                  <label>Username</label>
+                  <input type="text" name="username" onChange={handleChange} />
+                </div>
+                <div className="row">
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  {error ? (
+                    <div className="error">{error}</div>
+                  ) : (
+                    <div>&nbsp;</div>
+                  )}
+                </div>
+                <div className="flex items-center justify-center">
+                  <button className="button change-hue">Sign Up</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </Panel>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

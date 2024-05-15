@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import Link from "next/link";
+import Footer from "./components/Footer";
 
 // interface Product {
 //     id: number;

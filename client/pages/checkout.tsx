@@ -3,6 +3,7 @@ import Panel from "./components/Panel";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { backend } from "./components/Constants";
+import Footer from "./components/Footer";
 
 interface Inputs {
   email?: string;
@@ -160,254 +161,261 @@ export default function placeOrder() {
   };
 
   return (
-    <Panel title="Checkout">
-      <div className="box">
-        <h2 className="heading">Summary</h2>
-        <div>
-          <div className="product-name indent">Subtotal:</div>
-          <div className="indent">${`${total.toFixed(2)}`}</div>
-          <div className="product-name indent">Shipping:</div>
-          <div className="indent">${`${total.toFixed(2)}`}</div>
-          <div className="product-name indent">Taxes:</div>
-          <div className="indent">${`${(total * tax).toFixed(2)}`}</div>
-          <br />
-        </div>
-        <h2 className="heading">In Your Cart</h2>
-        <div>
-          {items && items.length > 0 ? (
-            <>
-              {items.map((t, i) => (
-                <div className="">
-                  <div key={i}>
-                    <div className="product-name indent">{t.product_name}</div>
-                    <div className="product-description indent">
-                      Quantity: {`${t.quantity}`}
+    <>
+      <Panel title="Checkout">
+        <div className="box">
+          <h2 className="heading">Summary</h2>
+          <div>
+            <div className="product-name indent">Subtotal:</div>
+            <div className="indent">${`${total.toFixed(2)}`}</div>
+            <div className="product-name indent">Shipping:</div>
+            <div className="indent">${`${total.toFixed(2)}`}</div>
+            <div className="product-name indent">Taxes:</div>
+            <div className="indent">${`${(total * tax).toFixed(2)}`}</div>
+            <br />
+          </div>
+          <h2 className="heading">In Your Cart</h2>
+          <div>
+            {items && items.length > 0 ? (
+              <>
+                {items.map((t, i) => (
+                  <div className="">
+                    <div key={i}>
+                      <div className="product-name indent">
+                        {t.product_name}
+                      </div>
+                      <div className="product-description indent">
+                        Quantity: {`${t.quantity}`}
+                      </div>
+                      <div className="product-price indent">
+                        ${`${(t.product_price * t.quantity).toFixed(2)}`}
+                      </div>
+                      <br />
                     </div>
-                    <div className="product-price indent">
-                      ${`${(t.product_price * t.quantity).toFixed(2)}`}
-                    </div>
-                    <br />
                   </div>
-                </div>
-              ))}
-            </>
-          ) : (
-            <></>
-          )}
+                ))}
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
-      </div>
-      <div className="box">
-        <div>
-          <h2 className="heading">Shipping Address</h2>
-        </div>
-        <form onSubmit={handleFormSubmit}>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="First Name"
-                name="shipFirstName"
-                onChange={handleChange}
-              />
-            </label>
-
-            <label>
-              <input
-                type="text"
-                placeholder="Last Name"
-                name="shipLastName"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Address"
-                name="shipAddr"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="City"
-                name="shipCity"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="State"
-                name="shipState"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="ZIP Code"
-                name="shipZip"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Email"
-                name="shipEmail"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="Phone Number"
-                name="shipPhoneNumber"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <br />
-
+        <div className="box">
           <div>
-            <h2 className="heading">Delivery</h2>
+            <h2 className="heading">Shipping Address</h2>
           </div>
-          <input
-            type="radio"
-            id="Standard Shipping"
-            className="indent"
-            name="shippingOpt"
-            value="Standard Shipping"
-            onSelect={deliveryClick}
-          ></input>
-          <label>Standard Shipping: $10</label>
-          <br />
-          <input
-            type="radio"
-            id="Express Shipping"
-            className="indent"
-            name="shippingOpt"
-            value="Express Shipping"
-            onSelect={deliveryClick}
-          ></input>
-          <label>Express Shipping: $15</label>
-          <br />
-          <br />
+          <form onSubmit={handleFormSubmit}>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  name="shipFirstName"
+                  onChange={handleChange}
+                />
+              </label>
 
-          <div>
-            <h2 className="heading">Payment</h2>
-          </div>
-          <input
-            type="checkbox"
-            className="indent"
-            id="Development Payment"
-            value="Development Payment"
-            onChange={handleDevPayment}
-          ></input>
-          <label>Development Payment</label>
-          <br />
-          <br />
-          <div>
-            <h2 className="heading">Billing Address</h2>
-          </div>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="First Name"
-                name="billFirstName"
-                onChange={handleChange}
-              />
-            </label>
-
-            <label>
-              <input
-                type="text"
-                placeholder="Last Name"
-                name="billLastName"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Address"
-                name="billAddr"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="City"
-                name="billCity"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="State"
-                name="billState"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="ZIP Code"
-                name="billZip"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <p>
-            <label>
-              <input
-                type="text"
-                placeholder="Email"
-                name="billEmail"
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              <input
-                type="text"
-                placeholder="Phone Number"
-                name="billPhoneNumber"
-                onChange={handleChange}
-              />
-            </label>
-          </p>
-          <br />
-        </form>
-        <div>
-          <div>
-            <p style={{ padding: "10px" }}>
-              By placing your order you agree to Radar's Terms and Conditions,
-              Privacy Notice, and Cookie Policy.
+              <label>
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  name="shipLastName"
+                  onChange={handleChange}
+                />
+              </label>
             </p>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Address"
+                  name="shipAddr"
+                  onChange={handleChange}
+                />
+              </label>
+            </p>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="City"
+                  name="shipCity"
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  placeholder="State"
+                  name="shipState"
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  placeholder="ZIP Code"
+                  name="shipZip"
+                  onChange={handleChange}
+                />
+              </label>
+            </p>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  name="shipEmail"
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Phone Number"
+                  name="shipPhoneNumber"
+                  onChange={handleChange}
+                />
+              </label>
+            </p>
+            <br />
+
+            <div>
+              <h2 className="heading">Delivery</h2>
+            </div>
+            <input
+              type="radio"
+              id="Standard Shipping"
+              className="indent"
+              name="shippingOpt"
+              value="Standard Shipping"
+              onSelect={deliveryClick}
+            ></input>
+            <label>Standard Shipping: $10</label>
+            <br />
+            <input
+              type="radio"
+              id="Express Shipping"
+              className="indent"
+              name="shippingOpt"
+              value="Express Shipping"
+              onSelect={deliveryClick}
+            ></input>
+            <label>Express Shipping: $15</label>
+            <br />
+            <br />
+
+            <div>
+              <h2 className="heading">Payment</h2>
+            </div>
+            <input
+              type="checkbox"
+              className="indent"
+              id="Development Payment"
+              value="Development Payment"
+              onChange={handleDevPayment}
+            ></input>
+            <label>Development Payment</label>
+            <br />
+            <br />
+            <div>
+              <h2 className="heading">Billing Address</h2>
+            </div>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  name="billFirstName"
+                  onChange={handleChange}
+                />
+              </label>
+
+              <label>
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  name="billLastName"
+                  onChange={handleChange}
+                />
+              </label>
+            </p>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Address"
+                  name="billAddr"
+                  onChange={handleChange}
+                />
+              </label>
+            </p>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="City"
+                  name="billCity"
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  placeholder="State"
+                  name="billState"
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  placeholder="ZIP Code"
+                  name="billZip"
+                  onChange={handleChange}
+                />
+              </label>
+            </p>
+            <p>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Email"
+                  name="billEmail"
+                  onChange={handleChange}
+                />
+              </label>
+              <label>
+                <input
+                  type="text"
+                  placeholder="Phone Number"
+                  name="billPhoneNumber"
+                  onChange={handleChange}
+                />
+              </label>
+            </p>
+            <br />
+          </form>
+          <div>
+            <div>
+              <p style={{ padding: "10px" }}>
+                By placing your order you agree to Radar's Terms and Conditions,
+                Privacy Notice, and Cookie Policy.
+              </p>
+            </div>
+            <br />
+          </div>
+
+          <div className="flex items-center justify-center">
+            <Link href="/confirmation" className="button change-hue">
+              Place Order
+            </Link>
           </div>
           <br />
         </div>
-
-        <div className="flex items-center justify-center">
-          <Link href="/confirmation" className="button change-hue">
-            Place Order
-          </Link>
-        </div>
-      </div>
-    </Panel>
+      </Panel>
+      <br />
+      <Footer></Footer>
+    </>
   );
 }

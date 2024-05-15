@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import Footer from "./components/Footer";
 
 export default function MyStore() {
   const router = useRouter();
@@ -667,555 +668,564 @@ export default function MyStore() {
   let order_prod_name: string | null = null;
 
   return (
-    <Panel title="Store Overview">
-      <div className="box container bluebg">
-        <div className="heading">My Store</div>
-        {store && storeName != null ? (
-          <>
-            <div
-              className="indent store-name"
-              onDoubleClick={() => setIsEditingStoreName(true)}
-            >
-              {isEditingStoreName ? (
-                <input
-                  className="indent input"
-                  name="vchName"
-                  defaultValue={editStoreName}
-                  type="text"
-                  placeholder="Store Name"
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      updateStoreEdit(e, "vchName");
-                      setIsEditingStoreName(false);
-                    } else if (e.key === "Escape") {
-                      setIsEditingStoreName(false);
-                    }
-                  }}
-                />
-              ) : (
-                <>{theStoreName}&nbsp;</>
-              )}
-            </div>
-            <div
-              className="indent store-description"
-              onDoubleClick={() => setIsEditingStoreDescription(true)}
-            >
-              {isEditingStoreDescription ? (
-                <input
-                  className="indent input"
-                  name="vchDescription"
-                  defaultValue={editStoreDescription}
-                  type="text"
-                  placeholder="Store Description"
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      updateStoreEdit(e, "txtDescription");
-                      setIsEditingStoreDescription(false);
-                    } else if (e.key === "Escape") {
-                      setIsEditingStoreDescription(false);
-                    }
-                  }}
-                />
-              ) : (
-                <>{theStoreDescription}&nbsp;</>
-              )}
-            </div>
-          </>
-        ) : creatingStore ? (
-          <>
-            <div className="create-store">
-              <form onSubmit={createStore}>
-                <input type="hidden" name="nUserID" value={userID} />
-                <input type="hidden" name="aID" value={storeID} />
-                <input
-                  className="indent input"
-                  name="vchName"
-                  type="text"
-                  placeholder="Store Name"
-                  onChange={handleChangeCreateStoreName}
-                />
-                <input
-                  className="indent input larger"
-                  name="txtDescription"
-                  type="text"
-                  placeholder="Store Description"
-                  onChange={handleChangeCreateStoreDescription}
-                />
-                <input
-                  type="submit"
-                  className="button button-small"
-                  value="Create Store"
-                />
-                <button
-                  className="cancel button-small indent-right"
-                  onClick={cancelCreateStore}
-                >
-                  Cancel
-                </button>
-              </form>
-            </div>
-          </>
-        ) : (
-          <div className="center">
-            <button
-              className="indent button button-small"
-              onClick={handleStorePress}
-            >
-              Create Your Store
-            </button>
-          </div>
-        )}
-        {store && store.vchName != null ? (
-          <>
-            <div className="box container no-shadow">
-              <div className="heading subheading light-gray">My Products</div>
-              {products && products.length > 0 ? (
-                <>
-                  <div className="all-products flex">
-                    {products.map((t, i) => {
-                      return (
-                        <>
-                          <div className="product" key={i}>
-                            <div
-                              className="product-name"
-                              onDoubleClick={() => {
-                                setIsEditingProductID(i);
-                                setIsEditingProductName(true);
-                              }}
-                            >
-                              {isEditingProductName &&
-                              isEditingProductID == i ? (
-                                <input
-                                  className="indent input"
-                                  name="vchName"
-                                  defaultValue={t.vchName}
-                                  type="text"
-                                  placeholder="Product Name"
-                                  onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                      updateProductEdit(e, i, "vchName");
-                                      setIsEditingProductName(false);
-                                    } else if (e.key === "Escape") {
-                                      setIsEditingProductName(false);
-                                    }
-                                  }}
-                                />
-                              ) : (
-                                <>{t.vchName}&nbsp;</>
-                              )}
-                            </div>
-                            <div
-                              className="product-description"
-                              onDoubleClick={() => {
-                                setIsEditingProductID(i);
-                                setIsEditingProductDescription(true);
-                              }}
-                            >
-                              {isEditingProductDescription &&
-                              isEditingProductID == i ? (
-                                <input
-                                  className="indent input"
-                                  name="txtDescription"
-                                  defaultValue={t.txtDescription}
-                                  type="text"
-                                  placeholder="Product Description"
-                                  onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                      updateProductEdit(e, i, "txtDescription");
-                                      setIsEditingProductDescription(false);
-                                    } else if (e.key === "Escape") {
-                                      setIsEditingProductDescription(false);
-                                    }
-                                  }}
-                                />
-                              ) : (
-                                <>{t.txtDescription}&nbsp;</>
-                              )}
-                            </div>
-                            <div
-                              className="product-price"
-                              onDoubleClick={() => {
-                                setIsEditingProductID(i);
-                                setIsEditingProductPrice(true);
-                              }}
-                            >
-                              Price: $
-                              {isEditingProductPrice &&
-                              isEditingProductID == i ? (
-                                <input
-                                  className="indent input short-input"
-                                  name="fPrice"
-                                  defaultValue={t.fPrice.toFixed(2)}
-                                  type="text"
-                                  placeholder="Price"
-                                  onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                      updateProductEdit(e, i, "fPrice");
-                                      setIsEditingProductPrice(false);
-                                    } else if (e.key === "Escape") {
-                                      setIsEditingProductPrice(false);
-                                    }
-                                  }}
-                                />
-                              ) : (
-                                <>{t.fPrice.toFixed(2)}&nbsp;</>
-                              )}
-                            </div>
-                            <div
-                              className="product-shipping"
-                              onDoubleClick={() => {
-                                setIsEditingProductID(i);
-                                setIsEditingProductShipping(true);
-                              }}
-                            >
-                              Shipping: $
-                              {isEditingProductShipping &&
-                              isEditingProductID == i ? (
-                                <input
-                                  className="indent input short-input"
-                                  name="fShipping"
-                                  defaultValue={t.fShipping.toFixed(2)}
-                                  type="text"
-                                  placeholder="Shipping"
-                                  onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                      updateProductEdit(e, i, "fShipping");
-                                      setIsEditingProductShipping(false);
-                                      setIsEditingProductID(null);
-                                    } else if (e.key === "Escape") {
-                                      setIsEditingProductShipping(false);
-                                      setIsEditingProductID(null);
-                                    }
-                                  }}
-                                />
-                              ) : (
-                                <>{t.fShipping.toFixed(2)}&nbsp;</>
-                              )}
-                            </div>
-                            <div
-                              className="product-inventory"
-                              onDoubleClick={() => {
-                                setIsEditingProductID(i);
-                                setIsEditingProductInventory(true);
-                              }}
-                            >
-                              Stock:
-                              {isEditingProductInventory ? (
-                                <input
-                                  className="indent input short-input"
-                                  name="nInventory"
-                                  defaultValue={t.nInventory}
-                                  type="text"
-                                  placeholder="Inventory"
-                                  onKeyPress={(e) => {
-                                    if (e.key === "Enter") {
-                                      updateProductEdit(e, i, "nInventory");
-                                      setIsEditingProductInventory(false);
-                                      setIsEditingProductID(null);
-                                    } else if (e.key === "Escape") {
-                                      setIsEditingProductInventory(false);
-                                      setIsEditingProductID(null);
-                                    }
-                                  }}
-                                />
-                              ) : (
-                                <>{t.nInventory.toFixed(0)}&nbsp;</>
-                              )}
-                            </div>
-                            <button
-                              className="delete-product-button button button-small"
-                              onClick={(event) => deleteProduct(event, t.aID)}
-                              key={t.aID}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </>
-                      );
-                    })}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="indent">No products yet.</div>
-                </>
-              )}
-              {addingProduct ? (
-                <>
-                  <div className="div-center">
-                    <div className="product-box box container new-product-container no-shadow">
-                      <div className="heading subheading gray">
-                        Add a Product
-                      </div>
-                      <form onSubmit={handleSubmitProduct}>
-                        <div className="new-product-pane">
-                          <div>
-                            <input
-                              className="new-product-name input"
-                              type="text"
-                              name="newProductName"
-                              value={newProductName}
-                              onChange={(e) =>
-                                setNewProductName(e.target.value)
-                              }
-                              placeholder="Name"
-                            />
-                            <textarea
-                              className="new-product-description input"
-                              name="newProductDescription"
-                              value={newProductDescription}
-                              onChange={(e) =>
-                                setNewProductDescription(e.target.value)
-                              }
-                              placeholder="Description"
-                            />
-                            <input
-                              type="number"
-                              className="new-product-price input"
-                              name="newProductPrice"
-                              value={newProductPrice}
-                              onChange={(e) =>
-                                setNewProductPrice(e.target.value)
-                              }
-                              placeholder="Price"
-                            />
-                            <input
-                              type="number"
-                              className="new-product-shipping input"
-                              name="newProductShipping"
-                              value={newProductShipping}
-                              onChange={(e) =>
-                                setNewProductShipping(e.target.value)
-                              }
-                              placeholder="Shipping Cost"
-                            />
-                            <input
-                              type="number"
-                              className="new-product-inventory input"
-                              name="newProductInventory"
-                              value={newProductInventory}
-                              onChange={(e) =>
-                                setNewProductInventory(e.target.value)
-                              }
-                              placeholder="Inventory Count"
-                            />
-                          </div>
-                          <div className="product-submit-margin-top">
-                            <button
-                              className="button button-small"
-                              type="submit"
-                            >
-                              Submit
-                            </button>
-                            <button
-                              className="button button-small cancel"
-                              onClick={cancelAddProduct}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="center">
-                    <button
-                      className="indent bottom-margin top-indent button button-small"
-                      onClick={handleAddProduct}
-                    >
-                      <i class="bi bi-plus"></i>
-                      Add Product
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="box container no-shadow">
-              <div className="heading subheading gray">My Orders</div>
-              <div className="orders indent">
-                {(orderItem1 || orderItem2 || orderItem3) && (
-                  <div className="order">
-                    <div className="order-date header">Date</div>
-                    <div className="order-product-name header">Product</div>
-                    <div className="order-quantity header">Quantity</div>
-                    <div className="order-total header">Total</div>
-                  </div>
-                )}
-                {!orderItem1 && !orderItem2 && !orderItem3 && (
-                  <div className="indent bottom-margin">No orders yet.</div>
-                )}
-                {orderItem1 && (
-                  <div className="order">
-                    <div className="order-date ">4/12/24</div>
-                    <div className="order-product-name ">Klaatu CD</div>
-                    <div className="order-quantity ">3</div>
-                    <div className="order-total ">$32.50</div>
-                    <div>
-                      <button
-                        className="cancel-order button"
-                        onClick={(e) => {
-                          setOrderItem1(false);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {orderItem2 && (
-                  <div className="order">
-                    <div className="order-date ">4/14/24</div>
-                    <div className="order-product-name ">
-                      Autographed photo of Tom Petty
-                    </div>
-                    <div className="order-quantity ">1</div>
-                    <div className="order-total ">$10.00</div>
-                    <div>
-                      <button
-                        className="cancel-order button"
-                        onClick={(e) => {
-                          setOrderItem2(false);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {orderItem3 && (
-                  <div className="order">
-                    <div className="order-date ">4/16/24</div>
-                    <div className="order-product-name ">Tesla Model S</div>
-                    <div className="order-quantity ">1</div>
-                    <div className="order-total ">$122,000.00</div>
-                    <div>
-                      <button
-                        className="cancel-order button"
-                        onClick={(e) => {
-                          setOrderItem2(false);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
+    <>
+      <Panel title="Store Overview">
+        <div className="box container bluebg">
+          <div className="heading">My Store</div>
+          {store && storeName != null ? (
+            <>
+              <div
+                className="indent store-name"
+                onDoubleClick={() => setIsEditingStoreName(true)}
+              >
+                {isEditingStoreName ? (
+                  <input
+                    className="indent input"
+                    name="vchName"
+                    defaultValue={editStoreName}
+                    type="text"
+                    placeholder="Store Name"
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        updateStoreEdit(e, "vchName");
+                        setIsEditingStoreName(false);
+                      } else if (e.key === "Escape") {
+                        setIsEditingStoreName(false);
+                      }
+                    }}
+                  />
+                ) : (
+                  <>{theStoreName}&nbsp;</>
                 )}
               </div>
-            </div>
-          </>
-        ) : (
-          ""
-        )}
-      </div>
-
-      <div className="box greenbg">
-        <div className="heading green">Tracks</div>
-        {tracks && tracks.length > 0 ? (
-          <div className="all-products flex">
-            {tracks.map((t, i) => (
-              <div className="product" key={i}>
-                <div className="track-title">{t.vchTitle}</div>
-                <div className="track-description">{t.txtDescription}</div>
-                <div className="track-url">{t.vchAudioUrl}</div>
-                <button
-                  className="delete-product-button button button-small"
-                  onClick={(event) => deleteTrack(event, t.aID)}
-                  key={t.aID}
-                >
-                  Delete
-                </button>
+              <div
+                className="indent store-description"
+                onDoubleClick={() => setIsEditingStoreDescription(true)}
+              >
+                {isEditingStoreDescription ? (
+                  <input
+                    className="indent input"
+                    name="vchDescription"
+                    defaultValue={editStoreDescription}
+                    type="text"
+                    placeholder="Store Description"
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        updateStoreEdit(e, "txtDescription");
+                        setIsEditingStoreDescription(false);
+                      } else if (e.key === "Escape") {
+                        setIsEditingStoreDescription(false);
+                      }
+                    }}
+                  />
+                ) : (
+                  <>{theStoreDescription}&nbsp;</>
+                )}
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="indent bottom-margin">No tracks yet.</div>
-        )}
-        <br />
-        <br />
-        {addingTrack ? (
-          <>
-            <div className="div-center">
-              <div className="product-box box container new-product-container no-shadow">
-                <div className="heading subheading gray">Add New Track</div>
-                <form onSubmit={handleSubmitTrack}>
-                  <div className="new-product-pane">
-                    <div>
-                      <input
-                        className="new-product-name input"
-                        type="text"
-                        name="newTrackName"
-                        value={newTrackName}
-                        onChange={(e) => setNewTrackName(e.target.value)}
-                        placeholder="Song Title"
-                      />
-                      <textarea
-                        className="new-product-description input"
-                        name="newTrackDescription"
-                        value={newTrackDescription}
-                        onChange={(e) => setNewTrackDescription(e.target.value)}
-                        placeholder="Song Description"
-                      />
-                      <p>Enter Audio file path below:</p>
-                      <input
-                        className="new-product-name input"
-                        type="file"
-                        name="newTrackAudioURL"
-                        value={newTrackAudioURL}
-                        onChange={(e) => setNewTrackAudioURL(e.target.value)}
-                        placeholder="Song File"
-                      />
-                      <p>Upload Image file path below:</p>
-                      <input
-                        className="new-product-name input"
-                        type="file"
-                        name="newTrackImagePath"
-                        value={newTrackImagePath}
-                        onChange={(e) => setNewTrackImagePath(e.target.value)}
-                        placeholder="Song Image File"
-                      />
-                      <input
-                        className="new-product-name input"
-                        type="text"
-                        name="newTrackGenreID"
-                        value={newTrackGenreID}
-                        onChange={(e) => setNewTrackGenreID(e.target.value)}
-                        placeholder="Genre ID"
-                      />
-                    </div>
-                    <div className="product-submit-margin-top">
-                      <button className="button button-small" type="submit">
-                        Submit
-                      </button>
-                      <button
-                        className="button button-small cancel"
-                        onClick={cancelAddTrack}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
+            </>
+          ) : creatingStore ? (
+            <>
+              <div className="create-store">
+                <form onSubmit={createStore}>
+                  <input type="hidden" name="nUserID" value={userID} />
+                  <input type="hidden" name="aID" value={storeID} />
+                  <input
+                    className="indent input"
+                    name="vchName"
+                    type="text"
+                    placeholder="Store Name"
+                    onChange={handleChangeCreateStoreName}
+                  />
+                  <input
+                    className="indent input larger"
+                    name="txtDescription"
+                    type="text"
+                    placeholder="Store Description"
+                    onChange={handleChangeCreateStoreDescription}
+                  />
+                  <input
+                    type="submit"
+                    className="button button-small"
+                    value="Create Store"
+                  />
+                  <button
+                    className="cancel button-small indent-right"
+                    onClick={cancelCreateStore}
+                  >
+                    Cancel
+                  </button>
                 </form>
               </div>
-            </div>
-          </>
-        ) : (
-          <>
+            </>
+          ) : (
             <div className="center">
               <button
-                className="indent bottom-margin top-indent button button-small"
-                onClick={handleAddTrack}
+                className="indent button button-small"
+                onClick={handleStorePress}
               >
-                <i class="bi bi-plus"></i>
-                Upload Music
+                Create Your Store
               </button>
             </div>
-          </>
-        )}
-      </div>
-    </Panel>
+          )}
+          {store && store.vchName != null ? (
+            <>
+              <div className="box container no-shadow">
+                <div className="heading subheading light-gray">My Products</div>
+                {products && products.length > 0 ? (
+                  <>
+                    <div className="all-products flex">
+                      {products.map((t, i) => {
+                        return (
+                          <>
+                            <div className="product" key={i}>
+                              <div
+                                className="product-name"
+                                onDoubleClick={() => {
+                                  setIsEditingProductID(i);
+                                  setIsEditingProductName(true);
+                                }}
+                              >
+                                {isEditingProductName &&
+                                isEditingProductID == i ? (
+                                  <input
+                                    className="indent input"
+                                    name="vchName"
+                                    defaultValue={t.vchName}
+                                    type="text"
+                                    placeholder="Product Name"
+                                    onKeyPress={(e) => {
+                                      if (e.key === "Enter") {
+                                        updateProductEdit(e, i, "vchName");
+                                        setIsEditingProductName(false);
+                                      } else if (e.key === "Escape") {
+                                        setIsEditingProductName(false);
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <>{t.vchName}&nbsp;</>
+                                )}
+                              </div>
+                              <div
+                                className="product-description"
+                                onDoubleClick={() => {
+                                  setIsEditingProductID(i);
+                                  setIsEditingProductDescription(true);
+                                }}
+                              >
+                                {isEditingProductDescription &&
+                                isEditingProductID == i ? (
+                                  <input
+                                    className="indent input"
+                                    name="txtDescription"
+                                    defaultValue={t.txtDescription}
+                                    type="text"
+                                    placeholder="Product Description"
+                                    onKeyPress={(e) => {
+                                      if (e.key === "Enter") {
+                                        updateProductEdit(
+                                          e,
+                                          i,
+                                          "txtDescription"
+                                        );
+                                        setIsEditingProductDescription(false);
+                                      } else if (e.key === "Escape") {
+                                        setIsEditingProductDescription(false);
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <>{t.txtDescription}&nbsp;</>
+                                )}
+                              </div>
+                              <div
+                                className="product-price"
+                                onDoubleClick={() => {
+                                  setIsEditingProductID(i);
+                                  setIsEditingProductPrice(true);
+                                }}
+                              >
+                                Price: $
+                                {isEditingProductPrice &&
+                                isEditingProductID == i ? (
+                                  <input
+                                    className="indent input short-input"
+                                    name="fPrice"
+                                    defaultValue={t.fPrice.toFixed(2)}
+                                    type="text"
+                                    placeholder="Price"
+                                    onKeyPress={(e) => {
+                                      if (e.key === "Enter") {
+                                        updateProductEdit(e, i, "fPrice");
+                                        setIsEditingProductPrice(false);
+                                      } else if (e.key === "Escape") {
+                                        setIsEditingProductPrice(false);
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <>{t.fPrice.toFixed(2)}&nbsp;</>
+                                )}
+                              </div>
+                              <div
+                                className="product-shipping"
+                                onDoubleClick={() => {
+                                  setIsEditingProductID(i);
+                                  setIsEditingProductShipping(true);
+                                }}
+                              >
+                                Shipping: $
+                                {isEditingProductShipping &&
+                                isEditingProductID == i ? (
+                                  <input
+                                    className="indent input short-input"
+                                    name="fShipping"
+                                    defaultValue={t.fShipping.toFixed(2)}
+                                    type="text"
+                                    placeholder="Shipping"
+                                    onKeyPress={(e) => {
+                                      if (e.key === "Enter") {
+                                        updateProductEdit(e, i, "fShipping");
+                                        setIsEditingProductShipping(false);
+                                        setIsEditingProductID(null);
+                                      } else if (e.key === "Escape") {
+                                        setIsEditingProductShipping(false);
+                                        setIsEditingProductID(null);
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <>{t.fShipping.toFixed(2)}&nbsp;</>
+                                )}
+                              </div>
+                              <div
+                                className="product-inventory"
+                                onDoubleClick={() => {
+                                  setIsEditingProductID(i);
+                                  setIsEditingProductInventory(true);
+                                }}
+                              >
+                                Stock:
+                                {isEditingProductInventory ? (
+                                  <input
+                                    className="indent input short-input"
+                                    name="nInventory"
+                                    defaultValue={t.nInventory}
+                                    type="text"
+                                    placeholder="Inventory"
+                                    onKeyPress={(e) => {
+                                      if (e.key === "Enter") {
+                                        updateProductEdit(e, i, "nInventory");
+                                        setIsEditingProductInventory(false);
+                                        setIsEditingProductID(null);
+                                      } else if (e.key === "Escape") {
+                                        setIsEditingProductInventory(false);
+                                        setIsEditingProductID(null);
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  <>{t.nInventory.toFixed(0)}&nbsp;</>
+                                )}
+                              </div>
+                              <button
+                                className="delete-product-button button button-small"
+                                onClick={(event) => deleteProduct(event, t.aID)}
+                                key={t.aID}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </>
+                        );
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="indent">No products yet.</div>
+                  </>
+                )}
+                {addingProduct ? (
+                  <>
+                    <div className="div-center">
+                      <div className="product-box box container new-product-container no-shadow">
+                        <div className="heading subheading gray">
+                          Add a Product
+                        </div>
+                        <form onSubmit={handleSubmitProduct}>
+                          <div className="new-product-pane">
+                            <div>
+                              <input
+                                className="new-product-name input"
+                                type="text"
+                                name="newProductName"
+                                value={newProductName}
+                                onChange={(e) =>
+                                  setNewProductName(e.target.value)
+                                }
+                                placeholder="Name"
+                              />
+                              <textarea
+                                className="new-product-description input"
+                                name="newProductDescription"
+                                value={newProductDescription}
+                                onChange={(e) =>
+                                  setNewProductDescription(e.target.value)
+                                }
+                                placeholder="Description"
+                              />
+                              <input
+                                type="number"
+                                className="new-product-price input"
+                                name="newProductPrice"
+                                value={newProductPrice}
+                                onChange={(e) =>
+                                  setNewProductPrice(e.target.value)
+                                }
+                                placeholder="Price"
+                              />
+                              <input
+                                type="number"
+                                className="new-product-shipping input"
+                                name="newProductShipping"
+                                value={newProductShipping}
+                                onChange={(e) =>
+                                  setNewProductShipping(e.target.value)
+                                }
+                                placeholder="Shipping Cost"
+                              />
+                              <input
+                                type="number"
+                                className="new-product-inventory input"
+                                name="newProductInventory"
+                                value={newProductInventory}
+                                onChange={(e) =>
+                                  setNewProductInventory(e.target.value)
+                                }
+                                placeholder="Inventory Count"
+                              />
+                            </div>
+                            <div className="product-submit-margin-top">
+                              <button
+                                className="button button-small"
+                                type="submit"
+                              >
+                                Submit
+                              </button>
+                              <button
+                                className="button button-small cancel"
+                                onClick={cancelAddProduct}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="center">
+                      <button
+                        className="indent bottom-margin top-indent button button-small"
+                        onClick={handleAddProduct}
+                      >
+                        <i class="bi bi-plus"></i>
+                        Add Product
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="box container no-shadow">
+                <div className="heading subheading gray">My Orders</div>
+                <div className="orders indent">
+                  {(orderItem1 || orderItem2 || orderItem3) && (
+                    <div className="order">
+                      <div className="order-date header">Date</div>
+                      <div className="order-product-name header">Product</div>
+                      <div className="order-quantity header">Quantity</div>
+                      <div className="order-total header">Total</div>
+                    </div>
+                  )}
+                  {!orderItem1 && !orderItem2 && !orderItem3 && (
+                    <div className="indent bottom-margin">No orders yet.</div>
+                  )}
+                  {orderItem1 && (
+                    <div className="order">
+                      <div className="order-date ">4/12/24</div>
+                      <div className="order-product-name ">Klaatu CD</div>
+                      <div className="order-quantity ">3</div>
+                      <div className="order-total ">$32.50</div>
+                      <div>
+                        <button
+                          className="cancel-order button"
+                          onClick={(e) => {
+                            setOrderItem1(false);
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {orderItem2 && (
+                    <div className="order">
+                      <div className="order-date ">4/14/24</div>
+                      <div className="order-product-name ">
+                        Autographed photo of Tom Petty
+                      </div>
+                      <div className="order-quantity ">1</div>
+                      <div className="order-total ">$10.00</div>
+                      <div>
+                        <button
+                          className="cancel-order button"
+                          onClick={(e) => {
+                            setOrderItem2(false);
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {orderItem3 && (
+                    <div className="order">
+                      <div className="order-date ">4/16/24</div>
+                      <div className="order-product-name ">Tesla Model S</div>
+                      <div className="order-quantity ">1</div>
+                      <div className="order-total ">$122,000.00</div>
+                      <div>
+                        <button
+                          className="cancel-order button"
+                          onClick={(e) => {
+                            setOrderItem2(false);
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          ) : (
+            ""
+          )}
+        </div>
+
+        <div className="box greenbg">
+          <div className="heading green">Tracks</div>
+          {tracks && tracks.length > 0 ? (
+            <div className="all-products flex">
+              {tracks.map((t, i) => (
+                <div className="product" key={i}>
+                  <div className="track-title">{t.vchTitle}</div>
+                  <div className="track-description">{t.txtDescription}</div>
+                  <div className="track-url">{t.vchAudioUrl}</div>
+                  <button
+                    className="delete-product-button button button-small"
+                    onClick={(event) => deleteTrack(event, t.aID)}
+                    key={t.aID}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="indent bottom-margin">No tracks yet.</div>
+          )}
+          <br />
+          <br />
+          {addingTrack ? (
+            <>
+              <div className="div-center">
+                <div className="product-box box container new-product-container no-shadow">
+                  <div className="heading subheading gray">Add New Track</div>
+                  <form onSubmit={handleSubmitTrack}>
+                    <div className="new-product-pane">
+                      <div>
+                        <input
+                          className="new-product-name input"
+                          type="text"
+                          name="newTrackName"
+                          value={newTrackName}
+                          onChange={(e) => setNewTrackName(e.target.value)}
+                          placeholder="Song Title"
+                        />
+                        <textarea
+                          className="new-product-description input"
+                          name="newTrackDescription"
+                          value={newTrackDescription}
+                          onChange={(e) =>
+                            setNewTrackDescription(e.target.value)
+                          }
+                          placeholder="Song Description"
+                        />
+                        <p>Enter Audio file path below:</p>
+                        <input
+                          className="new-product-name input"
+                          type="file"
+                          name="newTrackAudioURL"
+                          value={newTrackAudioURL}
+                          onChange={(e) => setNewTrackAudioURL(e.target.value)}
+                          placeholder="Song File"
+                        />
+                        <p>Upload Image file path below:</p>
+                        <input
+                          className="new-product-name input"
+                          type="file"
+                          name="newTrackImagePath"
+                          value={newTrackImagePath}
+                          onChange={(e) => setNewTrackImagePath(e.target.value)}
+                          placeholder="Song Image File"
+                        />
+                        <input
+                          className="new-product-name input"
+                          type="text"
+                          name="newTrackGenreID"
+                          value={newTrackGenreID}
+                          onChange={(e) => setNewTrackGenreID(e.target.value)}
+                          placeholder="Genre ID"
+                        />
+                      </div>
+                      <div className="product-submit-margin-top">
+                        <button className="button button-small" type="submit">
+                          Submit
+                        </button>
+                        <button
+                          className="button button-small cancel"
+                          onClick={cancelAddTrack}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="center">
+                <button
+                  className="indent bottom-margin top-indent button button-small"
+                  onClick={handleAddTrack}
+                >
+                  <i class="bi bi-plus"></i>
+                  Upload Music
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { backend } from "./Constants";
 import { Routes, Route } from "react-router-dom"; // Import BrowserRouter
 import Link from "next/link";
 import { useRouter } from "next/router"; // Import useRouter
+import PlayButton from "./PlayButton";
 import storefront1 from "../../../data/storeFronts/1.png";
 import storefront2 from "../../../data/storeFronts/2.png";
 import storefront3 from "../../../data/storeFronts/3.png";
@@ -65,6 +66,10 @@ const SearchStores: React.FC = () => {
     }
   };
 
+  const handlePlay = () => {
+    console.log("Play button clicked");
+  };
+
   return (
     <div>
       <br />
@@ -97,21 +102,31 @@ const SearchStores: React.FC = () => {
               style={{
                 marginLeft: "5px",
                 padding: "5px",
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              <i className="bi bi-play-circle-fill"></i> Top Hit
+              <PlayButton songName="tophit1"></PlayButton>
+              <label>Top Hit</label>
             </div>
             <div
               style={{
                 marginLeft: "5px",
                 padding: "5px",
+                display: "flex",
+                alignItems: "center",
               }}
             >
-              <i className="bi bi-play-circle-fill"></i> Newest Song
+              <PlayButton songName="newestsong"></PlayButton>
+              <label>Newest Song</label>
             </div>
           </div>
         ))}
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 };
