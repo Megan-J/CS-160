@@ -573,6 +573,7 @@ export default function index() {
     return (
 <Panel title="My Radar">
     <p>Welcome{firstName && `, ${firstName} ${lastName}`}!</p>
+    <div className="profile-pic"><img src="placeholder1.png"></img></div>
     <div className="profile-pic"><img src={profilepic} alt="profile pic"/></div>
     <Modal isOpen={modalStates.uploadTrackModal} toggleModal={() => toggleModal('uploadTrackModal')}>
         <form id="upload-music-form" className="upload-music-form" onSubmit={do_upload}>

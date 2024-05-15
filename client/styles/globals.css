@@ -197,7 +197,7 @@ label {
 
 .initials {
     animation: hue-rotate 10s infinite linear;
-    background: #FF0;
+    background: rgb(141, 141, 2);
     border-radius: 12px;
     border: 1px solid #888;
     color: #000;
@@ -363,6 +363,10 @@ nav input.search {
     padding-left: 5px;
 }
 
+.bold-text {
+    font-weight: bold;
+}
+
 .box {
     background-color: rgba(240,240,255,.5);
     border: 1px solid #037;
@@ -439,6 +443,10 @@ html {
     margin-bottom: 10px;
 }
 
+.center {
+    text-align: center;
+}
+
 .orange {
     background-color: #93791d !important;
 }
@@ -511,12 +519,28 @@ html {
     background-color: rgb(206, 255, 253);
 }
 
+.store-in-profile {
+    border: 1px solid #888;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #888;
+    margin-bottom: 10px;
+    padding: 5px;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    margin-left: 5px;
+    margin-right: 15px;
+    background-color: rgb(206, 255, 253);
+}
+
 .all-products {
     flex-wrap: wrap;
     display: flex;
     max-width: 670px;
     margin-left: 30px;
 }
+
 .product-name {
     font-weight: bold;
 }
@@ -525,12 +549,25 @@ html {
     font-style: italic;
 }
 
+.delete-product-button {
+    height: 25px;
+    padding-top: 0;
+    align-content: right;
+}
 
-.product-name {
+.product-name, .track-title {
     font-weight: bold;
 }
 
+.product-description, .track-description {
+    font-style: italic;
+}
+
 .delete-product-button {
+    float: right;
+}
+
+.report-icon {
     float: right;
 }
 
@@ -738,4 +775,171 @@ html {
 .padding-right-5 {
     padding-right: 5px;
     padding-left: 5px;
+}
+
+.payment-form {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    height: 30vh;
+  }
+
+.left-column, .right-column {
+    padding: 20px;
+}
+
+.left-column {
+    background-color: #f0f0f0;
+}
+
+.right-column {
+    background-color: #e0e0e0;
+}
+
+  /* Overlay covers the entire viewport */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    z-index: 1000; /* High z-index to be on top of other content */
+}
+
+/* Modal content container with padding, background, etc. */
+.modal-content {
+    position: relative;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px; /* Max width for large screens */
+    background-color: #fff; /* White background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center; /* Center align the text */
+    z-index: 1001; /* Ensure it's above the overlay */
+}
+
+/* Styling for the close button */
+.modal-content button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007BFF; /* Bootstrap primary color */
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.modal-content button:hover {
+    background-color: #0056b3; /* Darken button on hover */
+}
+
+.drag-drop {
+    height: 200px;
+}
+
+.audio-player {
+    background-color: #fff;
+    align-items: center;
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 6px;
+    height: 38px;
+    margin-right: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #888;
+}
+
+.audio-player-container svg {
+    height: 0;
+}
+
+.audio-player button {
+    padding-right: 30px;
+}
+
+.audio-player * {
+    xpadding-right: 10px;
+}
+
+.audio-player svg {
+    fill: #000;
+    height: 24px;
+    width: 24px;
+}
+
+.photo .drag-drop {
+    background-color: #6b6bff;
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 100px;
+    width: 100%;
+    vertical-align: middle;
+    text-align: center;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.photo .drag-drop .uppy-Container {
+    margin: auto;
+}
+
+.photo .drag-drop .uppy-DragDrop-inner svg {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.photo .drag-drop .uppy-Container span {
+    color: white;
+}
+
+.product-image {
+    width: 200px;
+    cursor: pointer;
+}
+
+.small-width {
+    width: 100px;
+}
+
+.profile-pic {
+    width: 200px;
+}
+
+.center {
+    margin-bottom: 15px;
+}
+
+.product-image-div {
+    margin-left: 50px;
+}
+
+.relative {
+    position: relative;;
+}
+
+.upload-image {
+    position: absolute;
+    bottom: 5px;
+    right: 45px;
+    cursor: pointer;
+}
+
+.padding-right-5 {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.profile-pic {
+    animation: hue-rotate 10s infinite linear;
 }

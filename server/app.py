@@ -72,7 +72,8 @@ if "-----[ app setup ]-----":
     UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'mp4', 'mov', 'mp3', 'wav', 'm4a', 'flac'}
+    ALLOWED_EXTENSIONS = {"image": ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'mp4', 'mov', 'mp3', 'wav', 'm4a', 'flac'],
+                          "audio": ['mp3', 'wav', 'm4a', 'flac'],}
 
     app.config['SECRET_KEY'] = 'beneaththeradar'
     app.config['SECURITY_PASSWORD_SALT'] = b'77'
@@ -89,6 +90,12 @@ if "-----[ db setup ]-----":
 
     class Addresses(db.Model):
         __table__ = db.metadata.tables['Addresses']
+
+    class BanRequests(db.Model):
+        __table__ = db.metadata.tables['BanRequests']
+
+    class Cart(db.Model):
+        __table__ = db.metadata.tables['Cart']
 
     class CCInfo(db.Model):
         __table__ = db.metadata.tables['CCInfo']
@@ -114,6 +121,9 @@ if "-----[ db setup ]-----":
     class Products(db.Model):
         __table__ = db.metadata.tables['Products']
 
+    class Report(db.Model):
+        __table__ = db.metadata.tables['Reports']
+        
     class States(db.Model):
         __table__ = db.metadata.tables['States']
 
@@ -128,7 +138,6 @@ if "-----[ db setup ]-----":
 
     class Users(db.Model):
         __table__ = db.metadata.tables['Users']
-        # followers = db.relationship('Followers', backref='users', lazy=True)
 
     tables = {
         'Addresses': Addresses(),
@@ -151,8 +160,8 @@ if "-----[ helper functions ]-----":
     def allfields(name, item):
         return {col: getattr(item, col) for col in tables[name].__table__.columns.keys()}
 
-    def allowed_file(filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    def allowed_file(filename, type):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS[type]
 
 if "-----[ testing endpoints ]-----":
     @app.route('/check', methods=['GET'])
@@ -823,6 +832,92 @@ if "-----[ search endpoint ]-----":
                 return make_response(jsonify({'message': 'Missing query'}), 400)
         except Exception as e:
             return make_response(jsonify({'message': 'Error searching', 'error': str(e)}), 500)
+        
+    @app.route('/checkout/shipping_address', methods=['POST'])
+    def store_shipping_addr():
+        data = request.get_json()
+        try:
+            addresses = Addresses()
+            try:
+                a = addresses.query.filter_by(vchAddress1=data['shipAddr']).first()
+            except Exception as e:
+                return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e)}), 500)
+            if a:
+                return make_response(jsonify({'message': 'address already exists'}), 200)
+            else:
+                a = Addresses(
+                    vchAddress1=data['shipAddr'],
+                    vchCity=data['shipCity'],
+                    nStateID=data['shipCity'],
+                    vchZip=data['shipZip'],
+                )
+                db.session.add(a)
+                db.session.commit()
+                return jsonify({
+                    'aID': a.aID,
+                    'vchAddress1': a.vchAddress1,
+                    'vchCity': a.vchCity,
+                    'nStateID': a.nStateID,
+                    'vchZip': a.vchZip,
+                }), 201
+        except Exception as e:
+            return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e), 'data':data}), 500)
+        
+    @app.route('/checkout/billing_address', methods=['POST'])
+    def store_billing_addr():
+        data = request.get_json()
+        try:
+            addresses = Addresses()
+            try:
+                a = addresses.query.filter_by(vchAddress1=data['shipAddr']).first()
+            except Exception as e:
+                return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e)}), 500)
+            if a:
+                return make_response(jsonify({'message': 'address already exists'}), 200)
+            else:
+                a = Addresses(
+                    vchAddress1=data['billAddr'],
+                    vchCity=data['billCity'],
+                    nStateID=data['billCity'],
+                    vchZip=data['billZip'],
+                )
+                db.session.add(a)
+                db.session.commit()
+                return jsonify({
+                    'aID': a.aID,
+                    'vchAddress1': a.vchAddress1,
+                    'vchCity': a.vchCity,
+                    'nStateID': a.nStateID,
+                    'vchZip': a.vchZip,
+                }), 201
+        except Exception as e:
+            return make_response(jsonify({'message': 'address storage unsuccessful', 'error':str(e), 'data':data}), 500)
+
+    #get store by id with owner name
+    @app.route('/storefront/owner/<int:store_id>', methods=['GET'])
+    def get_store_with_owner(store_id):
+        try:
+            #try to get the store by its id
+            store = Stores.query.filter_by(aID=store_id).first()
+            if store:
+                ownerID = store.nUserID
+                if ownerID:
+                    ownerName = Users.query.filter_by(aID=ownerID).first()
+                    if ownerName:
+                        store_data = {
+                            'id': store.aID,
+                            'ownerID': store.nUserID,
+                            'name' : store.vchName,
+                            'description' : store.txtDescription,
+                            'ownerName': ownerName.vchUsername,
+                        }
+                        return make_response(jsonify(store_data), 200)
+                    return make_response(jsonify({'message' : 'owner not found'}), 404)
+            return make_response(jsonify({'message': 'store not found'}), 404)
+        except Exception as e:
+            return make_response(jsonify({'message': 'error getting store', 'error':str(e)}), 500)
+        
+
 if __name__ == '__main__':
     # with app.app_context():
     #     db.create_all()
