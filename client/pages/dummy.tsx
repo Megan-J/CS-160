@@ -10,12 +10,8 @@ export default function Dummy() {
     <>
       <Panel title="Report an Issue">
         <div>
-          <audio
-            controls
-            autoPlay
-            src="../public/troubles.mp3"
-            className="w-1/2 focus:outline-none transition-transform duration-300"
-          />
+          <p>In the method</p>
+          <audio controls loop src="./data/storeMusic/titanium.mp3" />
         </div>
       </Panel>
       <Footer></Footer>
