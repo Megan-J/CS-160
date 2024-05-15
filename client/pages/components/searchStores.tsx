@@ -23,6 +23,16 @@ const SearchStores: React.FC = () => {
 
   let [ownerName, setOwnerName] = useState("");
   const [userList, setUserList] = useState<Store[]>([]);
+  let index = 0;
+
+  const storefronts = [
+    storefront1,
+    storefront2,
+    storefront3,
+    storefront4,
+    storefront5,
+    storefront6,
+  ];
 
   useEffect(() => {
     fetchStores();
@@ -77,7 +87,7 @@ const SearchStores: React.FC = () => {
         {userList.map((store) => (
           <div className="body_item">
             <Link href="/storefront" as={`/storefront?storeID=${store.id}`}>
-              <img src={storefront1.src} />
+              <img src={storefronts[store.id].src} />
               <br />
               <p className="heading-center">
                 <div style={{ padding: "5px" }}>
