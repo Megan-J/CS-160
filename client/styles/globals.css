@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* Filename: styles.css */
+
+
 
 @font-face {
     font-family: 'radar';
@@ -494,6 +497,7 @@ html {
     padding-top: 0;
     align-content: right;
 }
+
 .payment-form {
     display: grid;
     justify-content: center;
@@ -501,7 +505,7 @@ html {
     height: 30vh;
   }
 
-  .left-column, .right-column {
+.left-column, .right-column {
     padding: 20px;
   }
   
@@ -512,3 +516,41 @@ html {
   .right-column {
     background-color: #e0e0e0;
   }
+
+  .all-images {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+    .song-names{
+        margin-bottom: 20px;
+    }
+
+
+.img-hover-shadow {
+  transition: box-shadow 0.3s ease;
+}
+
+.img-hover-shadow:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Adjust the shadow properties as needed */
+  
+}
+
+.button-hover-grow {
+    transition: box-shadow 0.3s ease;
+}
+
+.button-hover-grow:hover {
+    transform: scale(1.5); /* Increase size on hover */
+}
+
+.footer {
+    background-color: rgb(0, 0, 0);
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    color: white;
+    font-size: 25px;
+}

@@ -13,7 +13,7 @@ export default function Logout() {
     sessionStorage.removeItem("followers");
     sessionStorage.removeItem("following");
 
-    console.log("logging out")
+    console.log("logging out");
     router.push("/");
   }, [router]);
 

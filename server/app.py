@@ -29,15 +29,6 @@ class BanRequests(db.Model):
 class Cart(db.Model):
     __table__ = db.metadata.tables['Cart']
 
-class CCInfo(db.Model):
-    __table__ = db.metadata.tables['CCInfo']
-
-class CCTypes(db.Model):
-    __table__ = db.metadata.tables['CCTypes']
-
-class Countries(db.Model):
-    __table__ = db.metadata.tables['Countries']
-
 class Followers(db.Model):
     __table__ = db.metadata.tables['Followers']
 
@@ -49,9 +40,6 @@ class Orders(db.Model):
 
 class Products(db.Model):
     __table__ = db.metadata.tables['Products']
-
-class States(db.Model):
-    __table__ = db.metadata.tables['States']
 
 class StoreFollowers(db.Model):
     __table__ = db.metadata.tables['StoreFollowers']
@@ -469,10 +457,22 @@ def delete_track():
 def get_stores():
     try:
         stores = Stores.query.all()
-        stores_data = [{'id': store.aID, 'name': store.vchName, 'user': store.nUserID, 'txtDescription':store.txtDescription} for store in stores]
-        return jsonify(stores_data), 200
+        stores_data = []
+        if stores:
+                for store in stores:
+                    user = Users.query.filter_by(aID=store.nUserID).first()
+                    store_data = {
+                        'id': store.aID,
+                        'name': store.vchName,
+                        'user_id': store.nUserID,
+                        'user_name': user.vchUsername if user else None,  # Assuming user has a 'name' attribute
+                        'txtDescription': store.txtDescription
+                    }
+                    stores_data.append(store_data)
+                return jsonify(stores_data), 200
+        return make_response(jsonify({'message': 'error getting stores'}), 500)
     except Exception as e:
-        return make_response(jsonify({'message': 'error getting users', 'error':str(e)}), 500)
+        return jsonify({'message': 'error getting stores', 'error': str(e)}), 500
 
 #get all users
 @app.route('/user/all', methods=['GET'])

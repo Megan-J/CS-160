@@ -2,8 +2,23 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
+import Footer from "./components/Footer";
+import PlayButton from "./components/PlayButton";
 import Link from "next/link";
 import { backend } from "./components/Constants";
+import song1 from "../../data/newSongs/ai-generated-7926621_640.jpg";
+import song2 from "../../data/newSongs/ai-generated-8716960_640.jpg";
+import song3 from "../../data/newSongs/universe-8418706_640.jpg";
+import song4 from "../../data/newSongs/walkTogether.jpg";
+import song5 from "../../data/newSongs/LoFi Chill.png";
+import product1 from "../../data/trendingProducts/duck.jpg";
+import product2 from "../../data/trendingProducts/sweater.jpg";
+import product3 from "../../data/trendingProducts/ring.jpg";
+import product4 from "../../data/trendingProducts/art.jpg";
+import product5 from "../../data/trendingProducts/teddyBear.jpg";
+import listen1 from "../../data/recentlyListened/riseAndShine.jpg";
+import listen2 from "../../data/recentlyListened/i will be here.png";
+import listen3 from "../../data/recentlyListened/OneStepFurther.png";
 
 interface Track {
   id: number;
@@ -150,40 +165,6 @@ export default function index() {
     }
   };
 
-  const uploadFile = async (e) => {
-    /*console.log("UPLOADING FILE");
-    const file = e.target.files[0];
-    if (file != null) {
-      const data = new FormData();
-      data.append("file_from_react", file);
-
-      let response = await fetch(`${backend}/url_route`, {
-        method: "POST",
-        body: data,
-      });
-
-      let res = await response.json();
-      if (res.status !== 1) {
-        alert("Error uploading file");
-      } else {
-        router.push("/");
-      }
-    }*/
-
-    const file = e.target.files[0];
-    if (file != null) {
-      fetch(`https://api.escuelajs.co/api/v1/files/upload`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: {
-          file: e,
-        },
-      });
-    }
-  };
-
   const handleOnClick = async () => {
     // Fetch all tracks
     const response = await fetch(`${backend}/tracks/all`);
@@ -210,60 +191,268 @@ export default function index() {
     }
   };
 
+  const handlePlay = () => {
+    console.log("Play button clicked");
+  };
+
   return (
-    <Panel title="Welcome!">
-      <div>
-        {user ? (
-          <div>Dive back in</div>
-        ) : (
-          <div>
+    <>
+      <Panel title="Welcome!">
+        <div>
+          {user ? (
+            <div>Dive back in</div>
+          ) : (
+            <div>
+              <br />
+              <div className="box">
+                <br />
+                <p className="center" style={{ padding: "10px" }}>
+                  You haven't heard of Radar? Well get on ours!
+                </p>
+                <p className="center" style={{ padding: "10px" }}>
+                  Listen to your favorite songs from up and coming artists! Shop
+                  around and see what they're selling while listening to their
+                  songs!
+                </p>
+                <br />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <br />
+
+        <div>
+          {user ? (
+            <div>
+              <div className="box">
+                <div className="heading">Recently Listened To</div>
+                <div className="all-images">
+                  <div className="img-hover-shadow">
+                    <div className="center">
+                      <img
+                        src={listen1.src}
+                        style={{
+                          padding: "15px",
+                          boxSizing: "border-box",
+                          borderRadius: "20px",
+                        }}
+                        alt="Song 1 Image"
+                      />
+                      <p className="song-names">Rise & Shine</p>
+                      <PlayButton songName="riseandshine"></PlayButton>
+                    </div>
+                  </div>
+                  <div className="img-hover-shadow">
+                    <div className="center">
+                      <img
+                        src={listen2.src}
+                        style={{
+                          padding: "15px",
+                          boxSizing: "border-box",
+                          borderRadius: "20px",
+                        }}
+                        alt="Song 2 Image"
+                      />
+                      <p className="song-names">I'll be Here</p>
+                      <PlayButton songName="i'llbehere"></PlayButton>
+                    </div>
+                  </div>
+                  <div className="img-hover-shadow">
+                    <div className="center">
+                      <img
+                        src={listen3.src}
+                        style={{
+                          padding: "15px",
+                          boxSizing: "border-box",
+                          borderRadius: "20px",
+                        }}
+                        alt="Song 3 Image"
+                      />
+                      <p className="song-names">One Step Further</p>
+                      <PlayButton songName="one step further"></PlayButton>
+                    </div>
+                  </div>
+                </div>
+                <br />
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
+        <br />
+        <div>
+          <div className="box">
+            <div className="heading">Discover new songs</div>
+            <div className="all-images">
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={song1.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 1 Image"
+                  />
+                  <p className="song-names">Call to the Soul</p>
+                  <PlayButton songName="call to the soul"></PlayButton>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={song2.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 2 Image"
+                  />
+                  <p className="song-names">Powerful Rock</p>
+                  <PlayButton songName="powerful rock"></PlayButton>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={song3.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 3 Image"
+                  />
+                  <p className="song-names">Funk Kingdom</p>
+                  <PlayButton songName="funk kingdom"></PlayButton>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={song4.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 4 Image"
+                  />
+                  <p className="song-names">Walk Together</p>
+                  <PlayButton songName="walk together"></PlayButton>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={song5.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 3 Image"
+                  />
+                  <p className="song-names">LoFi Chill</p>
+                  <PlayButton songName="lofi chill"></PlayButton>
+                </div>
+              </div>
+            </div>
             <br />
-            <div className="box">
-              <br />
-              <p className="center" style={{ padding: "10px" }}>
-                You haven't heard of Radar? Well get on ours!
-              </p>
-              <p className="center" style={{ padding: "10px" }}>
-                Listen to your favorite songs from up and coming artists! Shop
-                around and see what they're selling while listening to their
-                songs!
-              </p>
-              <br />
-            </div>
           </div>
-        )}
-      </div>
-
-      <br />
-
-      <div>
-        <div className="box">
-          <div className="heading">Discover new songs</div>
-        </div>
-        <div className="box">
-          <div className="heading">Trending products</div>
-        </div>
-      </div>
-      <br />
-      <div>
-        {user ? (
-          <div>
-            <div className="box">
-              <div className="heading">My Playlists</div>
-            </div>
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
-      <div>
-        <div className="center">
-          <form>
-            <input type="file" onChange={uploadFile}></input>
-          </form>
           <br />
+          <div className="box">
+            <div className="heading">Trending products</div>
+            <div className="all-images">
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={product1.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 1 Image"
+                  />
+                  <p className="song-names">Crochet Duck</p>
+                  <button className="bi bi-cart-plus button-hover-grow"></button>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={product2.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 2 Image"
+                  />
+                  <p className="song-names">Sweater</p>
+                  <button className="bi bi-cart-plus button-hover-grow"></button>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={product3.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 1 Image"
+                  />
+                  <p className="song-names">Ring</p>
+                  <button className="bi bi-cart-plus button-hover-grow"></button>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={product4.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 2 Image"
+                  />
+                  <p className="song-names">Art Print</p>
+                  <button className="bi bi-cart-plus button-hover-grow"></button>
+                </div>
+              </div>
+              <div className="img-hover-shadow">
+                <div className="center">
+                  <img
+                    src={product5.src}
+                    style={{
+                      padding: "15px",
+                      boxSizing: "border-box",
+                      borderRadius: "20px",
+                    }}
+                    alt="Song 2 Image"
+                  />
+                  <p className="song-names">Teddy Bear</p>
+                  <button className="bi bi-cart-plus button-hover-grow"></button>
+                </div>
+              </div>
+            </div>
+            <br />
+          </div>
         </div>
-      </div>
-    </Panel>
+      </Panel>
+      <br />
+      <br />
+      <br />
+      <br />
+      <Footer></Footer>
+    </>
   );
 }
