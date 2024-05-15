@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Panel from "./components/Panel";
-import SearchStores from "./components/searchStores";
+import SearchStores from "./searchStores";
 import Footer from "./components/Footer";
 
 function stores() {

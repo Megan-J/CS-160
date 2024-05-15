@@ -4,6 +4,7 @@ import { backend } from "./components/Constants";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Link from "next/link";
 import Footer from "./components/Footer";
+import PlayButton from "./components/PlayButton";
 
 export default function UserProfile() {
   let urlString, url, profileID;
@@ -135,8 +136,13 @@ export default function UserProfile() {
               <div className="heading">Music</div>
               <div>
                 {userProfileTracks.map((t, i) => (
-                  <div>
-                    <div className="indent">{t.trackTitle}</div>
+                  <div
+                    className="indent"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <PlayButton songName={t.trackTitle}></PlayButton>
+                    <label className="indent">{t.trackTitle}</label>
+                    <br />
                     <br />
                   </div>
                 ))}

@@ -1,27 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { backend } from "./Constants";
+import { backend } from "./components/Constants";
 import { Routes, Route } from "react-router-dom"; // Import BrowserRouter
 import Link from "next/link";
 import { useRouter } from "next/router"; // Import useRouter
-import PlayButton from "./PlayButton";
-import storefront1 from "../../../data/storeFronts/1.png";
-import storefront2 from "../../../data/storeFronts/2.png";
-import storefront3 from "../../../data/storeFronts/3.png";
-import storefront4 from "../../../data/storeFronts/4.png";
-import storefront5 from "../../../data/storeFronts/5.png";
-import storefront6 from "../../../data/storeFronts/6.png";
+import PlayButton from "./components/PlayButton";
+import storefront1 from "../../data/storeFronts/1.png";
+import storefront2 from "../../data/storeFronts/2.png";
+import storefront3 from "../../data/storeFronts/3.png";
+import storefront4 from "../../data/storeFronts/4.png";
+import storefront5 from "../../data/storeFronts/5.png";
+import storefront6 from "../../data/storeFronts/6.png";
 
 interface Store {
   id: number;
   name: string;
   user: string;
   txtDescription: string;
+  user_id: number;
+  user_name: string;
 }
 
 const SearchStores: React.FC = () => {
   const [text, setText] = React.useState("");
 
   let [ownerName, setOwnerName] = useState("");
+  let [error, setError] = useState("");
   const [userList, setUserList] = useState<Store[]>([]);
   let index = 0;
 
@@ -44,7 +47,6 @@ const SearchStores: React.FC = () => {
       .then((res) => res.json())
       .then((data) => {
         setUserList(data);
-        console.log(data);
       })
       .catch((error) => console.error("Error fetching stores:", error));
   };
@@ -76,10 +78,6 @@ const SearchStores: React.FC = () => {
     }
   };
 
-  const handlePlay = () => {
-    console.log("Play button clicked");
-  };
-
   return (
     <div>
       <br />
@@ -88,23 +86,31 @@ const SearchStores: React.FC = () => {
           <div className="body_item">
             <Link href="/storefront" as={`/storefront?storeID=${store.id}`}>
               <img src={storefronts[store.id].src} />
-              <br />
+              <p></p>
               <p className="heading-center">
                 <div style={{ padding: "5px" }}>
                   <h1 className="bi bi-shop"></h1>
+                  <i className="bi bi-shop-window"></i>
                 </div>
                 {store.name}
               </p>
             </Link>
-            <p
-              style={{
-                marginLeft: "20px",
-                padding: "10px",
-                fontWeight: "bold",
-              }}
+            <Link
+              href="/user-profile"
+              as={`/user-profile?userID=${store.user_id}`}
             >
-              Owned by: {store.user}
-            </p>
+              <p
+                style={{
+                  marginLeft: "20px",
+                  padding: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                <i className="bi bi-person-fill"></i>
+                {store.user_name}
+              </p>
+            </Link>
+
             <p className="center">{store.txtDescription}</p>
 
             <br />
