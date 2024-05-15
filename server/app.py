@@ -483,10 +483,7 @@ if "-----[ track endpoints ]-----":
         response = {}
         try:
             data = request.get_json()
-            storeID = data['nUserID']
-            track = data['vchTrackName']
-            #find track id from track name
-            trackID = Tracks.query.get(track)
+            trackID = Tracks.query.filter_by(vchTitle=data['vchTrackName']).first()
             if not trackID:
                 return make_response(jsonify({'message': 'Track not found'}), 404)
 
