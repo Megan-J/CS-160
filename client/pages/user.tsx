@@ -15,6 +15,7 @@ import '@uppy/core/dist/style.css';
 
 interface ModalStates {
     uploadTrackModal: boolean;
+    uploadPlaylistsongModal: boolean;
     secondModal: boolean;
 }
 
@@ -23,6 +24,7 @@ export default function index() {
     const [uppy, setUppy] = useState(null);
     const [modalStates, setModalStates] = useState({
         uploadTrackModal: false,
+        uploadPlaylistsongModal: false,
         secondModal: false,
     });
     const toggleModal = (modalKey: keyof ModalStates): void => {
@@ -40,9 +42,13 @@ export default function index() {
     let [orderItem1, setOrderItem1] = useState(true);
     let [orderItem2, setOrderItem2] = useState(true);
     let [orderItem3, setOrderItem3] = useState(true);
+    let [playlistsongs, setPlaylistsongs] = useState(null);
+
 
     let [creatingStore, setCreatingStore] = useState(null);
     let [addingProduct, setAddingProduct] = useState(null);
+    let [addingPlaylistsong, setAddingPlaylistsong] = useState(null);
+
 
     let [theStoreName, setTheStoreName] = useState("");
     let [theStoreDescription, setTheStoreDescription] = useState("");
@@ -65,6 +71,8 @@ export default function index() {
     let [isEditingProductInventory, setIsEditingProductInventory] = useState(false);
     let [isEditingProductID, setIsEditingProductID] = useState(0);
 
+    let [newPlaylistsongName, setNewPlaylistsongName] = useState("");
+
     const handleChangeCreateStoreName = (event) => {
         setCreateStoreName(event.target.value);
     };
@@ -84,6 +92,14 @@ export default function index() {
     const cancelAddProduct = () => {
         setAddingProduct(false);
     }
+
+    const handleAddPlaylistsong = () => {
+        setAddingPlaylistsong(true);
+      };
+    
+      const cancelAddPlaylist = () => {
+        setAddingPlaylistsong(false);
+      };
 
     const createStore = (e) => {
         e.preventDefault();
@@ -305,6 +321,87 @@ export default function index() {
         });
     }
 
+    const fetchPlaylistSongs = (user: any) => {
+        // Fetch ban requests from the backend
+        fetch(`${backend}/playlistsongs/${user}`)
+          .then((res) => res.json())
+          .then((data) => {
+            setPlaylistsongs(data);
+            console.log(data);
+          })
+          .catch((error) => console.error("Error fetching playlist songs:", error));
+      };
+
+    const handleSubmitPlaylist = (e) => {
+        e.preventDefault();
+        let success = false;
+        let data = {
+          nUserID: user.aID,
+          vchTrackName: newPlaylistsongName
+        };
+        fetch(`${backend}/playlistsongs/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => {
+            console.log(res);
+            if (res.status === 200 || res.status === 201) {
+              success = true;
+              // clear the form
+              setNewPlaylistsongName("");
+            }
+            return res.json();
+          })
+          .then((data) => {
+            console.log("returned:");
+            console.log(data);
+            if (success) {
+              sessionStorage.setItem("playlistsongs", JSON.stringify(data));
+              setPlaylistsongs(data.playlists);
+              console.log("playlists updated");
+              console.log(data);
+              setAddingPlaylistsong(false);
+            }
+            return data;
+          });
+      };
+
+      const deletePlaylist = (event, aID) => {
+        event.preventDefault();
+        let success = false;
+        let data = {
+          aID: aID,
+          nUserID: user.aID,
+        };
+        fetch(`${backend}/playlistsongs/delete`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => {
+            console.log(res);
+            if (res.status === 200 || res.status === 201) {
+              success = true;
+            }
+            return res.json();
+          })
+          .then((data) => {
+            console.log("returned:");
+            console.log(data);
+            if (success) {
+              setPlaylistsongs(data.playlists);
+              console.log("playlists updated");
+              console.log(data);
+            }
+            return data;
+          });
+      };
+
     let product_key;
 
     function uploadProductImage(event: FormEvent<HTMLInputElement>) {
@@ -448,6 +545,8 @@ export default function index() {
         let productsJson = sessionStorage.getItem("products");
         let followingJson = sessionStorage.getItem("following");
         let followersJson = sessionStorage.getItem("followers");
+        let playlistsongsJson = sessionStorage.getItem("playlistsongs");
+
 
         let user = userJson ? JSON.parse(userJson) : null;
         let store = storeJson ? JSON.parse(storeJson) : null;
@@ -457,6 +556,7 @@ export default function index() {
         let products = productsJson ? JSON.parse(productsJson) : null;  
         let following = followingJson ? JSON.parse(followingJson) : null;
         let followers = followersJson ? JSON.parse(followersJson) : null;
+        let playlistsongs = playlistsongsJson ? JSON.parse(playlistsongsJson) : null; 
 
         setUser(user);
         console.log("user:");
@@ -482,6 +582,8 @@ export default function index() {
             if (productsJson) setProducts(products);
             if (followingJson) setFollowing(following);
             if (followersJson) setFollowers(followers);
+            if (playlistsongsJson) setPlaylistsongs(playlistsongs);
+            fetchPlaylistSongs(user.aID);
         }
         if (id) {
             fetch(`${backend}/get-user/${id}`, {
@@ -941,21 +1043,93 @@ export default function index() {
         
         : <div className="indent bottom-margin">No music uploaded yet.</div>
     }
-    <div className="center"><button onClick={() => toggleModal('uploadTrackModal')} className="button button-small">Add a Track</button></div>
+    <div className="center"><button onClick={() => toggleModal('uploadTrackModal')} className="button button-small">Upload Your Track</button></div>
     </div>
+
     <div className="box">
-        <div className="heading orange">Tracks and Playlists</div>
-{ tracks && tracks.length > 0 ? tracks.map((t, i) => (
-        <div className="track" key={t.aID}>
-            <div className="track-title">{t.vchTitle}</div>
-            <div className="track-description">{t.txtDescription}</div>
-            <div className="track-url">{t.vchAudioUrl}</div>
-            <button className="button button-small" onClick={deleteTrack}>Delete</button>
-        </div>
-    ))
-    : <><div className="indent">No tracks added yet.</div></>
-}
+        <div className="heading orange"> My Playlist</div>
+        { playlistsongs && playlistsongs.length > 0 ? playlistsongs.map((t, i) => (
+            <>
+            <div className="track" key={t.playlist_id}>
+                <div className="track-title">{t.track_title}</div>
+                <div className="track-artist">By: {t.vchArtistFirst} {t.vchArtistLast}</div>
+                <button
+                  className="button button-small cancel"
+                  onClick={(event) => deletePlaylist(event, t.playlist_id)}
+                  key={t.playlist_id}
+                >
+                  Remove
+                </button>
+                <div className="audio-player-container">
+                <AudioPlayerControlSprite/>
+                    <Audio
+                        src={`http://127.0.0.1:5000/file/${t.vchAudioURL}`}
+                        preload="auto"
+                        duration={0}
+                        className={`audio-player change-hue`}
+                        onDidMount={console.log}
+                        downloadFileName={t.vchAudioURL}
+                        useRepeatButton={true}
+                    />
+                    
+                </div>
+                
+            </div>
+            </>
+        ))
+        
+        : <div className="indent bottom-margin">No tracks added yet.</div>
+    }
+    {addingPlaylistsong ? (
+          <>
+            <div className="div-center">
+              <div className="product-box box container new-product-container no-shadow">
+                <div className="heading subheading gray">
+                  Add Track To Playlist
+                </div>
+                <form onSubmit={handleSubmitPlaylist}>
+                  <div className="new-product-pane">
+                    <div>
+                      <input
+                        className="new-product-name input"
+                        type="text"
+                        name="newPlaylistsongName"
+                        value={newPlaylistsongName}
+                        onChange={(e) => setNewPlaylistsongName(e.target.value)}
+                        placeholder="Track Name"
+                      />
+                    </div>
+                    <div className="product-submit-margin-top">
+                      <button className="button button-small" type="submit">
+                        Submit
+                      </button>
+                      <button
+                        className="button button-small cancel"
+                        onClick={cancelAddPlaylist}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="center">
+              <button
+                className="indent bottom-margin top-indent button button-small"
+                onClick={handleAddPlaylistsong}
+              >
+                Add to Playlist
+              </button>
+            </div>
+          </>
+        )}
     </div>
+
+
     <div className="box">
         <div className="heading">Following</div>
     { following && following.length > 0 ? following.map((t, i) => (

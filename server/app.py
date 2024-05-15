@@ -57,7 +57,7 @@ if "-----[ imports ]-----":
 if "-----[ app setup ]-----":
     app = Flask(__name__)
     CORS(app) 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/cloudsound'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root@localhost/cloudsound'
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cloud.db'
     app.config['SQLALCHEMY_TRACK_NOTIFICATIONS'] = False
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -111,6 +111,9 @@ if "-----[ db setup ]-----":
     class Orders(db.Model):
         __table__ = db.metadata.tables['Orders']
 
+    class PlaylistSongs(db.Model):
+        __table__ = db.metadata.tables['PlaylistSongs']
+
     class Products(db.Model):
         __table__ = db.metadata.tables['Products']
 
@@ -139,6 +142,7 @@ if "-----[ db setup ]-----":
         'Genres': Genres(),
         'OrderItems': OrderItems(),
         'Orders': Orders(),
+        'PlaylistSongs': PlaylistSongs(),
         'Products': Products(),
         'States': States(),
         'StoreFollowers': StoreFollowers(),
@@ -473,6 +477,86 @@ if "-----[ track endpoints ]-----":
         except Exception as e:
             return make_response(jsonify({'message': 'Error uploading track', 'error': str(e)}), 500)
 
+    #add song to playlist
+    @app.route('/playlistsongs/add', methods=['POST'])
+    def do_playlistsongs_upload(): 
+        response = {}
+        try:
+            data = request.get_json()
+            storeID = data['nUserID']
+            track = data['vchTrackName']
+            #find track id from track name
+            trackID = Tracks.query.get(track)
+            if not trackID:
+                return make_response(jsonify({'message': 'Track not found'}), 404)
+
+            p =  PlaylistSongs(
+                nUserID=data['nUserID'],
+                nTrackID=trackID.aID
+            )
+            db.session.add(p)
+            db.session.commit()
+            response['playlistsong'] = {
+             'aID': p.aID,
+             'nUserID': p.nUserID,
+             'nTrackID': p.nTrackID,
+            }
+            return make_response(jsonify(response), 201)
+        except Exception as e:
+            return make_response(jsonify({'message': 'product not added', 'error':str(e), 'response':response}), 500)
+
+    #get playlistsongs by user
+    @app.route('/playlistsongs/<int:user_id>', methods=['GET'])
+    def get_playlistsongs_by_user(user_id):
+        try:
+            # Query playlist songs by user ID
+            cart_items = PlaylistSongs.query.filter_by(nUserID=user_id).all()
+
+            # Initialize an empty list to store formatted cart items
+            formatted_cart_items = []
+
+            # Iterate over each song in playlist
+            for cart_item in cart_items:
+                # Get the id associated with the song 
+                track = Tracks.query.get(cart_item.nTrackID)
+                if track:
+                    # Get the store associated with the product
+                    user = Users.query.get(track.nUserID)
+                    if user:
+                        # Create a dictionary representing the formatted cart item
+                        formatted_cart_item = {
+                         'playlist_id': cart_item.aID,
+                         'user_id': cart_item.nUserID,
+                         'track_id': cart_item.nTrackID,
+                         'track_title': track.vchTitle,  # Include product name
+                         'vchAudioURL':track.vchAudioURL,
+                         'vchArtistFirst': user.vchFirstName,
+                         'vchArtistLast': user.vchLastName,
+                        }
+                        # Append the formatted cart item to the list
+                        formatted_cart_items.append(formatted_cart_item)
+
+            # Return the formatted cart items as JSON response
+            return jsonify(formatted_cart_items), 200
+        except Exception as e:
+            return make_response(jsonify({'message': 'Error getting songs in playlist', 'error': str(e)}), 500)
+
+    # delete song from playlist
+    @app.route('/playlistsongs/delete', methods=['POST'])
+    def do_playlistsongs_delete():
+        response = {}
+        try:
+            data = request.get_json()
+            id = data['aID']
+            p = PlaylistSongs().query.filter_by(aID=id).first()
+            if p:
+                db.session.delete(p)
+                db.session.commit()
+                return make_response(jsonify(response), 200)
+            return make_response(jsonify({'message': 'playlistsong not found'}), 404)
+        except Exception as e:
+            return make_response(jsonify({'message': 'playlistsong not deleted', 'error':str(e), 'response':response}), 500)
+
 if "-----[ image endpoints ]-----":
     @app.route('/image/upload', methods=['POST'])
     def do_upload_image():
@@ -525,6 +609,7 @@ if "-----[ login/signup endpoints ]-----":
             followersTable = Followers()
             ordersTable = Orders()
             orderItemsTable = OrderItems()
+            playlistsongsTable = PlaylistSongs()
 
             try:
                 u = usersTable.query.filter_by(vchUsername=data['username'], vchPassword=data['password']).first()
@@ -597,7 +682,14 @@ if "-----[ login/signup endpoints ]-----":
                         response['following'] = [allfields('Followers', follow) for follow in following] if following else []
                     except Exception as e:
                         response['following'] = []
-
+                    
+                    try:
+                        # get any playlist songs of user
+                        playlistsongs = playlistsongsTable.query.filter_by(nUserID=user_id).all()
+                        response['playlistsongs'] = [allfields('Playlistsongs', playlistsong) for playlistsong in playlistsongs] if playlistsongs else []
+                    except Exception as e:
+                        response['playlistsongs'] = []
+                    
                     try:
                         # get any orders associated with the user's store
                         orders = ordersTable.query.filter_by(nStoreID=response['store']['aID']).all()
@@ -629,6 +721,7 @@ if "-----[ login/signup endpoints ]-----":
             followersTable = Followers()
             ordersTable = Orders()
             orderItemsTable = OrderItems()
+            playlistsongsTable = PlaylistSongs()
 
             try:
                 u = usersTable.query.filter_by(aID=id).first()
@@ -641,6 +734,13 @@ if "-----[ login/signup endpoints ]-----":
                     response['genres'] = [allfields('Genres', genre) for genre in genres] if genres else []
                 except Exception as e:
                     response['genres'] = []
+
+                try:
+                    # get any playlist songs of user
+                    playlistsongs = playlistsongsTable.query.filter_by(nUserID=user_id).all()
+                    response['playlistsongs'] = [allfields('Playlistsongs', playlistsong) for playlistsong in playlistsongs] if playlistsongs else []
+                except Exception as e:
+                        response['playlistsongs'] = []
 
                 try:
                     # get any store associated with the user
@@ -823,6 +923,10 @@ if "-----[ search endpoint ]-----":
                 return make_response(jsonify({'message': 'Missing query'}), 400)
         except Exception as e:
             return make_response(jsonify({'message': 'Error searching', 'error': str(e)}), 500)
+        
+
+
+
 if __name__ == '__main__':
     # with app.app_context():
     #     db.create_all()
