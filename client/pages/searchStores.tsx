@@ -47,6 +47,7 @@ const SearchStores: React.FC = () => {
       .then((res) => res.json())
       .then((data) => {
         setUserList(data);
+        console.log(data);
       })
       .catch((error) => console.error("Error fetching stores:", error));
   };
@@ -89,10 +90,9 @@ const SearchStores: React.FC = () => {
               <p></p>
               <p className="heading-center">
                 <div style={{ padding: "5px" }}>
-                  <h1 className="bi bi-shop"></h1>
                   <i className="bi bi-shop-window"></i>
                 </div>
-                {store.name}
+                <div style={{ paddingBottom: "10px" }}>{store.name}</div>
               </p>
             </Link>
             <Link
