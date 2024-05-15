@@ -83,19 +83,22 @@ export default function Confirmation() {
   let shippingAddr, billingAddr;
 
   return (
-    <Panel title="Thank you">
-      <div className="box">
-        <br />
-        <div className="center">Your order was placed successfully!</div>
-        <br />
+    <>
+      <Panel title="Thank you">
+        <div className="box">
+          <br />
+          <div className="center">Your order was placed successfully!</div>
+          <br />
 
-        <div className="flex items-center justify-center">
-          <Link href="/" className="button-small">
-            Return to Home
-          </Link>
+          <div className="flex items-center justify-center">
+            <Link href="/" className="button-small">
+              Return to Home
+            </Link>
+          </div>
+          <br />
         </div>
-        <br />
-      </div>
-    </Panel>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

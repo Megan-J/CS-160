@@ -413,7 +413,11 @@ export default function placeOrder() {
           </div>
           <br />
         </div>
+        <br />
+        <br />
       </Panel>
+      <br />
+      <br />
       <br />
       <Footer></Footer>
     </>

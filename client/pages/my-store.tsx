@@ -1224,7 +1224,13 @@ export default function MyStore() {
             </>
           )}
         </div>
+        <br />
+        <br />
       </Panel>
+
+      <br />
+      <br />
+      <br />
       <Footer></Footer>
     </>
   );
