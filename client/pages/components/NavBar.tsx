@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
@@ -31,6 +32,16 @@ const NavBar = ({ children }: NavBarProps) => {
       setUserID(user.aID);
     }
   }, []);
+
+  const searchChanged = (event) => {
+    let search = event.target.value;
+    let key = event.key;
+    if (key === "Enter") {
+      console.log("search", search);
+      router.push(`/search/${search}`);
+    }
+  };
+
   return (
     <nav className="main">
       <ul>
@@ -69,15 +80,26 @@ const NavBar = ({ children }: NavBarProps) => {
               <Link href="/my-store">My Store</Link>
             </li>
             <li className="right">
-              <Link className="initials" href="/my-profile">
-                <i class="bi bi-person-circle"></i>
-                {initials}
+              <Link href="/my-profile">
+                <div className="initials">
+                  <i class="bi bi-person-circle"></i>
+                  {initials}
+                </div>
               </Link>
             </li>
           </>
         ) : (
           ""
         )}
+        <li className="right">
+          <input
+            id="search"
+            className="search"
+            type="text"
+            placeholder="Search"
+            onKeyUp={searchChanged}
+          />
+        </li>
       </ul>
     </nav>
   );
