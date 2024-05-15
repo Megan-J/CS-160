@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
+import Footer from "./components/Footer";
 import { backend } from "./components/Constants";
 
 export default function Login() {
@@ -56,35 +57,38 @@ export default function Login() {
   };
 
   return (
-    <Panel title="Login">
-      <div className="flex items-center justify-center">
-        <form onSubmit={handleSubmit} autoComplete="off">
-          <div className="row">
-            <label>Username</label>
-            <input
-              className="input"
-              type="text"
-              name="username"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="row">
-            <label>Password</label>
-            <input
-              className="input"
-              type="password"
-              name="password"
-              onChange={handleChange}
-            />
-          </div>
-          <div className="row">
-            {error ? <div className="error">{error}</div> : <div>&nbsp;</div>}
-          </div>
-          <div className="flex items-center justify-center">
-            <button className="button button-small change-hue">Submit</button>
-          </div>
-        </form>
-      </div>
-    </Panel>
+    <>
+      <Panel title="Login">
+        <div className="flex items-center justify-center">
+          <form onSubmit={handleSubmit} autoComplete="off">
+            <div className="row">
+              <label>Username</label>
+              <input
+                className="input"
+                type="text"
+                name="username"
+                onChange={handleChange}
+              />
+            </div>
+            <div className="row">
+              <label>Password</label>
+              <input
+                className="input"
+                type="password"
+                name="password"
+                onChange={handleChange}
+              />
+            </div>
+            <div className="row">
+              {error ? <div className="error">{error}</div> : <div>&nbsp;</div>}
+            </div>
+            <div className="flex items-center justify-center">
+              <button className="button button-small change-hue">Submit</button>
+            </div>
+          </form>
+        </div>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

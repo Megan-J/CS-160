@@ -583,8 +583,7 @@ export default function index() {
   }
 
   return (
-    <Panel title="My Radar">
-      <p>Welcome{firstName && `, ${firstName} ${lastName}`}!</p>
+    <Panel title="Store Overview">
       <div className="profile-pic">
         <img src={profilepic} alt="profile pic" />
       </div>
@@ -1176,48 +1175,6 @@ export default function index() {
         ) : (
           <>
             <div className="indent">No tracks added yet.</div>
-          </>
-        )}
-      </div>
-      <div className="box">
-        <div className="heading">Following</div>
-        {following && following.length > 0 ? (
-          following.map((t, i) => (
-            <div className="following" key={i}>
-              <div className="following-name">
-                <Link href={`http://127.0.0.1:3000/profile/${t.aID}`}>
-                  {t.vchFirstName} {t.vchLastName} ({t.vchUsername})
-                </Link>
-              </div>
-              <button className="button button-small" onClick={unfollow}>
-                Unfollow
-              </button>
-            </div>
-          ))
-        ) : (
-          <>
-            <div className="indent bottom-margin">
-              You are not following anyone.
-            </div>
-          </>
-        )}
-      </div>
-      <div className="box">
-        <div className="heading">Followers</div>
-        {followers && followers.length > 0 ? (
-          followers.map((t, i) => (
-            <div className="follower" key={i}>
-              <div className="follower-name">{t.vchTrackName}</div>
-              <div className="track-description">{t.txtDescription}</div>
-              <div className="track-url">{t.vchAudioUrl}</div>
-              <button className="button button-small" onClick={unfollow}>
-                Unfollow
-              </button>
-            </div>
-          ))
-        ) : (
-          <>
-            <div className="indent bottom-margin">Nobody is following you.</div>
           </>
         )}
       </div>

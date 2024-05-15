@@ -3,6 +3,8 @@ import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Link from "next/link";
+import Footer from "./components/Footer";
+import PlayButton from "./components/PlayButton";
 
 export default function UserProfile() {
   let urlString, url, profileID;
@@ -84,76 +86,74 @@ export default function UserProfile() {
   }
 
   return (
-    <Panel title={userProfileName}>
-      <div>
-        {followers} Followers <i class="bi bi-soundwave" /> {following}{" "}
-        Following
-      </div>
-      <br />
-      <button className="button">
-        Follow
-        <i class="bi bi-person-plus-fill"></i>
-      </button>
-      <br />
-      <br />
-      <div className="box">
-        <div className="heading">Bio</div>
-        {userProfileBio && userProfileBio.length > 0 ? (
-          <div>
-            <div className="indent bottom-margin">{userProfileBio}</div>
-          </div>
-        ) : (
-          <>
-            <div className="indent bottom-margin"></div>
-            <br />
-          </>
-        )}
-      </div>
-
-      {userProfileStoreName && userProfileStoreName.length > 0 ? (
-        <>
-          <div className="box">
-            <div className="heading">Store</div>
-            <Link
-              href={`/storefront?storeID=${userProfileStoreId}`}
-              className="store-in-profile"
-            >
-              <div className="center">{userProfileStoreName}</div>
-              <div className="center">{userProfileStoreDes}</div>
-            </Link>
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
-
-      {userProfileTracks && userProfileTracks.length > 0 ? (
-        <>
-          <div className="box">
-            <div className="heading">Music</div>
+    <>
+      <Panel title={userProfileName}>
+        <div>
+          {followers} Followers <i class="bi bi-soundwave" /> {following}{" "}
+          Following
+        </div>
+        <br />
+        <button className="button">
+          Follow
+          <i class="bi bi-person-plus-fill"></i>
+        </button>
+        <br />
+        <br />
+        <div className="box">
+          <div className="heading">Bio</div>
+          {userProfileBio && userProfileBio.length > 0 ? (
             <div>
-              {userProfileTracks.map((t, i) => (
-                <div>
-                  <div className="indent">{t.trackTitle}</div>
-                  <br />
-                </div>
-              ))}
+              <div className="indent bottom-margin">{userProfileBio}</div>
             </div>
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
+          ) : (
+            <>
+              <div className="indent bottom-margin"></div>
+              <br />
+            </>
+          )}
+        </div>
 
-      {/*bio && bio.length > 0 ? (
-        <>
-          <div className="box">
-            <div className="heading">Playlists</div>
-          </div>
-        </>
-      ) : (
-        <></>
-      )*/}
-    </Panel>
+        {userProfileStoreName && userProfileStoreName.length > 0 ? (
+          <>
+            <div className="box">
+              <div className="heading">Store</div>
+              <Link
+                href={`/storefront?storeID=${userProfileStoreId}`}
+                className="store-in-profile"
+              >
+                <div className="center">{userProfileStoreName}</div>
+                <div className="center">{userProfileStoreDes}</div>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {userProfileTracks && userProfileTracks.length > 0 ? (
+          <>
+            <div className="box">
+              <div className="heading">Music</div>
+              <div>
+                {userProfileTracks.map((t, i) => (
+                  <div
+                    className="indent"
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <PlayButton songName={t.trackTitle}></PlayButton>
+                    <label className="indent">{t.trackTitle}</label>
+                    <br />
+                    <br />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

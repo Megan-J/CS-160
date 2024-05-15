@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import Link from "next/link";
+import Footer from "./components/Footer";
 
 // interface Product {
 //     id: number;
@@ -92,59 +93,63 @@ export default function Cart() {
   };
 
   return (
-    <Panel title="Cart">
-      <div className="box">
-        <div className="heading">Your Items</div>
-        {products && products.length > 0 ? (
-          <>
-            <div className="">
-              {products.map((t, i) => (
-                <div className="product">
-                  <div key={i}>
-                    <div className="product-name">{t.product_name}</div>
-                    <div className="product-description">
-                      Quantity: {`${t.quantity}`}
+    <>
+      <Panel title="Cart">
+        <div className="box">
+          <div className="heading">Your Items</div>
+          {products && products.length > 0 ? (
+            <>
+              <div className="">
+                {products.map((t, i) => (
+                  <div className="product">
+                    <div key={i}>
+                      <div className="product-name">{t.product_name}</div>
+                      <div className="product-description">
+                        Quantity: {`${t.quantity}`}
+                      </div>
+                      <div className="product-price">
+                        ${`${(t.product_price * t.quantity).toFixed(2)}`}
+                      </div>
                     </div>
-                    <div className="product-price">
-                      ${`${(t.product_price * t.quantity).toFixed(2)}`}
-                    </div>
+                    <button
+                      className="delete-product-button button button-small"
+                      onClick={(event) => deleteItem(event, t)}
+                      key={t.aID}
+                    >
+                      Remove from Cart
+                    </button>
                   </div>
-                  <button
-                    className="delete-product-button button button-small"
-                    onClick={(event) => deleteItem(event, t)}
-                    key={t.aID}
-                  >
-                    Remove from Cart
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            <div>
-              <Link
-                className="delete-product-button button button-small"
-                href="/checkout"
-                as={`/checkout?userID=${idOfUser}`}
-              >
-                Proceed to Checkout
-              </Link>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="indent bottom-margin">No Items in Cart</div>
-            <div>
-              <button
-                className="delete-product-button button button-small"
-                onClick={handleProceedToStores}
-              >
-                {" "}
-                Shop for Products
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </Panel>
+              <div>
+                <br />
+                <Link
+                  className="delete-product-button button button-small"
+                  href="/checkout"
+                  as={`/checkout?userID=${idOfUser}`}
+                >
+                  Proceed to Checkout
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="indent bottom-margin">No Items in Cart</div>
+              <div>
+                <button
+                  className="delete-product-button button button-small"
+                  onClick={handleProceedToStores}
+                >
+                  {" "}
+                  Shop for Products
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

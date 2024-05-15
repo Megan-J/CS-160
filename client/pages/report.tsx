@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
+import Footer from "./components/Footer";
 
 export default function Report() {
   const [reportType, setReportType] = useState("");
@@ -39,59 +40,62 @@ export default function Report() {
   };
 
   return (
-    <Panel title="Report an Issue">
-      <br />
-      <form onSubmit={handleSubmit}>
-        <label>
-          Report Type:
-          <select
-            value={reportType}
-            onChange={(e) => setReportType(e.target.value)}
-          >
-            <option value="">Select a Type</option>
-            <option value="inappropiate">Inappropiate Content</option>
-            <option value="plagiarism">Plagiarism</option>
-            <option value="copyright">Copyright</option>
-            <option value="duplicate">Duplicate</option>
-            <option value="scam">Scam</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
+    <>
+      <Panel title="Report an Issue">
         <br />
+        <form onSubmit={handleSubmit}>
+          <label>
+            Report Type:
+            <select
+              value={reportType}
+              onChange={(e) => setReportType(e.target.value)}
+            >
+              <option value="">Select a Type</option>
+              <option value="inappropiate">Inappropiate Content</option>
+              <option value="plagiarism">Plagiarism</option>
+              <option value="copyright">Copyright</option>
+              <option value="duplicate">Duplicate</option>
+              <option value="scam">Scam</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <br />
+          <br />
+          <label>
+            Description:
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </label>
+          <br />
+          <label>
+            User ID:
+            <input
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+            />
+          </label>
+          <br />
+          <br />
+          <label>
+            Product ID:
+            <input
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
+            />
+          </label>
+          <br />
+          <br />
+          <button type="submit" disabled={submitting} className="button">
+            {submitting ? "Submitting..." : "Submit Report"}
+          </button>
+        </form>
         <br />
-        <label>
-          Description:
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          User ID:
-          <input
-            type="text"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-          />
-        </label>
-        <br />
-        <br />
-        <label>
-          Product ID:
-          <input
-            type="text"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-          />
-        </label>
-        <br />
-        <br />
-        <button type="submit" disabled={submitting} className="button">
-          {submitting ? "Submitting..." : "Submit Report"}
-        </button>
-      </form>
-      <br />
-    </Panel>
+      </Panel>
+      <Footer></Footer>
+    </>
   );
 }

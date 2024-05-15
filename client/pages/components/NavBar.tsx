@@ -56,8 +56,7 @@ const NavBar = ({ children }: NavBarProps) => {
           <>
             <li className="right">
               <Link href="/cart" as={`/cart?userID=${userID}`}>
-                Cart
-                <i class="bi bi-cart3"></i>
+                <h1 class="bi bi-cart3"></h1>
               </Link>
             </li>
             <li className="right">
