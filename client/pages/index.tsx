@@ -19,6 +19,7 @@ import product5 from "../public/data/trendingProducts/teddyBear.jpg";
 import listen1 from "../public/data/recentlyListened/riseAndShine.jpg";
 import listen2 from "../public/data/recentlyListened/i will be here.png";
 import listen3 from "../public/data/recentlyListened/OneStepFurther.png";
+import path from "../public/data/storeMusic/flashback-184686.mp3";
 
 interface Track {
   id: number;
@@ -33,6 +34,9 @@ export default function index() {
   const router = useRouter();
   const [text, setText] = React.useState("");
   let [user, setUser] = useState(null);
+  const [audioSrc, setAudioSrc] = useState(
+    "../public/data/storeMusic/titanium.mp3"
+  );
 
   const [userList, setUserList] = useState<Track[]>([]);
 
@@ -191,8 +195,8 @@ export default function index() {
     }
   };
 
-  const handlePlay = () => {
-    console.log("Play button clicked");
+  const handlePlayButton = (newAudioSrc) => {
+    setAudioSrc(newAudioSrc);
   };
 
   return (
@@ -298,6 +302,15 @@ export default function index() {
                     alt="Song 1 Image"
                   />
                   <p className="song-names">Call to the Soul</p>
+                  <button
+                    onClick={() =>
+                      handlePlayButton(
+                        "../public/data/storeMusic/flashback-184686.mp3"
+                      )
+                    }
+                  >
+                    Press Me
+                  </button>
                   <PlayButton songName="call to the soul"></PlayButton>
                 </div>
               </div>
@@ -447,12 +460,13 @@ export default function index() {
             <br />
           </div>
         </div>
+        <p>Current Audio Source: {audioSrc}</p>
       </Panel>
       <br />
       <br />
       <br />
       <br />
-      <Footer></Footer>
+      <Footer audioSrc={audioSrc}></Footer>
     </>
   );
 }

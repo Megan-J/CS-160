@@ -1,6 +1,6 @@
 import React from "react";
 
-const Footer = () => (
+const Footer = ({ audioSrc }) => (
   <footer className="footer">
     <p
       style={{
@@ -25,7 +25,7 @@ const Footer = () => (
         <audio
           controls
           autoPlay
-          src="./troubles.mp3"
+          src={audioSrc}
           className="w-1/2 focus:outline-none transition-transform duration-300"
         />
       </div>
