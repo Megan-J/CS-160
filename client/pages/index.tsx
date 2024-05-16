@@ -34,9 +34,7 @@ export default function index() {
   const router = useRouter();
   const [text, setText] = React.useState("");
   let [user, setUser] = useState(null);
-  const [audioSrc, setAudioSrc] = useState(
-    "../public/data/storeMusic/titanium.mp3"
-  );
+  const [audioSrc, setAudioSrc] = useState("./data/storeMusic/titanium.mp3");
 
   const [userList, setUserList] = useState<Track[]>([]);
 
