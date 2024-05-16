@@ -22,9 +22,10 @@ interface Store {
 
 interface Props {
   setAudioSrc: (audioSrc: string) => void; // Define setAudioSrc as a function that takes a string argument and returns void
+  setSongName: (songName: string) => void;
 }
 
-const SearchStores: React.FC<Props> = ({ setAudioSrc }) => {
+const SearchStores: React.FC<Props> = ({ setAudioSrc, setSongName }) => {
   const [text, setText] = React.useState("");
 
   let [error, setError] = useState("");
@@ -47,6 +48,10 @@ const SearchStores: React.FC<Props> = ({ setAudioSrc }) => {
   const handlePlayButton = (storeID) => {
     const newAudioSrc = `./data/storeFronts/${storeID}.mp3`;
     setAudioSrc(newAudioSrc);
+  };
+
+  const handleSongChange = (newSongName) => {
+    setSongName(newSongName);
   };
 
   const fetchStores = () => {
@@ -132,7 +137,10 @@ const SearchStores: React.FC<Props> = ({ setAudioSrc }) => {
             >
               <button
                 className="bi bi-play-circle-fill button-hover-grow"
-                onClick={() => handlePlayButton(store.id)}
+                onClick={() => {
+                  handlePlayButton(store.id);
+                  handleSongChange(`${store.user_name}'s top hit`);
+                }}
               ></button>
               <label>Top Hit</label>
             </div>
@@ -146,7 +154,10 @@ const SearchStores: React.FC<Props> = ({ setAudioSrc }) => {
             >
               <button
                 className="bi bi-play-circle-fill button-hover-grow"
-                onClick={() => handlePlayButton(store.id + 0.1)}
+                onClick={() => {
+                  handlePlayButton(store.id + 0.1);
+                  handleSongChange(`${store.user_name}'s newest song`);
+                }}
               ></button>
               <label>Newest Song</label>
             </div>

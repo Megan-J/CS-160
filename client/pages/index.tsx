@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import Footer from "./components/Footer";
-import PlayButton from "./components/PlayButton";
 import Link from "next/link";
 import { backend } from "./components/Constants";
 import song1 from "../public/data/newSongs/ai-generated-7926621_640.jpg";
@@ -35,6 +34,7 @@ export default function index() {
   const [text, setText] = React.useState("");
   let [user, setUser] = useState(null);
   const [audioSrc, setAudioSrc] = useState("");
+  const [songName, setSongName] = useState("");
 
   const [userList, setUserList] = useState<Track[]>([]);
 
@@ -197,6 +197,10 @@ export default function index() {
     setAudioSrc(newAudioSrc);
   };
 
+  const handleSongChange = (newSongName) => {
+    setSongName(newSongName);
+  };
+
   return (
     <>
       <Panel title="Welcome!">
@@ -244,11 +248,12 @@ export default function index() {
                       <p className="song-names">Rise & Shine</p>
                       <button
                         className="bi bi-play-circle-fill button-hover-grow"
-                        onClick={() =>
+                        onClick={() => {
                           handlePlayButton(
                             "./data/recentlyListened/rise-and-shine-203779.mp3"
-                          )
-                        }
+                          );
+                          handleSongChange("Rise & Shine");
+                        }}
                       ></button>
                     </div>
                   </div>
@@ -266,11 +271,12 @@ export default function index() {
                       <p className="song-names">I'll be Here</p>
                       <button
                         className="bi bi-play-circle-fill button-hover-grow"
-                        onClick={() =>
+                        onClick={() => {
                           handlePlayButton(
                             "./data/recentlyListened/i-will-be-here-vocal-edm-140857.mp3"
-                          )
-                        }
+                          );
+                          handleSongChange("I'll be Here");
+                        }}
                       ></button>
                     </div>
                   </div>
@@ -288,11 +294,12 @@ export default function index() {
                       <p className="song-names">One Step Further</p>
                       <button
                         className="bi bi-play-circle-fill button-hover-grow"
-                        onClick={() =>
+                        onClick={() => {
                           handlePlayButton(
                             "./data/recentlyListened/one-step-further-141064.mp3"
-                          )
-                        }
+                          );
+                          handleSongChange("One Step Further");
+                        }}
                       ></button>
                     </div>
                   </div>
@@ -323,9 +330,12 @@ export default function index() {
                   <p className="song-names">Call to the Soul</p>
                   <button
                     className="bi bi-play-circle-fill button-hover-grow"
-                    onClick={() =>
-                      handlePlayButton("./data/newSongs/a-call-to-the-soul.mp3")
-                    }
+                    onClick={() => {
+                      handlePlayButton(
+                        "./data/newSongs/a-call-to-the-soul.mp3"
+                      );
+                      handleSongChange("Call to the Soul");
+                    }}
                   ></button>
                 </div>
               </div>
@@ -343,11 +353,12 @@ export default function index() {
                   <p className="song-names">Powerful Rock</p>
                   <button
                     className="bi bi-play-circle-fill button-hover-grow"
-                    onClick={() =>
+                    onClick={() => {
                       handlePlayButton(
                         "./data/newSongs/powerful-gym-rock-121485.mp3"
-                      )
-                    }
+                      );
+                      handleSongChange("Powerful Rock");
+                    }}
                   ></button>
                 </div>
               </div>
@@ -365,11 +376,12 @@ export default function index() {
                   <p className="song-names">Funk Kingdom</p>
                   <button
                     className="bi bi-play-circle-fill button-hover-grow"
-                    onClick={() =>
+                    onClick={() => {
                       handlePlayButton(
                         "./data/newSongs/funk-in-kingdom-200507.mp3"
-                      )
-                    }
+                      );
+                      handleSongChange("Funk Kingdom");
+                    }}
                   ></button>
                 </div>
               </div>
@@ -387,11 +399,12 @@ export default function index() {
                   <p className="song-names">Walk Together</p>
                   <button
                     className="bi bi-play-circle-fill button-hover-grow"
-                    onClick={() =>
+                    onClick={() => {
                       handlePlayButton(
                         "./data/newSongs/walk-together-123281.mp3"
-                      )
-                    }
+                      );
+                      handleSongChange("Walk Together");
+                    }}
                   ></button>
                 </div>
               </div>
@@ -409,11 +422,12 @@ export default function index() {
                   <p className="song-names">LoFi Chill</p>
                   <button
                     className="bi bi-play-circle-fill button-hover-grow"
-                    onClick={() =>
+                    onClick={() => {
                       handlePlayButton(
                         "./data/newSongs/lofi-chill-medium-version-159456.mp3"
-                      )
-                    }
+                      );
+                      handleSongChange("LoFi Chill");
+                    }}
                   ></button>
                 </div>
               </div>
@@ -503,13 +517,12 @@ export default function index() {
             <br />
           </div>
         </div>
-        <p>Current Audio Source: {audioSrc}</p>
       </Panel>
       <br />
       <br />
       <br />
       <br />
-      <Footer audioSrc={audioSrc}></Footer>
+      <Footer audioSrc={audioSrc} songName={songName}></Footer>
     </>
   );
 }

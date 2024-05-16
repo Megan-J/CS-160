@@ -17,6 +17,7 @@ export default function UserProfile() {
   let [userProfileStoreDes, setUserProfileStoreDes] = useState(null);
   let [userProfileTracks, setUserProfileTracks] = useState(null);
   const [audioSrc, setAudioSrc] = useState("");
+  const [songName, setSongName] = useState("");
 
   // user is you
   let [user, setUser] = useState(null);
@@ -87,8 +88,12 @@ export default function UserProfile() {
   }
 
   const handlePlayButton = (storeID) => {
-    const newAudioSrc = `./data/storeFronts/${storeID}.mp3`;
+    const newAudioSrc = `./data/userMusic/${storeID}.mp3`;
     setAudioSrc(newAudioSrc);
+  };
+
+  const handleSongChange = (newSongName) => {
+    setSongName(newSongName);
   };
 
   return (
@@ -148,7 +153,10 @@ export default function UserProfile() {
                   >
                     <button
                       className="bi bi-play-circle-fill button-hover-grow"
-                      onClick={() => handlePlayButton(i + 1)}
+                      onClick={() => {
+                        handlePlayButton(i + 1);
+                        handleSongChange(t.trackTitle);
+                      }}
                     ></button>
                     <label className="indent">{t.trackTitle}</label>
                     <br />
@@ -162,7 +170,7 @@ export default function UserProfile() {
           <></>
         )}
       </Panel>
-      <Footer audioSrc={audioSrc}></Footer>
+      <Footer audioSrc={audioSrc} songName={songName}></Footer>
     </>
   );
 }

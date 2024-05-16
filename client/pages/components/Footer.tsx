@@ -1,6 +1,6 @@
 import React from "react";
 
-const Footer = ({ audioSrc }) => (
+const Footer = ({ audioSrc, songName }) => (
   <footer className="footer">
     <p
       style={{
@@ -11,7 +11,7 @@ const Footer = ({ audioSrc }) => (
         fontWeight: "bold",
       }}
     >
-      Now Playing
+      {songName ? `Now Playing: ${songName}` : ""}
     </p>
     <div className="center" style={{ maxWidth: "80%", margin: "0 auto" }}>
       <div
