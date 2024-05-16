@@ -59,7 +59,7 @@ export default function Signup() {
           console.log(data);
           if (success) {
             sessionStorage.setItem("user", JSON.stringify(data));
-            router.push("/user");
+            router.push("/");
           }
           return data;
         });

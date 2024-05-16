@@ -56,17 +56,6 @@ export default function index() {
     }
   }, []);
 
-  const fetchStores = () => {
-    // Fetch stores from the backend
-    fetch(`${backend}/tracks/all`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUserList(data);
-        console.log(data);
-      })
-      .catch((error) => console.error("Error fetching stores:", error));
-  };
-
   useEffect(() => {
     const userJSON = sessionStorage.getItem("user");
     let user = userJSON ? JSON.parse(userJSON) : null;

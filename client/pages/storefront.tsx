@@ -4,6 +4,9 @@ import Panel from "./components/Panel";
 import { backend } from "./components/Constants";
 import Link from "next/link";
 import Footer from "./components/Footer";
+import image1 from "../public/data/storeFrontProducts/15.png";
+import image2 from "../public/data/storeFrontProducts/17.png";
+import image3 from "../public/data/storeFrontProducts/18.png";
 
 export default function Storefront() {
   //should hold the store id
@@ -18,6 +21,8 @@ export default function Storefront() {
   let [owner, setOwner] = useState("");
   let [ownerId, setOwnerId] = useState("");
   let [IdOfStore, setIdOfStore] = useState("");
+
+  const images = [image1, image2, image3];
 
   useEffect(() => {
     urlString = window.location.href;
@@ -139,6 +144,7 @@ export default function Storefront() {
             <div className="all-products flex">
               {products.map((t, i) => (
                 <div className="product" key={i}>
+                  <img src={images[i].src} />
                   <div className="product-name">{t.vchName}</div>
                   <div className="product-description">{t.txtDescription}</div>
                   <div className="product-price">
@@ -171,6 +177,10 @@ export default function Storefront() {
             <i class="bi bi-exclamation-circle"></i>
           </Link>
         </div>
+        <br />
+        <br />
+        <br />
+        <br />
       </Panel>
       <Footer></Footer>
     </>
