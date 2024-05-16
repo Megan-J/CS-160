@@ -244,7 +244,14 @@ export default function index() {
                         alt="Song 1 Image"
                       />
                       <p className="song-names">Rise & Shine</p>
-                      <PlayButton songName="riseandshine"></PlayButton>
+                      <button
+                        className="bi bi-play-circle-fill button-hover-grow"
+                        onClick={() =>
+                          handlePlayButton(
+                            "./data/recentlyListened/rise-and-shine-203779.mp3"
+                          )
+                        }
+                      ></button>
                     </div>
                   </div>
                   <div className="img-hover-shadow">
@@ -259,7 +266,14 @@ export default function index() {
                         alt="Song 2 Image"
                       />
                       <p className="song-names">I'll be Here</p>
-                      <PlayButton songName="i'llbehere"></PlayButton>
+                      <button
+                        className="bi bi-play-circle-fill button-hover-grow"
+                        onClick={() =>
+                          handlePlayButton(
+                            "./data/recentlyListened/i-will-be-here-vocal-edm-140857.mp3"
+                          )
+                        }
+                      ></button>
                     </div>
                   </div>
                   <div className="img-hover-shadow">
@@ -274,7 +288,14 @@ export default function index() {
                         alt="Song 3 Image"
                       />
                       <p className="song-names">One Step Further</p>
-                      <PlayButton songName="one step further"></PlayButton>
+                      <button
+                        className="bi bi-play-circle-fill button-hover-grow"
+                        onClick={() =>
+                          handlePlayButton(
+                            "./data/recentlyListened/one-step-further-141064.mp3"
+                          )
+                        }
+                      ></button>
                     </div>
                   </div>
                 </div>
@@ -303,15 +324,11 @@ export default function index() {
                   />
                   <p className="song-names">Call to the Soul</p>
                   <button
+                    className="bi bi-play-circle-fill button-hover-grow"
                     onClick={() =>
-                      handlePlayButton(
-                        "../public/data/storeMusic/flashback-184686.mp3"
-                      )
+                      handlePlayButton("./data/storeMusic/flashback-184686.mp3")
                     }
-                  >
-                    Press Me
-                  </button>
-                  <PlayButton songName="call to the soul"></PlayButton>
+                  ></button>
                 </div>
               </div>
               <div className="img-hover-shadow">
