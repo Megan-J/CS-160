@@ -4,12 +4,12 @@ import { Routes, Route } from "react-router-dom"; // Import BrowserRouter
 import Link from "next/link";
 import { useRouter } from "next/router"; // Import useRouter
 import PlayButton from "./components/PlayButton";
-import storefront1 from "../../data/storeFronts/1.png";
-import storefront2 from "../../data/storeFronts/2.png";
-import storefront3 from "../../data/storeFronts/3.png";
-import storefront4 from "../../data/storeFronts/4.png";
-import storefront5 from "../../data/storeFronts/5.png";
-import storefront6 from "../../data/storeFronts/6.png";
+import storefront1 from "../public/data/storeFronts/1.png";
+import storefront2 from "../public/data/storeFronts/2.png";
+import storefront3 from "../public/data/storeFronts/3.png";
+import storefront4 from "../public/data/storeFronts/4.png";
+import storefront5 from "../public/data/storeFronts/5.png";
+import storefront6 from "../public/data/storeFronts/6.png";
 
 interface Store {
   id: number;
