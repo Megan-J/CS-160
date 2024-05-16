@@ -232,7 +232,7 @@ function admin() {
             <div className="input_wrapper">
               <input
                 type="text"
-                placeholder="Search Stores"
+                placeholder="Search Users"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyPress={handleKeyPress}

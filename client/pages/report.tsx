@@ -12,7 +12,7 @@ export default function Report() {
   const router = useRouter();
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    /*event.preventDefault();
     setSubmitting(true);
     try {
       const response = await fetch(`${router.basePath}/api/report`, {
@@ -36,7 +36,8 @@ export default function Report() {
       console.error("Failed to submit report:", error);
       alert("Failed to submit report");
       setSubmitting(false);
-    }
+    }*/
+    alert("Report submitted");
   };
 
   return (
@@ -66,25 +67,6 @@ export default function Report() {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-            />
-          </label>
-          <br />
-          <label>
-            User ID:
-            <input
-              type="text"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-            />
-          </label>
-          <br />
-          <br />
-          <label>
-            Product ID:
-            <input
-              type="text"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
             />
           </label>
           <br />
