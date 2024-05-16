@@ -98,7 +98,15 @@ const SearchStores: React.FC<Props> = ({ setAudioSrc, setSongName }) => {
         {userList.map((store) => (
           <div className="body_item">
             <Link href="/storefront" as={`/storefront?storeID=${store.id}`}>
-              <img src={storefronts[store.id].src} />
+              <div>
+                {storefronts[store.id] && (
+                  <img
+                    src={storefronts[store.id].src}
+                    alt={`Storefront of ${store.id}`}
+                  />
+                )}
+              </div>
+
               <p></p>
               <p className="heading-center">
                 <div style={{ padding: "5px" }}>

@@ -368,6 +368,9 @@ export default function MyProfile() {
               </div>
             </>
           )}
+          <br />
+          <br />
+          <br />
         </div>
       </Panel>
       <Footer></Footer>
