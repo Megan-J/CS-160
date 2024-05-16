@@ -148,7 +148,7 @@ export default function UserProfile() {
                   >
                     <button
                       className="bi bi-play-circle-fill button-hover-grow"
-                      onClick={() => handlePlayButton(storeID)}
+                      onClick={() => handlePlayButton(i + 1)}
                     ></button>
                     <label className="indent">{t.trackTitle}</label>
                     <br />
