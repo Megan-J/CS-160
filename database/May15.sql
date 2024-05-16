@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `cloudsound` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `cloudsound`;
--- MySQL dump 10.13  Distrib 8.0.31, for macos12 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.34, for macos13 (arm64)
 --
 -- Host: 127.0.0.1    Database: cloudsound
 -- ------------------------------------------------------
--- Server version	8.3.0
+-- Server version	8.0.34
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -17,7 +15,6 @@ USE `cloudsound`;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-use cloudsound;
 --
 -- Table structure for table `Addresses`
 --
@@ -68,7 +65,7 @@ CREATE TABLE `BanRequests` (
   `dtResolved` datetime DEFAULT NULL,
   `bResolved` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +74,7 @@ CREATE TABLE `BanRequests` (
 
 LOCK TABLES `BanRequests` WRITE;
 /*!40000 ALTER TABLE `BanRequests` DISABLE KEYS */;
-INSERT INTO `BanRequests` VALUES (3,1,2,'just cause','2024-04-15 19:44:07','2024-04-16 21:00:56',-1),(8,0,2,'i said so','2024-04-16 14:21:55','2024-04-16 21:22:00',1),(9,0,2,'wefwf','2024-04-16 14:27:00','2024-04-16 21:27:06',1),(10,0,2,'ererbeb','2024-04-16 14:32:42','2024-04-16 21:32:49',1);
+INSERT INTO `BanRequests` VALUES (3,1,2,'just cause','2024-04-15 19:44:07','2024-04-16 21:00:56',-1),(8,0,2,'i said so','2024-04-16 14:21:55','2024-04-16 21:22:00',1),(9,0,2,'wefwf','2024-04-16 14:27:00','2024-04-16 21:27:06',1),(10,0,2,'ererbeb','2024-04-16 14:32:42','2024-04-16 21:32:49',1),(12,1,123,'123','2024-05-11 18:06:03',NULL,0);
 /*!40000 ALTER TABLE `BanRequests` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,8 +91,9 @@ CREATE TABLE `Cart` (
   `nStoreID` int DEFAULT NULL,
   `nProductID` int DEFAULT NULL,
   `nQuantity` int DEFAULT NULL,
+  `nActive` int DEFAULT '0',
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,95 +102,8 @@ CREATE TABLE `Cart` (
 
 LOCK TABLES `Cart` WRITE;
 /*!40000 ALTER TABLE `Cart` DISABLE KEYS */;
-INSERT INTO `Cart` VALUES (1,1,1,15,1);
+INSERT INTO `Cart` VALUES (15,1,1,15,2,1),(16,1,1,17,1,1);
 /*!40000 ALTER TABLE `Cart` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `CCInfo`
---
-
-DROP TABLE IF EXISTS `CCInfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `CCInfo` (
-  `aID` int NOT NULL AUTO_INCREMENT,
-  `nUserID` int NOT NULL,
-  `nCCType` int NOT NULL,
-  `vchCCNumber` varchar(45) NOT NULL,
-  `vchCCExp` varchar(45) NOT NULL,
-  `vchCCV` varchar(45) NOT NULL,
-  `bIsPreferred` int DEFAULT '0',
-  `bIsDeleted` int DEFAULT '0',
-  `dtLastUpdate` datetime DEFAULT CURRENT_TIMESTAMP,
-  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`aID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `CCInfo`
---
-
-LOCK TABLES `CCInfo` WRITE;
-/*!40000 ALTER TABLE `CCInfo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `CCInfo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `CCTypes`
---
-
-DROP TABLE IF EXISTS `CCTypes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `CCTypes` (
-  `aID` int NOT NULL AUTO_INCREMENT,
-  `vchName` varchar(45) NOT NULL,
-  `vchIconPath` varchar(45) DEFAULT NULL,
-  `bIsDeleted` int DEFAULT '0',
-  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`aID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `CCTypes`
---
-
-LOCK TABLES `CCTypes` WRITE;
-/*!40000 ALTER TABLE `CCTypes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `CCTypes` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Countries`
---
-
-DROP TABLE IF EXISTS `Countries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Countries` (
-  `aID` int NOT NULL AUTO_INCREMENT,
-  `vchName` varchar(45) NOT NULL,
-  `vchAbbr` varchar(45) DEFAULT NULL,
-  `bPriority` int DEFAULT '0',
-  `bIsDeleted` int NOT NULL DEFAULT '0',
-  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Countries`
---
-
-LOCK TABLES `Countries` WRITE;
-/*!40000 ALTER TABLE `Countries` DISABLE KEYS */;
-INSERT INTO `Countries` VALUES (1,'United States','USA',1,0,'2024-03-14 16:39:19','2024-03-14 16:39:19');
-/*!40000 ALTER TABLE `Countries` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -209,7 +120,7 @@ CREATE TABLE `Followers` (
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -218,6 +129,7 @@ CREATE TABLE `Followers` (
 
 LOCK TABLES `Followers` WRITE;
 /*!40000 ALTER TABLE `Followers` DISABLE KEYS */;
+INSERT INTO `Followers` VALUES (1,1,11,'2024-05-13 02:23:39','2024-05-13 02:23:39');
 /*!40000 ALTER TABLE `Followers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,7 +244,7 @@ CREATE TABLE `Products` (
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT NULL,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,37 +253,34 @@ CREATE TABLE `Products` (
 
 LOCK TABLES `Products` WRITE;
 /*!40000 ALTER TABLE `Products` DISABLE KEYS */;
-INSERT INTO `Products` VALUES (3,2,'111','222',333,444,555,'',0,'2024-03-21 14:58:29',NULL),(4,2,'111','222',333,444,555,'',0,'2024-03-21 14:59:02',NULL),(5,2,'111','222',333,444,555,'',0,'2024-03-21 14:59:07',NULL),(6,2,'111','222',333,444,555,'',0,'2024-03-21 15:00:23',NULL),(7,2,'111','222',333,444,555,'',0,'2024-03-21 15:02:15',NULL),(8,2,'111','222',333,444,555,'',0,'2024-03-21 15:02:28',NULL),(9,2,'111','222',333,444,555,'',0,'2024-03-21 15:03:00',NULL),(10,2,'111','222',333,444,555,'',0,'2024-03-21 15:04:24',NULL),(11,2,'111','222',333,444,555,'',0,'2024-03-21 15:04:59',NULL),(12,2,'111','222',333,444,555,'',0,'2024-03-21 15:05:17',NULL),(15,1,'asdfasfd','adfsfdsa',22,33,44,'',0,'2024-03-21 15:40:42',NULL),(17,1,'My great product','This is cool',11.22,55.44,123,'',0,'2024-03-21 15:57:15',NULL),(18,4,'My brain','Not using anymore',5,1,1,'',0,'2024-03-21 16:02:46',NULL);
+INSERT INTO `Products` VALUES (3,2,'111','222',333,444,555,'',0,'2024-03-21 14:58:29',NULL),(4,2,'111','222',333,444,555,'',0,'2024-03-21 14:59:02',NULL),(5,2,'111','222',333,444,555,'',0,'2024-03-21 14:59:07',NULL),(6,2,'111','222',333,444,555,'',0,'2024-03-21 15:00:23',NULL),(7,2,'111','222',333,444,555,'',0,'2024-03-21 15:02:15',NULL),(8,2,'111','222',333,444,555,'',0,'2024-03-21 15:02:28',NULL),(9,2,'111','222',333,444,555,'',0,'2024-03-21 15:03:00',NULL),(10,2,'111','222',333,444,555,'',0,'2024-03-21 15:04:24',NULL),(11,2,'111','222',333,444,555,'',0,'2024-03-21 15:04:59',NULL),(12,2,'111','222',333,444,555,'',0,'2024-03-21 15:05:17',NULL),(15,1,'asdfasfd','adfsfdsa',22,33,44,'',0,'2024-03-21 15:40:42',NULL),(17,1,'My great product','This is cool',11.22,55.44,123,'',0,'2024-03-21 15:57:15',NULL),(18,4,'My brain','Not using anymore',5,1,1,'',0,'2024-03-21 16:02:46',NULL),(20,1,'new product','new',12,2,2,'',0,'2024-05-15 21:44:08',NULL);
 /*!40000 ALTER TABLE `Products` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `States`
+-- Table structure for table `Reports`
 --
 
-DROP TABLE IF EXISTS `States`;
+DROP TABLE IF EXISTS `Reports`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `States` (
-  `aID` int NOT NULL AUTO_INCREMENT,
-  `vchStateName` varchar(45) NOT NULL,
-  `vchStateAbbr` varchar(45) NOT NULL,
-  `fTaxRate` float DEFAULT NULL,
-  `bIsDeleted` int DEFAULT '0',
-  `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `Reports` (
+  `idReports` int NOT NULL,
+  `ReportType` varchar(45) DEFAULT NULL,
+  `Description` varchar(255) DEFAULT NULL,
+  `UserID` int DEFAULT NULL,
+  `ProductID` int DEFAULT NULL,
+  PRIMARY KEY (`idReports`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `States`
+-- Dumping data for table `Reports`
 --
 
-LOCK TABLES `States` WRITE;
-/*!40000 ALTER TABLE `States` DISABLE KEYS */;
-INSERT INTO `States` VALUES (1,'Alabama','AL',0.04,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(2,'Alaska','AK',0,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(3,'Arizona','AZ',0.056,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(4,'Arkansas','AR',0.065,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(5,'California','CA',0.0725,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(6,'Colorado','CO',0.029,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(7,'Connecticut','CT',0.0635,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(8,'Delaware','DE',0,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(9,'Florida','FL',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(10,'Georgia','GA',0.04,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(11,'Hawaii','HI',0.04,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(12,'Idaho','ID',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(13,'Illinois','IL',0.0625,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(14,'Indiana','IN',0.07,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(15,'Iowa','IO',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(16,'Kansas','KS',0.065,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(17,'Kentucky','KY',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(18,'Louisiana','LA',0.0445,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(19,'Maine','ME',0.055,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(20,'Maryland','MD',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(21,'Massachusetts','MA',0.0625,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(22,'Michigan','MI',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(23,'Minnesota','MN',0.0688,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(24,'Mississippi','MS',0.07,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(25,'Missouri','MO',0.0423,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(26,'Montana','MT',0,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(27,'Nebraska','NB',0.055,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(28,'Nevada','NV',0.0685,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(29,'New Hampshire','NH',0,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(30,'New Jersey','NJ',0.0663,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(31,'New Mexico','NM',0.0488,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(32,'New York','NY',0.04,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(33,'North Carolina','NC',0.0475,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(34,'North Dakota','ND',0.05,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(35,'Ohio','OH',0.0575,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(36,'Oklahoma','OK',0.045,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(37,'Oregon','OR',0,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(38,'Pennsylvania','PA',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(39,'Rhode Island','RI',0.07,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(40,'South Carolina','SC',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(41,'South Dakota','SD',0.042,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(42,'Tennessee','TN',0.07,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(43,'Texas','TX',625,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(44,'Utah','UT',0.061,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(45,'Vermont','VT',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(46,'Virginia','VA',0.053,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(47,'Washington','WA',0.065,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(48,'West Virginia','WV',0.06,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(49,'Wisconsin','WI',0.05,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(50,'Wyoming','WY',0.04,0,'2024-03-14 16:49:23','2024-03-14 16:49:23'),(51,'District of Columbia','DC',0.06,0,'2024-03-14 16:59:25','2024-03-14 16:59:25');
-/*!40000 ALTER TABLE `States` ENABLE KEYS */;
+LOCK TABLES `Reports` WRITE;
+/*!40000 ALTER TABLE `Reports` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Reports` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -415,7 +324,7 @@ CREATE TABLE `Stores` (
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +333,7 @@ CREATE TABLE `Stores` (
 
 LOCK TABLES `Stores` WRITE;
 /*!40000 ALTER TABLE `Stores` DISABLE KEYS */;
-INSERT INTO `Stores` VALUES (1,1,'My little store','It has everything!','2024-03-19 16:50:16','2024-03-21 12:27:49'),(2,2,'asdf','ee','2024-03-21 05:09:30','2024-03-21 12:27:49'),(3,13,'cars','asdfasdf','2024-03-21 12:29:17','2024-03-21 12:29:17'),(4,14,'Natasha\'s Store','Good stuff!!!','2024-03-21 16:02:26','2024-03-21 16:02:26');
+INSERT INTO `Stores` VALUES (1,1,'My little store','It has everything!','2024-03-19 16:50:16','2024-03-21 12:27:49'),(2,2,'asdf','ee','2024-03-21 05:09:30','2024-03-21 12:27:49'),(3,13,'cars','asdfasdf','2024-03-21 12:29:17','2024-03-21 12:29:17'),(4,14,'Natasha\'s Store','Good stuff!!!','2024-03-21 16:02:26','2024-03-21 16:02:26'),(5,15,'my store','come look','2024-05-11 18:57:31','2024-05-11 18:57:31');
 /*!40000 ALTER TABLE `Stores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -446,7 +355,7 @@ CREATE TABLE `Tracks` (
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT NULL,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -455,6 +364,7 @@ CREATE TABLE `Tracks` (
 
 LOCK TABLES `Tracks` WRITE;
 /*!40000 ALTER TABLE `Tracks` DISABLE KEYS */;
+INSERT INTO `Tracks` VALUES (1,1,'song1','best song','someurl',NULL,1,'2024-04-16 17:29:55',NULL),(2,1,'song2','description','basic',NULL,NULL,'2024-04-16 17:29:55',NULL);
 /*!40000 ALTER TABLE `Tracks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -483,7 +393,7 @@ CREATE TABLE `Users` (
   `dtUpdateDate` datetime DEFAULT CURRENT_TIMESTAMP,
   `dtInsertDate` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`aID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -492,7 +402,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (1,'tmoquin','password',NULL,'Tyler','Moquin','TAM','tyler.moquin@sjsu.edu',1,'Student with a penchant for music.',NULL,NULL,NULL,0,'2024-03-18 16:55:55','2024-03-18 16:55:55'),(2,'kmoquin','password',NULL,'Kai','Moquin','Kainess','kai@gmail.com',1,'Just a kid.',NULL,NULL,NULL,0,'2024-03-19 16:54:12','2024-03-19 16:54:12'),(11,'tmoquin2','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:34:39','2024-03-20 18:34:39'),(12,'tmoquin22','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:35:32','2024-03-20 18:35:32'),(13,'cmoquin','password',NULL,'Carla','Moquin',NULL,'cmoquin@gmail.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 12:14:59','2024-03-21 12:14:59'),(14,'nmoquin','password',NULL,'Natasha','Moquin',NULL,'nmoquin@foo.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 16:02:15','2024-03-21 16:02:15');
+INSERT INTO `Users` VALUES (1,'tmoquin','password',NULL,'Tyler','Moquin','TAM','tyler.moquin@sjsu.edu',1,'Student with a penchant for music.',NULL,NULL,NULL,0,'2024-03-18 16:55:55','2024-03-18 16:55:55'),(2,'kmoquin','password',NULL,'Kai','Moquin','Kainess','kai@gmail.com',1,'Just a kid.',NULL,NULL,NULL,0,'2024-03-19 16:54:12','2024-03-19 16:54:12'),(11,'tmoquin2','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:34:39','2024-03-20 18:34:39'),(12,'tmoquin22','foobar',NULL,'Brian','Moquin',NULL,'safd@asf.com',0,NULL,NULL,NULL,NULL,0,'2024-03-20 18:35:32','2024-03-20 18:35:32'),(13,'cmoquin','password',NULL,'Carla','Moquin',NULL,'cmoquin@gmail.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 12:14:59','2024-03-21 12:14:59'),(14,'nmoquin','password',NULL,'Natasha','Moquin',NULL,'nmoquin@foo.com',0,NULL,NULL,NULL,NULL,0,'2024-03-21 16:02:15','2024-03-21 16:02:15'),(15,'asdf','asdf',NULL,'asdf','asdf',NULL,'asdf',0,NULL,NULL,NULL,NULL,0,'2024-05-06 23:17:53','2024-05-06 23:17:53'),(16,'j6','mypass',NULL,'Joe','Sixpack',NULL,'j6@j6.org',0,NULL,NULL,NULL,NULL,0,'2024-05-11 16:55:22','2024-05-11 16:55:22');
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -505,4 +415,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-16 14:45:57
+-- Dump completed on 2024-05-15 22:47:50
