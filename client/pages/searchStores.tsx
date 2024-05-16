@@ -20,10 +20,14 @@ interface Store {
   user_name: string;
 }
 
-const SearchStores: React.FC = () => {
+interface Props {
+  setAudioSrc: (audioSrc: string) => void; // Define setAudioSrc as a function that takes a string argument and returns void
+  setSongName: (songName: string) => void;
+}
+
+const SearchStores: React.FC<Props> = ({ setAudioSrc, setSongName }) => {
   const [text, setText] = React.useState("");
 
-  let [ownerName, setOwnerName] = useState("");
   let [error, setError] = useState("");
   const [userList, setUserList] = useState<Store[]>([]);
   let index = 0;
@@ -40,6 +44,15 @@ const SearchStores: React.FC = () => {
   useEffect(() => {
     fetchStores();
   }, []);
+
+  const handlePlayButton = (storeID) => {
+    const newAudioSrc = `./data/storeFronts/${storeID}.mp3`;
+    setAudioSrc(newAudioSrc);
+  };
+
+  const handleSongChange = (newSongName) => {
+    setSongName(newSongName);
+  };
 
   const fetchStores = () => {
     // Fetch stores from the backend
@@ -122,7 +135,13 @@ const SearchStores: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <PlayButton songName="tophit1"></PlayButton>
+              <button
+                className="bi bi-play-circle-fill button-hover-grow"
+                onClick={() => {
+                  handlePlayButton(store.id);
+                  handleSongChange(`${store.user_name}'s top hit`);
+                }}
+              ></button>
               <label>Top Hit</label>
             </div>
             <div
@@ -133,7 +152,13 @@ const SearchStores: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <PlayButton songName="newestsong"></PlayButton>
+              <button
+                className="bi bi-play-circle-fill button-hover-grow"
+                onClick={() => {
+                  handlePlayButton(store.id + 0.1);
+                  handleSongChange(`${store.user_name}'s newest song`);
+                }}
+              ></button>
               <label>Newest Song</label>
             </div>
           </div>

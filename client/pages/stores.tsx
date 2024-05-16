@@ -5,17 +5,19 @@ import Footer from "./components/Footer";
 
 function stores() {
   const [message, setMessage] = useState("Loading");
+  const [audioSrc, setAudioSrc] = useState("");
+  const [songName, setSongName] = useState("");
 
   return (
     <>
       <Panel title="Stores">
         <p>Explore all the stores created by our very own users!</p>
         <div>
-          <SearchStores />
+          <SearchStores setAudioSrc={setAudioSrc} setSongName={setSongName} />
         </div>
       </Panel>
       <br />
-      <Footer></Footer>
+      <Footer audioSrc={audioSrc} songName={songName}></Footer>
     </>
   );
 }

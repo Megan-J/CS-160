@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Panel from "./components/Panel";
 import Footer from "./components/Footer";
-import PlayButton from "./components/PlayButton";
 import Link from "next/link";
 import { backend } from "./components/Constants";
 import song1 from "../public/data/newSongs/ai-generated-7926621_640.jpg";
@@ -19,6 +18,7 @@ import product5 from "../public/data/trendingProducts/teddyBear.jpg";
 import listen1 from "../public/data/recentlyListened/riseAndShine.jpg";
 import listen2 from "../public/data/recentlyListened/i will be here.png";
 import listen3 from "../public/data/recentlyListened/OneStepFurther.png";
+import path from "../public/data/storeMusic/flashback-184686.mp3";
 
 interface Track {
   id: number;
@@ -33,6 +33,8 @@ export default function index() {
   const router = useRouter();
   const [text, setText] = React.useState("");
   let [user, setUser] = useState(null);
+  const [audioSrc, setAudioSrc] = useState("");
+  const [songName, setSongName] = useState("");
 
   const [userList, setUserList] = useState<Track[]>([]);
 
@@ -191,8 +193,12 @@ export default function index() {
     }
   };
 
-  const handlePlay = () => {
-    console.log("Play button clicked");
+  const handlePlayButton = (newAudioSrc) => {
+    setAudioSrc(newAudioSrc);
+  };
+
+  const handleSongChange = (newSongName) => {
+    setSongName(newSongName);
   };
 
   return (
@@ -240,7 +246,15 @@ export default function index() {
                         alt="Song 1 Image"
                       />
                       <p className="song-names">Rise & Shine</p>
-                      <PlayButton songName="riseandshine"></PlayButton>
+                      <button
+                        className="bi bi-play-circle-fill button-hover-grow"
+                        onClick={() => {
+                          handlePlayButton(
+                            "./data/recentlyListened/rise-and-shine-203779.mp3"
+                          );
+                          handleSongChange("Rise & Shine");
+                        }}
+                      ></button>
                     </div>
                   </div>
                   <div className="img-hover-shadow">
@@ -255,7 +269,15 @@ export default function index() {
                         alt="Song 2 Image"
                       />
                       <p className="song-names">I'll be Here</p>
-                      <PlayButton songName="i'llbehere"></PlayButton>
+                      <button
+                        className="bi bi-play-circle-fill button-hover-grow"
+                        onClick={() => {
+                          handlePlayButton(
+                            "./data/recentlyListened/i-will-be-here-vocal-edm-140857.mp3"
+                          );
+                          handleSongChange("I'll be Here");
+                        }}
+                      ></button>
                     </div>
                   </div>
                   <div className="img-hover-shadow">
@@ -270,7 +292,15 @@ export default function index() {
                         alt="Song 3 Image"
                       />
                       <p className="song-names">One Step Further</p>
-                      <PlayButton songName="one step further"></PlayButton>
+                      <button
+                        className="bi bi-play-circle-fill button-hover-grow"
+                        onClick={() => {
+                          handlePlayButton(
+                            "./data/recentlyListened/one-step-further-141064.mp3"
+                          );
+                          handleSongChange("One Step Further");
+                        }}
+                      ></button>
                     </div>
                   </div>
                 </div>
@@ -298,7 +328,15 @@ export default function index() {
                     alt="Song 1 Image"
                   />
                   <p className="song-names">Call to the Soul</p>
-                  <PlayButton songName="call to the soul"></PlayButton>
+                  <button
+                    className="bi bi-play-circle-fill button-hover-grow"
+                    onClick={() => {
+                      handlePlayButton(
+                        "./data/newSongs/a-call-to-the-soul.mp3"
+                      );
+                      handleSongChange("Call to the Soul");
+                    }}
+                  ></button>
                 </div>
               </div>
               <div className="img-hover-shadow">
@@ -313,7 +351,15 @@ export default function index() {
                     alt="Song 2 Image"
                   />
                   <p className="song-names">Powerful Rock</p>
-                  <PlayButton songName="powerful rock"></PlayButton>
+                  <button
+                    className="bi bi-play-circle-fill button-hover-grow"
+                    onClick={() => {
+                      handlePlayButton(
+                        "./data/newSongs/powerful-gym-rock-121485.mp3"
+                      );
+                      handleSongChange("Powerful Rock");
+                    }}
+                  ></button>
                 </div>
               </div>
               <div className="img-hover-shadow">
@@ -328,7 +374,15 @@ export default function index() {
                     alt="Song 3 Image"
                   />
                   <p className="song-names">Funk Kingdom</p>
-                  <PlayButton songName="funk kingdom"></PlayButton>
+                  <button
+                    className="bi bi-play-circle-fill button-hover-grow"
+                    onClick={() => {
+                      handlePlayButton(
+                        "./data/newSongs/funk-in-kingdom-200507.mp3"
+                      );
+                      handleSongChange("Funk Kingdom");
+                    }}
+                  ></button>
                 </div>
               </div>
               <div className="img-hover-shadow">
@@ -343,7 +397,15 @@ export default function index() {
                     alt="Song 4 Image"
                   />
                   <p className="song-names">Walk Together</p>
-                  <PlayButton songName="walk together"></PlayButton>
+                  <button
+                    className="bi bi-play-circle-fill button-hover-grow"
+                    onClick={() => {
+                      handlePlayButton(
+                        "./data/newSongs/walk-together-123281.mp3"
+                      );
+                      handleSongChange("Walk Together");
+                    }}
+                  ></button>
                 </div>
               </div>
               <div className="img-hover-shadow">
@@ -358,7 +420,15 @@ export default function index() {
                     alt="Song 3 Image"
                   />
                   <p className="song-names">LoFi Chill</p>
-                  <PlayButton songName="lofi chill"></PlayButton>
+                  <button
+                    className="bi bi-play-circle-fill button-hover-grow"
+                    onClick={() => {
+                      handlePlayButton(
+                        "./data/newSongs/lofi-chill-medium-version-159456.mp3"
+                      );
+                      handleSongChange("LoFi Chill");
+                    }}
+                  ></button>
                 </div>
               </div>
             </div>
@@ -452,7 +522,7 @@ export default function index() {
       <br />
       <br />
       <br />
-      <Footer></Footer>
+      <Footer audioSrc={audioSrc} songName={songName}></Footer>
     </>
   );
 }
