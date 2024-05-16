@@ -45,6 +45,7 @@ export default function UserProfile() {
 
   const getUserProfileData = () => {
     let success = false;
+    console.log(profileID);
     fetch(`${backend}/user/data/${profileID}`, {
       method: "GET",
     })
@@ -70,22 +71,6 @@ export default function UserProfile() {
         }
       });
   };
-
-  let userID: number;
-  try {
-    userID = user.aID;
-  } catch (e) {
-    userID = "";
-  }
-
-  let storeID, storeName;
-  try {
-    storeID = store.aID;
-    storeName = store.vchName;
-  } catch (e) {
-    storeID = "";
-    storeName = "";
-  }
 
   const handlePlayButton = (storeID) => {
     const newAudioSrc = `./data/userMusic/${storeID}.mp3`;
@@ -133,7 +118,6 @@ export default function UserProfile() {
                 className="store-in-profile"
               >
                 <div className="center">{userProfileStoreName}</div>
-                <div className="center">{userProfileStoreDes}</div>
               </Link>
             </div>
           </>

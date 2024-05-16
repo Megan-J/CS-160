@@ -1043,7 +1043,7 @@ export default function MyStore() {
               <div className="box container no-shadow">
                 <div className="heading subheading gray">My Orders</div>
                 <div className="orders indent">
-                  {(orderItem1 || orderItem2 || orderItem3) && (
+                  {(orderItem1 || orderItem2) && (
                     <div className="order">
                       <div className="order-date header">Date</div>
                       <div className="order-product-name header">Product</div>
@@ -1057,7 +1057,7 @@ export default function MyStore() {
                   {orderItem1 && (
                     <div className="order">
                       <div className="order-date ">4/12/24</div>
-                      <div className="order-product-name ">Klaatu CD</div>
+                      <div className="order-product-name ">Art Print</div>
                       <div className="order-quantity ">3</div>
                       <div className="order-total ">$32.50</div>
                       <div>
@@ -1076,28 +1076,10 @@ export default function MyStore() {
                     <div className="order">
                       <div className="order-date ">4/14/24</div>
                       <div className="order-product-name ">
-                        Autographed photo of Tom Petty
+                        Stained Glass Art
                       </div>
                       <div className="order-quantity ">1</div>
                       <div className="order-total ">$10.00</div>
-                      <div>
-                        <button
-                          className="cancel-order button"
-                          onClick={(e) => {
-                            setOrderItem2(false);
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  {orderItem3 && (
-                    <div className="order">
-                      <div className="order-date ">4/16/24</div>
-                      <div className="order-product-name ">Tesla Model S</div>
-                      <div className="order-quantity ">1</div>
-                      <div className="order-total ">$122,000.00</div>
                       <div>
                         <button
                           className="cancel-order button"
