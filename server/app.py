@@ -1,6 +1,7 @@
 #, jsonify, make_response
 from datetime import datetime
 from flask import Flask, request, render_template
+import requests
 from flask import request, jsonify, make_response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -1101,6 +1102,39 @@ def make_user():
     
     except Exception as e:
         return make_response(jsonify({'message': 'Error creating user', 'error': str(e)}), 500)
+    
+#test if the external api would connect
+@app.route('/external_api', methods=['GET'])
+def get_data_from_external_api():
+    api_url = 'https://api.eva.pingutil.com/email?email=test@mail7.io'
+    response = requests.get(api_url, verify=False)
+
+
+    if response.status_code == 200:
+        data = response.json()
+        return jsonify(data)
+    else:
+        return jsonify({'error': 'Failed to fetch data from the external API'}), 500
+
+
+### ------------- External API Call ------------- ###
+@app.route('/external-api/<string:email>', methods=['GET'])
+def call_external_api(email):
+    print(email)
+    api_url = f'https://api.eva.pingutil.com/email?email={email}'
+    response = requests.get(api_url, verify=False)
+    data = response.json()
+
+
+    if response.status_code == 200:
+        data = response.json()
+        if data['status'] == 'success':
+            return jsonify(data['status']), 200
+        else:
+            return jsonify({'error': 'Failed to fetch data from the external API'}), 500
+    else:
+        return jsonify({'error': 'Failed to fetch data from the external API'}), 500
+
 
 
 ### ------------- RUN FLASK SERVER ------------- ###

@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 export default function Signup() {
   const [formState, setFormState] = useState(null);
   let [error, setError] = useState(null);
+  let [verified, setVerifyEmail] = useState(false);
   const router = useRouter();
 
   const handleChange = (event) => {
@@ -19,33 +20,50 @@ export default function Signup() {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(formState);
+    console.log(formState.email);
 
-    let success = false;
-    fetch(`${backend}/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formState),
-    })
-      .then((res) => {
-        if (res.status === 200 || res.status === 201) {
-          success = true;
-        } else {
-          setError("Username already taken. Please try another.");
-        }
+    if (formState && formState.email) {
+      fetch(`${backend}/external-api/${formState.email}`, {
+        method: "GET",
+      }).then((res) => {
         console.log(res);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("returned:");
-        console.log(data);
-        if (success) {
-          sessionStorage.setItem("user", JSON.stringify(data));
-          router.push("/user");
+        if (res.status === 200) {
+          setVerifyEmail(true);
+        } else {
+          setError("Invalid Email");
+          setVerifyEmail(false);
         }
-        return data;
       });
+    }
+
+    if (verified) {
+      let success = false;
+      fetch(`${backend}/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      })
+        .then((res) => {
+          if (res.status === 200 || res.status === 201) {
+            success = true;
+          } else {
+            setError("Username already taken. Please try another.");
+          }
+          console.log(res);
+          return res.json();
+        })
+        .then((data) => {
+          console.log("returned:");
+          console.log(data);
+          if (success) {
+            sessionStorage.setItem("user", JSON.stringify(data));
+            router.push("/user");
+          }
+          return data;
+        });
+    }
   };
 
   return (
